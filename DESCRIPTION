@@ -1,0 +1,12 @@
+Package: health-inequalities-explorer
+Title: Identify Health Inequalities
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Mike", "Page", email = "mpage@redcross.org.uk", role = "cre"),
+    person(family = "British Red Cross", role = "cph")
+    )
+Description: Shiny app to identify areas of high health inequalities.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
