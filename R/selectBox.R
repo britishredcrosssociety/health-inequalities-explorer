@@ -35,10 +35,10 @@ selectBoxTest <- function() {
 
     selectBoxServer("test", selected_area)
 
-    # Debug
-    observe({
-      print(selected_area())
-    })
+    # # Debug
+    # observe({
+    #   print(selected_area())
+    # })
   }
   shinyApp(ui, server)
 }
