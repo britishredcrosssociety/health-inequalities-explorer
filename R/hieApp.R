@@ -20,9 +20,9 @@ hieApp <- function() {
           href = "https://redcross.org.uk",
           target = "_blank",
           img(src = "www/brc-team-logo.jpg", width = 400)
-        ) # tags$a
-      ) # tags$div
-    ), # fluidRow
+        )
+      )
+    ),
 
     # - Instructions -
     fluidRow(
@@ -36,15 +36,35 @@ hieApp <- function() {
         tags$p(
           "You can use this tool to explore health inequalities and how they
           compare across different geographies across the UK."
-        ) # tags$p
-      ), # column
+        )
+      ),
       column(width = 2)
-    ) # fluidRow
-  ) # fluidPage
+    ),
+
+    # - Search Box (module) -
+    selectBoxUI("searchbox"),
+
+    # - Map (module) -
+    mapUI("leafletmap")
+  )
 
   # ---- Server ----
   server <- function(input, output, session) {
 
+    # - Set an empty reactive to be passed between modules -
+    selected_area <- reactiveVal()
+
+    # - Search Box (module) -
+    selectBoxServer("searchbox", selected_area)
+
+    # - Map (module) -
+    mapServer("leafletmap", selected_area)
+
+    # Debug
+    observe({
+      print(selected_area())
+    })
   }
+
   shinyApp(ui, server)
 }
