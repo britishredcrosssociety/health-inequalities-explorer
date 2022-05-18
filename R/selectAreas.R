@@ -10,9 +10,8 @@ selectAreasUI <- function(id) {
   ) # selectizeInput
 }
 
-selectAreasServer <- function(id) {
+selectAreasServer <- function(id, selected_area) {
   moduleServer(id, function(input, output, session) {
-    selected_area <- reactiveVal()
     observeEvent(input$selectbox,
       {
         boundaries_ltla21_england |>
@@ -24,19 +23,22 @@ selectAreasServer <- function(id) {
       },
       ignoreInit = TRUE
     ) # observeEvent
-    # Debug
-    observe({
-      print(selected_area())
-    }) # observe
   }) # moduleServer
 }
 
-selectAreasApp <- function() {
+selectAreasTest <- function() {
   ui <- fluidPage(
     selectAreasUI("test")
   )
   server <- function(input, output, session) {
-    selectAreasServer("test")
+    selected_area <- reactiveVal()
+
+    selectAreasServer("test", selected_area)
+
+    # # Debug
+    # observe({
+    #   print(selected_area())
+    # })
   }
   shinyApp(ui, server)
 }
