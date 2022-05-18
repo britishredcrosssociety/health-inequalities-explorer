@@ -23,6 +23,16 @@ selectBoxServer <- function(id, selected_area) {
       },
       ignoreInit = TRUE
     ) # observeEvent
+
+    # This sits in its own observer because it needs to track any changes to
+    # the global `selected_area` reactive value, not just the selectbox (above)
+    observeEvent(selected_area(), {
+      updateSelectInput(
+        session,
+        "selectbox",
+        selected = selected_area()
+      )
+    })
   }) # moduleServer
 }
 
