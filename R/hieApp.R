@@ -51,7 +51,7 @@ hieApp <- function() {
   # ---- Server ----
   server <- function(input, output, session) {
 
-    # - Set an empty reactive to be passed between modules -
+    # - Set an empty global reactive to be passed between modules -
     selected_area <- reactiveVal()
 
     # - Search Box (module) -
