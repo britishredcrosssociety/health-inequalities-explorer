@@ -1,6 +1,7 @@
 library(shiny)
 library(sf)
 library(dplyr)
+library(leaflet)
 
 hieApp <- function() {
 
