@@ -5,8 +5,13 @@ mapUI <- function(id) {
   )
 }
 
-mapServer <- function(id) {
+mapServer <- function(id, selected_area) {
   moduleServer(id, function(input, output, session) {
+    observeEvent(input$map_shape_click, {
+      input$map_shape_click$id |>
+        selected_area()
+    })
+
     output$map <-
       renderLeaflet({
         leaflet() |>
@@ -14,7 +19,7 @@ mapServer <- function(id) {
           addProviderTiles(providers$CartoDB.Positron) |>
           addPolygons(
             data = boundaries_ltla21_england,
-            layerId = ~ltla21_code,
+            layerId = ~ltla21_name,
             weight = 0.7,
             opacity = 0.5,
             color = "#5C747A",
@@ -27,7 +32,7 @@ mapServer <- function(id) {
               fillOpacity = 0.7,
               bringToFront = TRUE
             ),
-            label = boundaries_ltla21_england$ltl2a_name
+            label = boundaries_ltla21_england$ltla21_name
           )
       })
   })
@@ -39,7 +44,15 @@ mapTest <- function() {
   )
 
   server <- function(input, output, session) {
-    mapServer("test")
+    selected_area <- reactiveVal()
+
+    mapServer("test", selected_area)
+
+    # Debug
+    observe({
+      print(selected_area())
+    })
   }
 
   shinyApp(ui, server)
+}
