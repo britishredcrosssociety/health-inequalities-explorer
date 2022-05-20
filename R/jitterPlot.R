@@ -38,7 +38,7 @@ jitterPlotTest <- function(data) {
     jitterPlotServer("test", data)
   }
 
-  shinyApp(ui, server)
+  shinyApp(ui, server) 
 }
 
 # Examples
