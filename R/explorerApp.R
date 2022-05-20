@@ -44,7 +44,7 @@ explorerApp <- function() {
     mapServer("leafletmap", selected_area, boundaries_ltla21_england)
 
     # - Jitter Plot (module) -
-    jitterPlotServer("jitterplot", hi_vul_england)
+    jitterPlotServer("jitterplot", hi_vul_england, selected_area)
 
     # Debug
     observe({
