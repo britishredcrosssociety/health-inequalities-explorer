@@ -20,9 +20,10 @@ jitterPlotServer <- function(id, data) {
       girafe(
         ggobj = gg,
         options = list(
-          opts_hover_inv(css = "opacity:0.3;"),
+          # opts_hover_inv(css = "opacity:0.3;"),
           opts_toolbar(saveaspng = FALSE),
-          opts_selection(type = "none")
+          opts_selection(type = "none"),
+          opts_sizing(rescale = TRUE, width = .5)
         )
       )
     })
@@ -42,4 +43,4 @@ jitterPlotTest <- function(data) {
 }
 
 # Examples
-# jitterPlotTest(data = hi_vul_england)
+jitterPlotTest(data = hi_vul_england)
