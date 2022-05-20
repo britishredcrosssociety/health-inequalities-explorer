@@ -38,13 +38,7 @@ selectBoxTest <- function(data) {
   )
   server <- function(input, output, session) {
     selected_area <- reactiveVal()
-
     selectBoxServer("test", selected_area)
-
-    # # Debug
-    # observe({
-    #   print(selected_area())
-    # })
   }
   shinyApp(ui, server)
 }
