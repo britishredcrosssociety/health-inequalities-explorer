@@ -10,15 +10,11 @@ selectBoxUI <- function(id, data) {
   ) # selectizeInput
 }
 
-selectBoxServer <- function(id, selected_area, data) {
+selectBoxServer <- function(id, selected_area) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$selectbox,
       {
-        data |>
-          st_drop_geometry() |>
-          filter(area_name == input$selectbox) |>
-          select(area_name) |>
-          pull() |>
+        input$selectbox |>
           selected_area()
       },
       ignoreInit = TRUE
@@ -43,9 +39,9 @@ selectBoxTest <- function(data) {
   server <- function(input, output, session) {
     selected_area <- reactiveVal()
 
-    selectBoxServer("test", selected_area, data)
+    selectBoxServer("test", selected_area)
 
-    # Debug
+    # # Debug
     # observe({
     #   print(selected_area())
     # })
