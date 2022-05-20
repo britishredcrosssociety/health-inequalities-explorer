@@ -14,34 +14,10 @@ hieApp <- function() {
     includeCSS("inst/www/styles.css"),
 
     # - Logo -
-    fluidRow(
-      align = "center",
-      tags$div(
-        class = "brc-logo",
-        tags$a(
-          href = "https://redcross.org.uk",
-          target = "_blank",
-          img(src = "www/brc-team-logo.jpg", width = 400)
-        )
-      )
-    ),
+    logo(),
 
     # - Instructions -
-    fluidRow(
-      column(width = 2),
-      column(
-        width = 8,
-        align = "center",
-        tags$h1(
-          "Health Inequalities Explorer"
-        ), # tags$h1
-        tags$p(
-          "You can use this tool to explore health inequalities and how they
-          compare across different geographies across the UK."
-        )
-      ),
-      column(width = 2)
-    ),
+    instructions(),
 
     # - Search Box (module) -
     selectBoxUI("searchbox"),
