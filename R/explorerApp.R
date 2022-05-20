@@ -1,11 +1,10 @@
 library(shiny)
 library(sf)
-library(dplyr)
 library(leaflet)
 library(ggplot2)
 library(ggiraph)
 
-hieApp <- function() {
+explorerApp <- function() {
 
   # ---- UI ----
   ui <- fluidPage(
@@ -20,10 +19,16 @@ hieApp <- function() {
     instructions(),
 
     # - Search Box (module) -
-    selectBoxUI("searchbox"),
+    fluidRow(
+      selectBoxUI("searchbox", boundaries_ltla21_england),
+      align = "center"
+    ),
 
-    # - Map (module) -
-    mapUI("leafletmap")
+    # - Map (module) & Plot (module) -
+    fluidRow(
+      column(width = 4, align = "center", mapUI("leafletmap")),
+      column(width = 8, align = "center", jitterPlotUI("jitterplot"))
+    )
   )
 
   # ---- Server ----
@@ -36,7 +41,10 @@ hieApp <- function() {
     selectBoxServer("searchbox", selected_area)
 
     # - Map (module) -
-    mapServer("leafletmap", selected_area)
+    mapServer("leafletmap", selected_area, boundaries_ltla21_england)
+
+    # - Jitter Plot (module) -
+    jitterPlotServer("jitterplot", hi_vul_england)
 
     # Debug
     observe({
