@@ -4,13 +4,13 @@ jitterPlotUI <- function(id) {
   )
 }
 
-jitterPlotServer <- function(id) {
+jitterPlotServer <- function(id, data) {
   moduleServer(id, function(input, output, session) {
-    gg <- hi_vul_england |>
-      ggplot(aes(x = value, y = name)) +
+    gg <- data |>
+      ggplot(aes(x = value, y = variable)) +
       geom_vline(xintercept = 150, size = 2, alpha = .5, colour = "#FFA500") +
       geom_jitter_interactive(
-        aes(tooltip = ltla21_name, data_id = ltla21_name),
+        aes(tooltip = area_name, data_id = area_name),
         height = 0.25, color = "steelblue3", size = 4, alpha = .7
       ) +
       theme_minimal() +
@@ -29,14 +29,17 @@ jitterPlotServer <- function(id) {
   })
 }
 
-jitterPlotTest <- function() {
+jitterPlotTest <- function(data) {
   ui <- fluidPage(
     jitterPlotUI("test")
   )
 
   server <- function(input, output, session) {
-    jitterPlotServer("test")
+    jitterPlotServer("test", data)
   }
 
   shinyApp(ui, server)
 }
+
+# Examples
+# jitterPlotTest(data = hi_vul_england)

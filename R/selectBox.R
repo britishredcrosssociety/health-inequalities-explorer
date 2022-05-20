@@ -1,28 +1,28 @@
-selectBoxUI <- function(id) {
+selectBoxUI <- function(id, data) {
   selectizeInput(
     NS(id, "selectbox"),
     label = NULL,
-    choices = sort(unique(boundaries_ltla21_england$ltla21_name)),
+    choices = sort(unique(data$area_name)),
     options = list(
-      placeholder = "Select a Local Authority",
+      placeholder = "Select an area",
       onInitialize = I('function() { this.setValue(""); }')
     ) # list
   ) # selectizeInput
 }
 
-selectBoxServer <- function(id, selected_area) {
+selectBoxServer <- function(id, selected_area, data) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$selectbox,
       {
-        boundaries_ltla21_england |>
+        data |>
           st_drop_geometry() |>
-          filter(ltla21_name == input$selectbox) |>
-          select(ltla21_name) |>
+          filter(area_name == input$selectbox) |>
+          select(area_name) |>
           pull() |>
           selected_area()
       },
       ignoreInit = TRUE
-    ) # observeEvent
+    )
 
     # This sits in its own observer because it needs to track any changes to
     # the global `selected_area` reactive value, not just the selectbox (above)
@@ -36,19 +36,22 @@ selectBoxServer <- function(id, selected_area) {
   }) # moduleServer
 }
 
-selectBoxTest <- function() {
+selectBoxTest <- function(data) {
   ui <- fluidPage(
-    selectBoxUI("test")
+    selectBoxUI("test", data)
   )
   server <- function(input, output, session) {
     selected_area <- reactiveVal()
 
-    selectBoxServer("test", selected_area)
+    selectBoxServer("test", selected_area, data)
 
-    # # Debug
+    # Debug
     # observe({
     #   print(selected_area())
     # })
   }
   shinyApp(ui, server)
 }
+
+# Examples
+# selectBoxTest(data = boundaries_ltla21_england)

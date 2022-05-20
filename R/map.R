@@ -5,7 +5,7 @@ mapUI <- function(id) {
   )
 }
 
-mapServer <- function(id, selected_area) {
+mapServer <- function(id, selected_area, data) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$map_shape_click, {
       input$map_shape_click$id |>
@@ -18,8 +18,8 @@ mapServer <- function(id, selected_area) {
           setView(lat = 52.75, lng = -2.0, zoom = 6) |>
           addProviderTiles(providers$CartoDB.Positron) |>
           addPolygons(
-            data = boundaries_ltla21_england,
-            layerId = ~ltla21_name,
+            data = data,
+            layerId = ~area_name,
             weight = 0.7,
             opacity = 0.5,
             color = "#5C747A",
@@ -32,13 +32,13 @@ mapServer <- function(id, selected_area) {
               fillOpacity = 0.7,
               bringToFront = TRUE
             ),
-            label = boundaries_ltla21_england$ltla21_name
+            label = data$area_name
           )
       })
   })
 }
 
-mapTest <- function() {
+mapTest <- function(data) {
   ui <- fluidPage(
     mapUI("test")
   )
@@ -46,7 +46,7 @@ mapTest <- function() {
   server <- function(input, output, session) {
     selected_area <- reactiveVal()
 
-    mapServer("test", selected_area)
+    mapServer("test", selected_area, data)
 
     # # Debug
     # observe({
@@ -56,3 +56,6 @@ mapTest <- function() {
 
   shinyApp(ui, server)
 }
+
+# Examples
+# mapTest(data = boundaries_ltla21_england)
