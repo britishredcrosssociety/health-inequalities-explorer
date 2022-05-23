@@ -8,6 +8,6 @@ boundaries_ltla21_england <-
   filter(str_detect(ltla21_code, "^E")) |>
   mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
   ms_simplify(keep = 0.5) |> # Any less and areas get dropped
-  select(area_name = ltla21_name)
+  select(area_name = ltla21_name, area_code = ltla21_code)
 
 usethis::use_data(boundaries_ltla21_england, overwrite = TRUE)
