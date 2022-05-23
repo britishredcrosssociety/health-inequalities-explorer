@@ -33,7 +33,7 @@ selectBoxTest <- function(data) {
     selectBoxUI("test", data)
   )
   server <- function(input, output, session) {
-    selected <- reactiveValues(areas = NULL)
+    selected <- reactiveValues(areas = vector())
     selectBoxServer("test", selected)
   }
   shinyApp(ui, server)
