@@ -2,7 +2,7 @@ selectBoxUI <- function(id, data) {
   selectizeInput(
     NS(id, "selectbox"),
     label = NULL,
-    choices = c("Select area(s)" = "", sort(unique(data$area_name))),
+    choices = c("Select areas to compare" = "", sort(unique(data$area_name))),
     multiple = TRUE
   )
 }
@@ -35,7 +35,6 @@ selectBoxTest <- function(data) {
   server <- function(input, output, session) {
     selected <- reactiveValues(areas = NULL)
     selectBoxServer("test", selected)
-    observe({print(selected$areas)})
   }
   shinyApp(ui, server)
 }
