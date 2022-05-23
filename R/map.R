@@ -74,9 +74,6 @@ mapTest <- function(data) {
   server <- function(input, output, session) {
     selected <- reactiveValues(areas = NULL)
     mapServer("test", data, selected)
-    observe({
-      print(selected$areas)
-    })
   }
   shinyApp(ui, server)
 }
