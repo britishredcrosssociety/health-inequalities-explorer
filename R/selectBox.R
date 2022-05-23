@@ -7,23 +7,22 @@ selectBoxUI <- function(id, data) {
   )
 }
 
-selectBoxServer <- function(id, selected_areas) {
+selectBoxServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$selectbox,
       {
-        input$selectbox |>
-          selected_areas()
+        selected$areas <- input$selectbox
       },
       ignoreInit = TRUE
     )
 
     # This sits in its own observer because it needs to track any changes to
     # the global `selected_area` reactive value, not just the selectbox (above)
-    observeEvent(selected_areas(), {
+    observeEvent(selected$areas, {
       updateSelectizeInput(
         session,
         "selectbox",
-        selected = selected_areas()
+        selected = selected$areas
       )
     })
   })
@@ -34,8 +33,9 @@ selectBoxTest <- function(data) {
     selectBoxUI("test", data)
   )
   server <- function(input, output, session) {
-    selected_areas <- reactiveVal()
-    selectBoxServer("test", selected_areas)
+    selected <- reactiveValues(areas = NULL)
+    selectBoxServer("test", selected)
+    observe({print(selected$areas)})
   }
   shinyApp(ui, server)
 }
