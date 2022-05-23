@@ -2,12 +2,8 @@ selectBoxUI <- function(id, data) {
   selectizeInput(
     NS(id, "selectbox"),
     label = NULL,
-    choices = sort(unique(data$area_name)),
-    options = list(
-      placeholder = "Select an area",
-      onInitialize = I('function() { this.setValue(""); }')
-    ) # list
-  ) # selectizeInput
+    choices = c("Select area(s)" = "", sort(unique(data$area_name))),
+  )
 }
 
 selectBoxServer <- function(id, selected_area) {
