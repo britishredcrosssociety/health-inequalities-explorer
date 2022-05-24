@@ -4,43 +4,43 @@ jitterPlotUI <- function(id) {
   )
 }
 
-jitterPlotServer <- function(id, data, selected_area) {
+jitterPlotServer <- function(id, data, selected) {
   moduleServer(id, function(input, output, session) {
     output$plot <- renderGirafe({
 
       # Set sensible plot/legend default if no area has been selected
-      if (is.null(selected_area())) {
+      if (is.null(selected$areas)) {
         data <- data |>
-          dplyr::mutate(selected = "not selected")
+          dplyr::mutate(selected = "not selected") |> 
+          dplyr::mutate(alpha = 0.2)
         legend_break_name <- NULL
       } else {
         data <- data |>
           dplyr::mutate(
             selected = dplyr::if_else(
-              area_name == selected_area(),
+              area_name %in% selected$areas,
               area_name,
               "not selected"
             )
           ) |>
           dplyr::mutate(
-            selected = factor(
-              selected,
-              levels = c("not selected", selected_area())
-            )
-          )
-        legend_break_name <- selected_area()
+            alpha = dplyr::if_else(selected != "not selected", 1, 0.2)
+          ) |>
+          dplyr::mutate(selected = factor(selected)) |>
+          dplyr::mutate(selected = relevel(selected, ref = "not selected"))
+        legend_break_name <- selected$areas
       }
 
       # Create plot object
       gg <- data |>
         ggplot(aes(x = value, y = variable, colour = selected)) +
         geom_vline(
-          xintercept = 150, size = 2, alpha = .5, colour = "#FFA500"
+          xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
         ) +
         geom_jitter_interactive(
-          aes(tooltip = area_name, data_id = area_name),
+          aes( alpha = alpha, tooltip = area_name, data_id = area_name),
           height = 0.25,
-          size = 3, alpha = .7
+          size = 4
         ) +
         theme_minimal() +
         theme(
@@ -48,9 +48,10 @@ jitterPlotServer <- function(id, data, selected_area) {
           legend.title = element_blank()
         ) +
         scale_color_viridis_d(
-          option = "C", alpha = .5, begin = .2, end = .8,
+          option = "C", begin = .2, end = .8, direction = -1,
           breaks = legend_break_name
         ) +
+        scale_alpha(guide = "none") +
         labs(x = NULL, y = NULL)
 
       # Render plot
@@ -73,8 +74,8 @@ jitterPlotTest <- function(data) {
   )
 
   server <- function(input, output, session) {
-    selected_area <- reactiveVal()
-    jitterPlotServer("test", data, selected_area)
+    selected <- reactiveValues(areas = vector())
+    jitterPlotServer("test", data, selected)
   }
 
   shinyApp(ui, server)
