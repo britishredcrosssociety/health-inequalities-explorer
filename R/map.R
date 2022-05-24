@@ -87,21 +87,6 @@ mapServer <- function(id, data, selected) {
 
       clicked$areas <- selected$areas
     })
-
-    # observeEvent(selected$areas, {
-    #   removed <- setdiff(clicked$areas, selected$areas)
-    #   added <- setdiff(selected$areas, clicked$areas)
-
-    #   if (length(removed) > 0) {
-    #     clicked$areas <- selected$areas
-    #     leafletProxy("map") |> hideGroup(group = removed)
-    #   }
-
-    #   if (length(added) > 0) {
-    #     clicked$areas <- selected$areas
-    #     leafletProxy("map") |> showGroup(group = added)
-    #   }
-    # })
   })
 }
 
@@ -117,4 +102,4 @@ mapTest <- function(data) {
 }
 
 # Examples
-# mapTest(data = boundaries_ltla21_england)
+mapTest(data = boundaries_ltla21_england)
