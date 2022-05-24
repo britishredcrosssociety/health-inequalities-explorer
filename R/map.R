@@ -76,7 +76,6 @@ mapServer <- function(id, data, selected) {
     # Track differences in the local and global reactive values. If activity has
     # occured outside of this module, update the local reactive values to match
     # the global reactive values and update the map polygons
-
     observeEvent(selected$areas, {
       removed <- setdiff(clicked$areas, selected$areas)
       added <- setdiff(selected$areas, clicked$areas)
@@ -86,7 +85,7 @@ mapServer <- function(id, data, selected) {
         showGroup(added)
 
       clicked$areas <- selected$areas
-    })
+    }, ignoreNULL = FALSE)
   })
 }
 
