@@ -37,7 +37,7 @@ explorerApp <- function() {
     selected <- reactiveValues(areas = vector())
 
     # - Search Box (module) -
-    selectBoxServer("searchbox", selected)
+    selectBoxServer("searchbox", boundaries_ltla21_england, selected)
 
     # - Map (module) -
     mapServer("leafletmap", boundaries_ltla21_england, selected)
