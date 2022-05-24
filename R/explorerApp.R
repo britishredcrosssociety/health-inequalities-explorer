@@ -34,21 +34,21 @@ explorerApp <- function() {
   server <- function(input, output, session) {
 
     # - Set an empty global reactive to be passed between modules -
-    selected_area <- reactiveVal()
+    selected <- reactiveValues(areas = vector())
 
     # - Search Box (module) -
-    selectBoxServer("searchbox", selected_area)
+    selectBoxServer("searchbox", selected)
 
     # - Map (module) -
-    mapServer("leafletmap", selected_area, boundaries_ltla21_england)
+    mapServer("leafletmap", boundaries_ltla21_england, selected)
 
     # - Jitter Plot (module) -
-    jitterPlotServer("jitterplot", hi_vul_england, selected_area)
+    jitterPlotServer("jitterplot", hi_vul_england, selected)
 
     # Debug
-    observe({
-      print(selected_area())
-    })
+    # observe({
+    #   print(selected$areas)
+    # })
   }
 
   shinyApp(ui, server)
