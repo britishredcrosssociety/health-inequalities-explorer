@@ -11,7 +11,7 @@ jitterPlotServer <- function(id, data, selected) {
       # Set sensible plot/legend default if no area has been selected
       if (is.null(selected$areas)) {
         data <- data |>
-          dplyr::mutate(selected = "not selected") |> 
+          dplyr::mutate(selected = "not selected") |>
           dplyr::mutate(alpha = 0.2)
         legend_break_name <- NULL
       } else {
@@ -38,7 +38,7 @@ jitterPlotServer <- function(id, data, selected) {
           xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
         ) +
         geom_jitter_interactive(
-          aes( alpha = alpha, tooltip = area_name, data_id = area_name),
+          aes(alpha = alpha, tooltip = area_name, data_id = area_name),
           height = 0.25,
           size = 4
         ) +
@@ -82,4 +82,4 @@ jitterPlotTest <- function(data) {
 }
 
 # Examples
-jitterPlotTest(data = hi_vul_england)
+# jitterPlotTest(data = hi_cap_england)
