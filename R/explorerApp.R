@@ -19,14 +19,43 @@ explorerApp <- function() {
 
     # - Search Box (module) -
     fluidRow(
-      selectBoxUI("searchbox", boundaries_ltla21_england),
+      selectBoxUI("searchBox", boundaries_ltla21_england),
       align = "center"
     ),
 
-    # - Map (module) & Plot (module) -
+    # - Map (module) & Plots (module) -
     fluidRow(
-      column(width = 4, align = "center", mapUI("leafletmap")),
-      column(width = 8, align = "center", jitterPlotUI("jitterplot"))
+      
+      # Column 1: map
+      column(width = 4, align = "center", mapUI("leafletMap")),
+
+      # Column 2: left plot
+      column(
+        width = 4,
+        align = "center",
+        tags$div(
+          id = "card",
+          h4("Vulnerability"),
+          h6("Last updated: 25.05.22"),
+          tabsetPanel(
+            tabPanel("Plot", jitterPlotUI("jitterPlotVulnerability"))
+          )
+        )
+      ),
+
+      # Column 3: right plot
+       column(
+        width = 4,
+        align = "center",
+        tags$div(
+          id = "card",
+          h4("Capacity"),
+          h6("Last updated: 25.05.22"),
+          tabsetPanel(
+            tabPanel("Plot", jitterPlotUI("jitterPlotCapacity"))
+          )
+        )
+      )
     )
   )
 
@@ -37,13 +66,16 @@ explorerApp <- function() {
     selected <- reactiveValues(areas = vector())
 
     # - Search Box (module) -
-    selectBoxServer("searchbox", boundaries_ltla21_england, selected)
+    selectBoxServer("searchBox", boundaries_ltla21_england, selected)
 
     # - Map (module) -
-    mapServer("leafletmap", boundaries_ltla21_england, selected)
+    mapServer("leafletMap", boundaries_ltla21_england, selected)
 
-    # - Jitter Plot (module) -
-    jitterPlotServer("jitterplot", hi_vul_england, selected)
+    # - Jitter Plot Left (module) -
+    jitterPlotServer("jitterPlotVulnerability", hi_vul_england, selected)
+
+    # - Jitter Plot Right (module) -
+    jitterPlotServer("jitterPlotCapacity", hi_cap_england, selected)
 
     # Debug
     # observe({
