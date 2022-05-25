@@ -3,7 +3,7 @@ library(leaflet)
 library(ggplot2)
 library(ggiraph)
 
-explorerApp <- function() {
+explorer <- function() {
 
   # ---- UI ----
   ui <- fluidPage(
