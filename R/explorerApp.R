@@ -19,7 +19,7 @@ explorerApp <- function() {
 
     # - Search Box (module) -
     fluidRow(
-      selectBoxUI("searchBox", boundaries_ltla21_england),
+      selectAreasUI("areas", boundaries_ltla21_england),
       align = "center"
     ),
 
@@ -66,7 +66,7 @@ explorerApp <- function() {
     selected <- reactiveValues(areas = vector())
 
     # - Search Box (module) -
-    selectBoxServer("searchBox", boundaries_ltla21_england, selected)
+    selectAreasServer("areas", boundaries_ltla21_england, selected)
 
     # - Map (module) -
     mapServer("leafletMap", boundaries_ltla21_england, selected)
