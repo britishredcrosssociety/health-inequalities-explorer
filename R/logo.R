@@ -6,7 +6,7 @@ logo <- function() {
       tags$a(
         href = "https://redcross.org.uk",
         target = "_blank",
-        img(src = "www/brc-team-logo.jpg", width = 400)
+        img(src = "www/brc-team-logo.jpg", width = 350)
       )
     )
   )
