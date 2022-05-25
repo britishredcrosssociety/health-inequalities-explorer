@@ -7,12 +7,12 @@ selectGeographyUI <- function(id) {
   )
 }
 
-selectGeographyServer <- function(id, selected_geography) {
+selectGeographyServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
 
     observeEvent(input$selectGeography,
       {
-        selected_geography(input$selectGeography)
+        selected$geography <- input$selectGeography
       }
     )
   })
@@ -23,9 +23,8 @@ selectGeographyTest <- function() {
     selectGeographyUI("test")
   )
   server <- function(input, output, session) {
-    selected_geography <- reactiveVal()
-    selectGeographyServer("test", selected_geography)
-    observe({print(selected_geography())})
+    selected <- reactiveValues(geography = vector())
+    selectGeographyServer("test", selected)
   }
   shinyApp(ui, server)
 }
