@@ -17,7 +17,13 @@ explorer <- function() {
     # - Instructions -
     instructions(),
 
-    # - Search Box (module) -
+    # - Geography Selection (module) -
+    fluidRow(
+      selectGeographyUI("geography"),
+      align = "center"
+    ),
+
+    # - Area Selection (module) -
     fluidRow(
       selectAreasUI("areas", boundaries_ltla21_england),
       align = "center"
@@ -62,10 +68,13 @@ explorer <- function() {
   # ---- Server ----
   server <- function(input, output, session) {
 
-    # - Set an empty global reactive to be passed between modules -
-    selected <- reactiveValues(areas = vector())
+    # - Set an empty global reactive values list to be passed between modules -
+    selected <- reactiveValues(areas = vector(), geography = vector())
 
-    # - Search Box (module) -
+    # - Geography Selection -
+    selectGeographyServer("geography", selected)
+
+    # - Area Selection (module) -
     selectAreasServer("areas", boundaries_ltla21_england, selected)
 
     # - Map (module) -
