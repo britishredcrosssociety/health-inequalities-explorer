@@ -2,19 +2,19 @@ selectGeographyUI <- function(id) {
   selectizeInput(
     NS(id, "selectGeography"),
     label = NULL,
-    choices = c("Integrated Care System", "Local Authority"),
+    choices = c(
+      "Local Authority" = "boundaries_ltla21_england",
+      "Integrated Care System" = "ICS"
+    ),
     multiple = FALSE
   )
 }
 
 selectGeographyServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
-
-    observeEvent(input$selectGeography,
-      {
-        selected$geography <- input$selectGeography
-      }
-    )
+    observeEvent(input$selectGeography, {
+      selected$geography <- input$selectGeography
+    })
   })
 }
 
