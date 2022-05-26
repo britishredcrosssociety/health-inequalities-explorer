@@ -1,4 +1,4 @@
-selectAreasUI <- function(id, data) {
+selectAreasUI <- function(id) {
   selectizeInput(
     NS(id, "selectAreas"),
     label = NULL,
@@ -44,7 +44,7 @@ selectAreasServer <- function(id, data, selected) {
 
 selectAreasTest <- function(data) {
   ui <- fluidPage(
-    selectAreasUI("test", data)
+    selectAreasUI("test")
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(areas = vector())

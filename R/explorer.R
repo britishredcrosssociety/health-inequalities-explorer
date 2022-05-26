@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(ggplot2)
 library(ggiraph)
+library(sf)
 
 explorer <- function() {
 
@@ -25,13 +26,13 @@ explorer <- function() {
 
     # - Area Selection (module) -
     fluidRow(
-      selectAreasUI("areas", boundaries_ltla21_england),
+      selectAreasUI("areas"),
       align = "center"
     ),
 
     # - Map (module) & Plots (module) -
     fluidRow(
-      
+
       # Column 1: map
       column(width = 4, align = "center", mapUI("leafletMap")),
 
@@ -50,7 +51,7 @@ explorer <- function() {
       ),
 
       # Column 3: right plot
-       column(
+      column(
         width = 4,
         align = "center",
         tags$div(
@@ -71,24 +72,45 @@ explorer <- function() {
     # - Set an empty global reactive values list to be passed between modules -
     selected <- reactiveValues(areas = vector(), geography = vector())
 
+    # ==== Work in progress ====================================================
+    # Currently set data sets from global values loaded into namespace with
+    # pkgload::load_all(".")
+    vulnerability <- hi_vul_england
+    capacity <- hi_cap_england
+    boundaries <- boundaries_ltla21_england
+    
+    # - Set data sets based off geographical selection -
+    # Require reactive value to be calculated before retrieving data set as
+    # boundaries intitiates to logical(0) as it waits for reactive depency to
+    # first 'kick in'.
+
+    # This reactive is returning a quosure (function), so it isn't subsettable.
+    # Needs to be convered into an object
+    # boundaries <- reactive({
+    #   req(selected$geography) |> get()
+    # })
+
+    # observe({print(all.equal(dataset(), boundaries))})
+    # ==========================================================================
+
     # - Geography Selection -
     selectGeographyServer("geography", selected)
 
     # - Area Selection (module) -
-    selectAreasServer("areas", boundaries_ltla21_england, selected)
+    selectAreasServer("areas", boundaries, selected)
 
     # - Map (module) -
-    mapServer("leafletMap", boundaries_ltla21_england, selected)
+    mapServer("leafletMap", boundaries, selected)
 
     # - Jitter Plot Left (module) -
-    jitterPlotServer("jitterPlotVulnerability", hi_vul_england, selected)
+    jitterPlotServer("jitterPlotVulnerability", vulnerability, selected)
 
     # - Jitter Plot Right (module) -
-    jitterPlotServer("jitterPlotCapacity", hi_cap_england, selected)
+    jitterPlotServer("jitterPlotCapacity", capacity, selected)
 
     # Debug
     # observe({
-    #   print(selected$areas)
+    #   print(selected$geography)
     # })
   }
 
