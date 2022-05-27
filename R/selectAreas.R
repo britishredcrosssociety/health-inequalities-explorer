@@ -49,7 +49,7 @@ selectAreasTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "boundaries_ltla21_england"
+      areas = vector(), geography = "ltla_shp_england"
     )
     selectAreasServer("test", selected)
   }

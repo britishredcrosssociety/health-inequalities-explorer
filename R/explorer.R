@@ -70,8 +70,8 @@ explorer <- function() {
   server <- function(input, output, session) {
 
     # Load data sets (to be replaced withy dynamic selection from selected$geography)
-    vulnerability <- hi_vul_england
-    capacity <- hi_cap_england
+    vulnerability <- ltla_vul_england
+    capacity <- ltla_cap_england
 
     # - Set an empty global reactive values list to be passed between modules -
     selected <- reactiveValues(areas = vector(), geography = vector())

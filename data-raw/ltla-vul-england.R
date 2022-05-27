@@ -11,7 +11,7 @@ raw <- read_csv(
   "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/england/health-index-2019.csv"
 )
 
-hi_vul_england <-
+ltla_vul_england <-
   raw |>
   left_join(ltla_names, by = c("lad_21_code" = "ltla21_code")) |>
   mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
@@ -24,4 +24,4 @@ hi_vul_england <-
   ) |>
   pivot_longer(cols = -area_name, names_to = "variable")
 
-usethis::use_data(hi_vul_england, overwrite = TRUE)
+usethis::use_data(ltla_vul_england, overwrite = TRUE)

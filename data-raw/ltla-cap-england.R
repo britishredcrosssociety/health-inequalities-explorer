@@ -12,7 +12,7 @@ raw <- read_csv(
   ""
 )
 
-hi_cap_england <-
+ltla_cap_england <-
   raw |>
   left_join(ltla_names, by = c("lad_code" = "ltla21_code")) |>
   mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
@@ -25,4 +25,4 @@ hi_cap_england <-
   ) |>
   pivot_longer(cols = -area_name, names_to = "variable")
 
-usethis::use_data(hi_cap_england, overwrite = TRUE)
+usethis::use_data(ltla_cap_england, overwrite = TRUE)

@@ -3,7 +3,7 @@ selectGeographyUI <- function(id) {
     NS(id, "selectGeography"),
     label = NULL,
     choices = c(
-      "Local Authority" = "boundaries_ltla21_england",
+      "Local Authority" = "ltla_shp_england",
       "Integrated Care System" = "ICS"
     ),
     multiple = FALSE
