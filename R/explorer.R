@@ -86,10 +86,10 @@ explorer <- function() {
     mapServer("leafletMap", selected)
 
     # - Jitter Plot Left (module) -
-    jitterPlotServer("jitterPlotVulnerability", vulnerability, selected)
+    jitterPlotServer("jitterPlotVulnerability", selected, "vulnerability")
 
     # - Jitter Plot Right (module) -
-    jitterPlotServer("jitterPlotCapacity", capacity, selected)
+    jitterPlotServer("jitterPlotCapacity", selected, "capacity")
 
     # Debug
     # observe({

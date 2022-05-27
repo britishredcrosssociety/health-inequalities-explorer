@@ -4,18 +4,28 @@ jitterPlotUI <- function(id) {
   )
 }
 
-jitterPlotServer <- function(id, data, selected) {
+jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
+
+    # Set dataset based on geography selection and type of dataset
+    dataset <- reactive({
+      if (selected$geography == "ltla_shp_england" && type == "vulnerability") {
+        ltla_vul_england
+      } else {
+        ltla_cap_england
+      }
+    })
+
     output$plot <- renderGirafe({
 
       # Set sensible plot/legend default if no area has been selected
       if (is.null(selected$areas)) {
-        data <- data |>
+        dataset <- dataset() |>
           dplyr::mutate(selected = "not selected") |>
           dplyr::mutate(alpha = 0.2)
         legend_break_name <- NULL
       } else {
-        data <- data |>
+        dataset <- dataset() |>
           dplyr::mutate(
             selected = dplyr::if_else(
               area_name %in% selected$areas,
@@ -32,7 +42,7 @@ jitterPlotServer <- function(id, data, selected) {
       }
 
       # Create plot object
-      gg <- data |>
+      gg <- dataset |>
         ggplot(aes(x = value, y = variable, colour = selected)) +
         geom_vline(
           xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
@@ -68,18 +78,20 @@ jitterPlotServer <- function(id, data, selected) {
   })
 }
 
-jitterPlotTest <- function(data) {
+jitterPlotTest <- function(type) {
   ui <- fluidPage(
     jitterPlotUI("test")
   )
 
   server <- function(input, output, session) {
-    selected <- reactiveValues(areas = vector())
-    jitterPlotServer("test", data, selected)
+    selected <- reactiveValues(
+      areas = vector(), geography = "ltla_shp_england"
+    )
+    jitterPlotServer("test", selected, type)
   }
 
   shinyApp(ui, server)
 }
 
 # Examples
-# jitterPlotTest(data = hi_cap_england)
+# jitterPlotTest(type = "vulnerability")
