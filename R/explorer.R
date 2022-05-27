@@ -69,38 +69,21 @@ explorer <- function() {
   # ---- Server ----
   server <- function(input, output, session) {
 
-    # - Set an empty global reactive values list to be passed between modules -
-    selected <- reactiveValues(areas = vector(), geography = vector())
-
-    # ==== Work in progress ====================================================
-    # Currently set data sets from global values loaded into namespace with
-    # pkgload::load_all(".")
+    # Load data sets (to be replaced withy dynamic selection from selected$geography)
     vulnerability <- hi_vul_england
     capacity <- hi_cap_england
-    boundaries <- boundaries_ltla21_england
-    
-    # - Set data sets based off geographical selection -
-    # Require reactive value to be calculated before retrieving data set as
-    # boundaries intitiates to logical(0) as it waits for reactive depency to
-    # first 'kick in'.
 
-    # This reactive is returning a quosure (function), so it isn't subsettable.
-    # Needs to be convered into an object
-    # boundaries <- reactive({
-    #   req(selected$geography) |> get()
-    # })
-
-    # observe({print(all.equal(dataset(), boundaries))})
-    # ==========================================================================
+    # - Set an empty global reactive values list to be passed between modules -
+    selected <- reactiveValues(areas = vector(), geography = vector())
 
     # - Geography Selection -
     selectGeographyServer("geography", selected)
 
     # - Area Selection (module) -
-    selectAreasServer("areas", boundaries, selected)
+    selectAreasServer("areas", selected)
 
     # - Map (module) -
-    mapServer("leafletMap", boundaries, selected)
+    mapServer("leafletMap", selected)
 
     # - Jitter Plot Left (module) -
     jitterPlotServer("jitterPlotVulnerability", vulnerability, selected)

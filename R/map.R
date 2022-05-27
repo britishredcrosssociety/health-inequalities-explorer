@@ -5,7 +5,7 @@ mapUI <- function(id) {
   )
 }
 
-mapServer <- function(id, data, selected) {
+mapServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
     output$map <-
       renderLeaflet({
@@ -13,7 +13,7 @@ mapServer <- function(id, data, selected) {
           setView(lat = 52.75, lng = -2.0, zoom = 6) |>
           addProviderTiles(providers$CartoDB.Positron) |>
           addPolygons(
-            data = data,
+            data = get(selected$geography),
             layerId = ~area_name,
             group = "base",
             label = ~area_name,
@@ -31,7 +31,7 @@ mapServer <- function(id, data, selected) {
             )
           ) |>
           addPolygons(
-            data = data,
+            data = get(selected$geography),
             layerId = ~area_code,
             # Create number of groups equal to the length of the number of areas
             # Match group names to layerId above so that group visibility can
@@ -51,7 +51,7 @@ mapServer <- function(id, data, selected) {
               bringToFront = TRUE
             )
           ) |>
-          hideGroup(data$area_name)
+          hideGroup(get(selected$geography)$area_name)
       })
 
     # Logic: create two sets of reactive values. One contained to the module
@@ -76,29 +76,34 @@ mapServer <- function(id, data, selected) {
     # Track differences in the local and global reactive values. If activity has
     # occured outside of this module, update the local reactive values to match
     # the global reactive values and update the map polygons
-    observeEvent(selected$areas, {
-      removed <- setdiff(clicked$areas, selected$areas)
-      added <- setdiff(selected$areas, clicked$areas)
+    observeEvent(selected$areas,
+      {
+        removed <- setdiff(clicked$areas, selected$areas)
+        added <- setdiff(selected$areas, clicked$areas)
 
-      leafletProxy("map") |>
-        hideGroup(removed) |>
-        showGroup(added)
+        leafletProxy("map") |>
+          hideGroup(removed) |>
+          showGroup(added)
 
-      clicked$areas <- selected$areas
-    }, ignoreNULL = FALSE)
+        clicked$areas <- selected$areas
+      },
+      ignoreNULL = FALSE
+    )
   })
 }
 
-mapTest <- function(data) {
+mapTest <- function() {
   ui <- fluidPage(
     mapUI("test")
   )
   server <- function(input, output, session) {
-    selected <- reactiveValues(areas = vector())
-    mapServer("test", data, selected)
+    selected <- reactiveValues(
+      areas = vector(), geography = "boundaries_ltla21_england"
+    )
+    mapServer("test", selected)
   }
   shinyApp(ui, server)
 }
 
 # Examples
-mapTest(data = boundaries_ltla21_england)
+mapTest()

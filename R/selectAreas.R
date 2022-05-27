@@ -12,16 +12,17 @@ selectAreasUI <- function(id) {
   )
 }
 
-selectAreasServer <- function(id, data, selected) {
+selectAreasServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
-
-    # Render server side to minimise user load
-    updateSelectizeInput(
-      session,
-      "selectAreas",
-      choices = sort(unique(data$area_name)),
-      server = TRUE
-    )
+    observeEvent(selected$geography, {
+      # Render server side to minimise user load
+      updateSelectizeInput(
+        session,
+        "selectAreas",
+        choices = sort(unique(get(selected$geography)$area_name)),
+        server = TRUE
+      )
+    })
 
     observeEvent(input$selectAreas,
       {
@@ -42,16 +43,18 @@ selectAreasServer <- function(id, data, selected) {
   })
 }
 
-selectAreasTest <- function(data) {
+selectAreasTest <- function() {
   ui <- fluidPage(
     selectAreasUI("test")
   )
   server <- function(input, output, session) {
-    selected <- reactiveValues(areas = vector())
-    selectAreasServer("test", data, selected)
+    selected <- reactiveValues(
+      areas = vector(), geography = "boundaries_ltla21_england"
+    )
+    selectAreasServer("test", selected)
   }
   shinyApp(ui, server)
 }
 
 # Examples
-# selectAreasTest(data = boundaries_ltla21_england)
+# selectAreasTest()
