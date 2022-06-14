@@ -47,9 +47,9 @@ jitterPlotServer <- function(id, selected, type) {
         geom_vline(
           xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
         ) +
-        geom_jitter_interactive(
+        geom_point_interactive(
           aes(alpha = alpha, tooltip = area_name, data_id = area_name),
-          height = 0.25,
+          position = position_jitter(height = 0.25, seed = 123),
           size = 4
         ) +
         theme_minimal() +
