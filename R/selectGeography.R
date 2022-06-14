@@ -4,7 +4,7 @@ selectGeographyUI <- function(id) {
     label = NULL,
     choices = c(
       "Local Authority" = "ltla_shp_england",
-      "Integrated Care System" = "ICS"
+      "Integrated Care System" = "ics_shp_england"
     ),
     multiple = FALSE
   )
@@ -30,4 +30,4 @@ selectGeographyTest <- function() {
 }
 
 # Examples
-# selectGeographyTest()
+selectGeographyTest()
