@@ -11,7 +11,11 @@ mapServer <- function(id, selected) {
       renderLeaflet({
         leaflet() |>
           setView(lat = 52.75, lng = -2.0, zoom = 6) |>
-          addProviderTiles(providers$CartoDB.Positron) |>
+          addProviderTiles(
+            providers$CartoDB.Positron,
+            options = providerTileOptions(minZoom = 6)
+            ) |>
+          setMaxBounds(-12, 49, 3.0, 61 ) |> 
           addPolygons(
             data = get(selected$geography),
             layerId = ~area_name,
