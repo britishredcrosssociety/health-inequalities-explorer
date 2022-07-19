@@ -34,7 +34,11 @@ explorer <- function() {
     fluidRow(
 
       # Column 1: map
-      column(width = 4, align = "center", mapUI("leafletMap")),
+      column(
+        width = 4,
+        align = "center",
+        mapUI("leafletMap")
+      ),
 
       # Column 2: left plot
       column(
