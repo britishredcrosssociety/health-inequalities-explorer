@@ -13,10 +13,7 @@ explorer <- function() {
     includeCSS("inst/www/styles.css"),
 
     # - Logo -
-    logo(),
-
-    # - Instructions -
-    instructions(),
+    logos(),
 
     # - Geography Selection (module) -
     fluidRow(
