@@ -12,8 +12,11 @@ explorer <- function() {
     # - Set CSS -
     includeCSS("inst/www/styles.css"),
 
-    # - Logo -
-    # logos(),
+    # - Heading -
+    fluidRow(
+      tags$h1("Health Inequalities Explorer"),
+      align = "center"
+    ),
 
     # - Geography Selection (module) -
     fluidRow(
