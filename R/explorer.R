@@ -3,70 +3,49 @@ library(leaflet)
 library(ggplot2)
 library(ggiraph)
 library(sf)
+library(gridlayout)
 
 explorer <- function() {
 
   # ---- UI ----
-  ui <- fluidPage(
-
-    # - Set CSS -
-    includeCSS("inst/www/styles.css"),
-
-    # - Heading -
-    fluidRow(
-      tags$h1("Health Inequalities Explorer"),
-      align = "center"
+  ui <- grid_page(
+    layout = c(
+      "     1fr              1fr              1fr             ",
+      "85px header           header           header          ",
+      "85px select_areas     select_areas     select_areas    ",
+      "85px select_geography select_geography select_geography",
+      "1fr  map              plot_1           plot_2          "
     ),
 
-    # - Geography Selection (module) -
-    fluidRow(
-      selectGeographyUI("geography"),
-      align = "center"
+    grid_card_text(
+      "header",
+      "Health Inequalities Explorer",
+      alignment = "center"
     ),
 
-    # - Area Selection (module) -
-    fluidRow(
-      selectAreasUI("areas"),
-      align = "center"
+    grid_card(
+      "select_geography",
+      selectGeographyUI("geography")
     ),
 
-    # - Map (module) & Plots (module) -
-    fluidRow(
+    grid_card(
+      "select_areas",
+      selectAreasUI("areas")
+    ),
 
-      # Column 1: map
-      column(
-        width = 4,
-        align = "center",
-        mapUI("leafletMap")
-      ),
+    grid_card(
+      "map",
+      mapUI("leafletMap")
+    ),
 
-      # Column 2: left plot
-      column(
-        width = 4,
-        align = "center",
-        tags$div(
-          id = "card",
-          h4("Vulnerability"),
-          h6("Last updated: 25.05.22"),
-          tabsetPanel(
-            tabPanel("Plot", jitterPlotUI("jitterPlotVulnerability"))
-          )
-        )
-      ),
+    grid_card(
+      "plot_1",
+      jitterPlotUI("jitterPlotVulnerability")
+    ),
 
-      # Column 3: right plot
-      column(
-        width = 4,
-        align = "center",
-        tags$div(
-          id = "card",
-          h4("Capacity"),
-          h6("Last updated: 25.05.22"),
-          tabsetPanel(
-            tabPanel("Plot", jitterPlotUI("jitterPlotCapacity"))
-          )
-        )
-      )
+    grid_card(
+      "plot_2",
+      jitterPlotUI("jitterPlotCapacity")
     )
   )
 
