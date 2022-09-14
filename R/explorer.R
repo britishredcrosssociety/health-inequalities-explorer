@@ -19,12 +19,14 @@ explorer <- function() {
     grid_card(
       "select_geography",
       selectGeographyUI("geography"),
-      has_border = FALSE
+      has_border = FALSE,
+      scrollable = TRUE
     ),
     grid_card(
       "select_areas",
       selectAreasUI("areas"),
-      has_border = FALSE
+      has_border = FALSE,
+      scrollable = TRUE
     ),
     grid_card(
       "map",
