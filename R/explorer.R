@@ -9,43 +9,37 @@ explorer <- function() {
 
   # ---- UI ----
   ui <- grid_page(
-    layout = c(
-      "     1fr              1fr              1fr             ",
-      "85px header           header           header          ",
-      "85px select_areas     select_areas     select_areas    ",
-      "85px select_geography select_geography select_geography",
-      "1fr  map              plot_1           plot_2          "
-    ),
-
+    layout = layout,
     grid_card_text(
       "header",
       "Health Inequalities Explorer",
-      alignment = "center"
+      alignment = "center",
+      has_border = FALSE
     ),
-
     grid_card(
       "select_geography",
-      selectGeographyUI("geography")
+      selectGeographyUI("geography"),
+      has_border = FALSE
     ),
-
     grid_card(
       "select_areas",
-      selectAreasUI("areas")
+      selectAreasUI("areas"),
+      has_border = FALSE
     ),
-
     grid_card(
       "map",
-      mapUI("leafletMap")
+      mapUI("leafletMap"),
+      has_border = FALSE
     ),
-
     grid_card(
       "plot_1",
-      jitterPlotUI("jitterPlotVulnerability")
+      jitterPlotUI("jitterPlotVulnerability"),
+      has_border = FALSE
     ),
-
     grid_card(
       "plot_2",
-      jitterPlotUI("jitterPlotCapacity")
+      jitterPlotUI("jitterPlotCapacity"),
+      has_border = FALSE
     )
   )
 
