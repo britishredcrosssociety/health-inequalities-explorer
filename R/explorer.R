@@ -17,14 +17,14 @@ explorer <- function() {
     ),
     grid_card(
       "select_geography",
-      title = "Select type of care",
+      title = "Select type of geography",
       selectGeographyUI("geography"),
       has_border = TRUE,
       scrollable = TRUE
     ),
     grid_card(
       "select_areas",
-      title = "Select type of geography",
+      title = "Select areas",
       selectAreasUI("areas"),
       has_border = TRUE,
       scrollable = TRUE
