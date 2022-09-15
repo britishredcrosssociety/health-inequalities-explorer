@@ -1,5 +1,5 @@
 jitterPlotUI <- function(id) {
-  girafeOutput(
+  plotOutput(
     NS(id, "plot")
   )
 }
@@ -16,7 +16,7 @@ jitterPlotServer <- function(id, selected, type) {
       }
     })
 
-    output$plot <- renderGirafe({
+    output$plot <- renderPlot({
 
       # Set sensible plot/legend default if no area has been selected
       if (is.null(selected$areas)) {
@@ -42,13 +42,13 @@ jitterPlotServer <- function(id, selected, type) {
       }
 
       # Create plot object
-      gg <- dataset |>
+      dataset |>
         ggplot(aes(x = value, y = variable, colour = selected)) +
         geom_vline(
           xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
         ) +
-        geom_point_interactive(
-          aes(alpha = alpha, tooltip = area_name, data_id = area_name),
+        geom_point(
+          aes(alpha = alpha),
           position = position_jitter(height = 0.25, seed = 123),
           size = 4
         ) +
@@ -63,17 +63,6 @@ jitterPlotServer <- function(id, selected, type) {
         ) +
         scale_alpha(guide = "none") +
         labs(x = NULL, y = NULL)
-
-      # Render plot
-      girafe(
-        ggobj = gg,
-        options = list(
-          # opts_hover_inv(css = "opacity:0.3;"),
-          opts_toolbar(saveaspng = FALSE),
-          opts_selection(type = "none"),
-          opts_sizing(rescale = TRUE, width = .5)
-        )
-      )
     })
   })
 }
