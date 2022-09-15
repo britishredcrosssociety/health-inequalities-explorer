@@ -1,7 +1,28 @@
-grid_config <- c(
-  "     1fr              1fr              1fr             ",
-  "80px header           header           header          ",
-  "70px select_geography select_geography select_geography",
-  "70px select_areas     select_areas     select_areas    ",
-  "1fr  map              plot_1           plot_2          "
+main_layout <- c(
+  "     1fr              1fr             ",
+  "80px header           header          ",
+  "100px select_geography select_areas   ",
+  "1fr  map              summary_metrics ",
+  "1fr  demographics     secondary_care  "
+)
+
+mobile_layout <- c(
+  "      1fr             ",
+  "80px  header          ",
+  "100px select_geography",
+  "100px select_areas    ",
+  "1fr   map             ",
+  "1fr   summary_metrics ",
+  "1fr   demographics    ",
+  "1fr   secondary_care  "
+)
+
+grid_config <- new_gridlayout(
+  main_layout,
+  alternate_layouts = list(
+    list(
+      layout = mobile_layout,
+      width_bounds = c(max = 600)
+    )
+  )
 )

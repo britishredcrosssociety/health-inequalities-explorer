@@ -11,36 +11,44 @@ explorer <- function() {
     layout = grid_config,
     grid_card(
       "header",
-      h3("Health Inequalities Explorer"),
+      tags$h3("Health Inequalities Explorer"),
       alignment = "center",
-      has_border = FALSE
+      has_border = TRUE
     ),
     grid_card(
       "select_geography",
+      title = "Select type of care",
       selectGeographyUI("geography"),
-      has_border = FALSE,
+      has_border = TRUE,
       scrollable = TRUE
     ),
     grid_card(
       "select_areas",
+      title = "Select type of geography",
       selectAreasUI("areas"),
-      has_border = FALSE,
+      has_border = TRUE,
       scrollable = TRUE
     ),
     grid_card(
       "map",
       mapUI("leafletMap"),
-      has_border = FALSE
+      has_border = TRUE
     ),
     grid_card(
-      "plot_1",
+      "summary_metrics",
+      title = "Summary metrics",
       jitterPlotUI("jitterPlotVulnerability"),
-      has_border = FALSE
+      has_border = TRUE
     ),
     grid_card(
-      "plot_2",
-      jitterPlotUI("jitterPlotCapacity"),
-      has_border = FALSE
+      "demographics",
+      title = "Demographics",
+      has_border = TRUE
+    ),
+    grid_card(
+      "secondary_care",
+      title = "Secondary Care",
+      has_border = TRUE
     )
   )
 
