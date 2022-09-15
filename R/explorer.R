@@ -10,9 +10,9 @@ explorer <- function() {
   # ---- UI ----
   ui <- grid_page(
     layout = layout,
-    grid_card_text(
+    grid_card(
       "header",
-      "Health Inequalities Explorer",
+      h3("Health Inequalities Explorer"),
       alignment = "center",
       has_border = FALSE
     ),
