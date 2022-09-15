@@ -3,70 +3,45 @@ library(leaflet)
 library(ggplot2)
 library(ggiraph)
 library(sf)
+library(gridlayout)
 
 explorer <- function() {
 
   # ---- UI ----
-  ui <- fluidPage(
-
-    # - Set CSS -
-    includeCSS("inst/www/styles.css"),
-
-    # - Heading -
-    fluidRow(
-      tags$h1("Health Inequalities Explorer"),
-      align = "center"
+  ui <- grid_page(
+    layout = layout,
+    grid_card(
+      "header",
+      h3("Health Inequalities Explorer"),
+      alignment = "center",
+      has_border = FALSE
     ),
-
-    # - Geography Selection (module) -
-    fluidRow(
+    grid_card(
+      "select_geography",
       selectGeographyUI("geography"),
-      align = "center"
+      has_border = FALSE,
+      scrollable = TRUE
     ),
-
-    # - Area Selection (module) -
-    fluidRow(
+    grid_card(
+      "select_areas",
       selectAreasUI("areas"),
-      align = "center"
+      has_border = FALSE,
+      scrollable = TRUE
     ),
-
-    # - Map (module) & Plots (module) -
-    fluidRow(
-
-      # Column 1: map
-      column(
-        width = 4,
-        align = "center",
-        mapUI("leafletMap")
-      ),
-
-      # Column 2: left plot
-      column(
-        width = 4,
-        align = "center",
-        tags$div(
-          id = "card",
-          h4("Vulnerability"),
-          h6("Last updated: 25.05.22"),
-          tabsetPanel(
-            tabPanel("Plot", jitterPlotUI("jitterPlotVulnerability"))
-          )
-        )
-      ),
-
-      # Column 3: right plot
-      column(
-        width = 4,
-        align = "center",
-        tags$div(
-          id = "card",
-          h4("Capacity"),
-          h6("Last updated: 25.05.22"),
-          tabsetPanel(
-            tabPanel("Plot", jitterPlotUI("jitterPlotCapacity"))
-          )
-        )
-      )
+    grid_card(
+      "map",
+      mapUI("leafletMap"),
+      has_border = FALSE
+    ),
+    grid_card(
+      "plot_1",
+      jitterPlotUI("jitterPlotVulnerability"),
+      has_border = FALSE
+    ),
+    grid_card(
+      "plot_2",
+      jitterPlotUI("jitterPlotCapacity"),
+      has_border = FALSE
     )
   )
 

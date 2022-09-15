@@ -8,6 +8,3 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 ## Overview
 An open access web app to *explore* location based health inequalities across
 different UK geographies.
-
-## Metadata
-TBC
