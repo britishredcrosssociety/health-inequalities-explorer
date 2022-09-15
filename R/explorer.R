@@ -1,7 +1,6 @@
 library(shiny)
 library(leaflet)
 library(ggplot2)
-library(ggiraph)
 library(sf)
 library(gridlayout)
 
@@ -9,7 +8,7 @@ explorer <- function() {
 
   # ---- UI ----
   ui <- grid_page(
-    layout = layout,
+    layout = grid_config,
     grid_card(
       "header",
       h3("Health Inequalities Explorer"),

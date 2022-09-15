@@ -1,4 +1,4 @@
-layout <- c(
+grid_config <- c(
   "     1fr              1fr              1fr             ",
   "80px header           header           header          ",
   "70px select_geography select_geography select_geography",
