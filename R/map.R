@@ -1,7 +1,6 @@
 mapUI <- function(id) {
   leafletOutput(
-    NS(id, "map"),
-    height = 630
+    NS(id, "map")
   )
 }
 
