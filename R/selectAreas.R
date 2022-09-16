@@ -5,9 +5,9 @@ selectAreasUI <- function(id) {
     choices = NULL,
     multiple = TRUE,
     options = list(
+      onInitialize = I('function() { this.setValue(""); }'),
       plugins = list("remove_button"),
-      placeholder = "Select areas to compare...",
-      onInitialize = I('function() { this.setValue(""); }')
+      placeholder = "Select areas to compare..."
     )
   )
 }
