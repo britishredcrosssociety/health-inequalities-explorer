@@ -1,7 +1,7 @@
 main_layout <- c(
   "     1fr              1fr             ",
   "80px header           header          ",
-  "100px select_geography select_areas   ",
+  "auto select_geography select_areas   ",
   "1fr  map              summary_metrics ",
   "1fr  demographics     secondary_care  "
 )

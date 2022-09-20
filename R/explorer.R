@@ -8,6 +8,7 @@ explorer <- function() {
 
   # ---- UI ----
   ui <- grid_page(
+    includeCSS("inst/www/styles.css"),
     layout = grid_config,
     grid_card(
       "header",
@@ -20,14 +21,14 @@ explorer <- function() {
       title = "Select type of geography",
       selectGeographyUI("geography"),
       has_border = TRUE,
-      scrollable = TRUE
+      scrollable = FALSE
     ),
     grid_card(
       "select_areas",
       title = "Select areas",
       selectAreasUI("areas"),
       has_border = TRUE,
-      scrollable = TRUE
+      scrollable = FALSE
     ),
     grid_card(
       "map",
