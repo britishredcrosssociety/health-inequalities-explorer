@@ -19,9 +19,6 @@ server <- function(input, output, session) {
   # - Jitter Plot Left (module) -
   jitterPlotServer("jitterPlotVulnerability", selected, "vulnerability")
 
-  # - Jitter Plot Right (module) -
-  jitterPlotServer("jitterPlotCapacity", selected, "capacity")
-
   # Debug
   # observe({
   #   print(selected$geography)
