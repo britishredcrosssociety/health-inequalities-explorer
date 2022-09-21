@@ -60,10 +60,10 @@ mapServer <- function(id, selected) {
     # Logic: create two sets of reactive values. One contained to the module
     # namespace (`clicked`), and one to the global namespace (`selected`)
 
-    # Contained to local namespace
+    # Contained to module namespace
     clicked <- reactiveValues(areas = vector())
 
-    # As polygons are clicked, update both the local and global reactive values
+    # As polygons are clicked, update both the module and global reactive values
     observeEvent(input$map_shape_click, {
       if (input$map_shape_click$group == "base") {
         selected$areas <- c(selected$areas, input$map_shape_click$id)
@@ -76,9 +76,9 @@ mapServer <- function(id, selected) {
       }
     })
 
-    # Track differences in the local and global reactive values. If activity has
-    # occured outside of this module, update the local reactive values to match
-    # the global reactive values and update the map polygons
+    # Track differences in the module and global reactive values. If activity 
+    # has occured outside of this module, update the module reactive values to 
+    # match the global reactive values and update the map polygons
     observeEvent(selected$areas,
       {
         removed <- setdiff(clicked$areas, selected$areas)
