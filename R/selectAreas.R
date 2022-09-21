@@ -5,6 +5,7 @@ selectAreasUI <- function(id) {
     choices = NULL,
     multiple = TRUE,
     options = list(
+      maxItems = 3,
       onInitialize = I('function() { this.setValue(""); }'),
       plugins = list("remove_button"),
       placeholder = "Select areas to compare..."

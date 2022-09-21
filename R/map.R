@@ -63,13 +63,16 @@ mapServer <- function(id, selected) {
     # Contained to module namespace
     clicked <- reactiveValues(areas = vector())
 
-    # As polygons are clicked, update both the module and global reactive values
+    # Track click events and then update both the module and global reactive
+    # values and add/remove polygons from the map. Limit the addition of
+    # overlapping polygons to three to match the select box.
     observeEvent(input$map_shape_click, {
-      if (input$map_shape_click$group == "base") {
+      if (input$map_shape_click$group == "base" & length(clicked$areas) < 3) {
         selected$areas <- c(selected$areas, input$map_shape_click$id)
         clicked$areas <- c(clicked$areas, input$map_shape_click$id)
         leafletProxy("map") |> showGroup(input$map_shape_click$id)
-      } else {
+        # Only hide non base group polygons
+      } else if(input$map_shape_click$group != "base") {
         selected$areas <- setdiff(selected$areas, input$map_shape_click$group)
         clicked$areas <- setdiff(clicked$areas, input$map_shape_click$group)
         leafletProxy("map") |> hideGroup(input$map_shape_click$group)
