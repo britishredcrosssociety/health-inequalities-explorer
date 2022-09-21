@@ -1,2 +1,2 @@
 pkgload::load_all(".")
-explorer()
+appLaunch()
