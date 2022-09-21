@@ -1,5 +1,5 @@
 main_layout <- c(
-  "      1fr              1fr             ",
+  "1rem  1fr              1fr             ",
   "120px header           bookmark        ",
   "auto  select_geography select_areas    ",
   "1fr   map              summary_metrics ",
@@ -7,7 +7,7 @@ main_layout <- c(
 )
 
 mobile_layout <- c(
-  "      1fr             ",
+  "1rem  1fr             ",
   "120px header          ",
   "120px bookmark        ",
   "100px select_geography",
