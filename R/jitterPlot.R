@@ -7,14 +7,16 @@ jitterPlotUI <- function(id) {
 jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
 
-    # Set dataset based on geography selection and type of dataset
-    dataset <- reactive({
-      if (selected$geography == "ltla_shp_england" && type == "vulnerability") {
-        ltla_vul_england
-      } else {
-        ltla_cap_england
-      }
-    })
+    # # Set dataset based on geography selection and type of dataset
+    # dataset <- reactive({
+    #   if (selected$geography == "ltla_shp_england" && type == "vulnerability") {
+    #     ltla_vul_england
+    #   } else {
+    #     ltla_cap_england
+    #   }
+    # })
+
+    dataset <- reactive({ltla_vul_england})
 
     output$plot <- renderPlot({
 
