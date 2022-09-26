@@ -1,7 +1,9 @@
 library(tidyverse)
 library(geographr)
+library(compositr)
 library(sf)
 library(IMD)
+library(readxl)
 
 ltla <-
   boundaries_ltla21 |>
@@ -23,6 +25,7 @@ imd <-
   summarise(imd_score = mean(imd_score))
 
 # ---- % Left-behind areas ----
+# Higher score = more deprived
 lba <-
   cni_england_ward17 |>
   left_join(lookup_england_ltla, by = c("lad19_code" = "ltla19_code")) |>
@@ -37,26 +40,75 @@ lba <-
   mutate(lba_percentage = replace_na(lba_percentage, 0))
 
 # ---- ONS Health Index score ----
-
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/england/health-index-2019.csv"
-)
-
-health_index <-
-  health_index_raw |>
-  select(
-    ltla21_code = lad_21_code,
-    health_index_score = overall_score_rank
+# Higher score = better health
+health_index_file <-
+  download_file(
+    "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland/current/healthindexscoresatnationalregionalandlocalauthoritylevelsenglandtimeseries.xlsx",
+    ".xlsx"
   )
 
-# ---- % NHS priority wards ----
-# To be added
+health_index_scores <-
+  read_excel(
+    health_index_file,
+    sheet = "Table_2_Index_scores",
+    range = "A3:G343"
+  )
+
+health_index_2019 <-
+  health_index_scores |>
+  select(
+    ltla21_code = `Area Code`,
+    health_index_score = `2019`
+  ) |>
+  filter(ltla21_code %in% ltla$ltla21_code)
+
+# Data is missing for two ltla's
+#   - Map Iscles of Scilly to Cornwall
+#   - Map City of London to Hackney
+cornwall_score <-
+  health_index_2019 |>
+  filter(ltla21_code == "E06000052") |>
+  pull(health_index_score)
+
+hackney_score <-
+  health_index_2019 |>
+  filter(ltla21_code == "E09000012") |>
+  pull(health_index_score)
+
+health_index_missing_added <-
+  health_index_2019 |>
+  add_row(ltla21_code = "E06000053", health_index_score = cornwall_score) |> 
+  add_row(ltla21_code = "E09000001", health_index_score = hackney_score)
+
+# Scores need flipping so polarity matches other summary metrics
+health_index <-
+  health_index_missing_added |> 
+  mutate(health_index_score = health_index_score * -1)
 
 # ---- Combine and export ----
-ltla_summary_metrics_england <-
+metrics_joined <-
   ltla |>
   left_join(imd) |>
   left_join(lba) |>
-  left_join(health_index)
+  left_join(health_index) |> 
+  pivot_longer(cols = !starts_with("ltla21_"), names_to = "variable") |> 
+  select(-ltla21_code) |> 
+  mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |> 
+  rename(area_name = ltla21_name)
+
+# Median absolute deviation cannot be used as if more than 50 % of values are
+# identical, then all values are zero. Given that all of the metrics use some
+# kind of score an there are no outliers. Perhaps simply normalising the
+# distributions to mean = 0, SD = 1 is adequate? No, as lba_percentage has a long
+# right tail. Need to find a distribution that is equal in range for each indicator
+metrics_joined |> 
+  group_by(variable) |> 
+  mutate(stand = standardise(value)) |> 
+  filter(variable == "lba_percentage") |> 
+  ggplot(aes(x = stand)) +
+  geom_density()
+
+# Pivot longer. Required cols: area_name, variable, value. Check deprecated code
+# (old commits) for info on cleaning on area names to match other data sets
 
 usethis::use_data(ltla_summary_metrics_england, overwrite = TRUE)
