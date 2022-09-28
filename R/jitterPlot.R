@@ -52,6 +52,7 @@ jitterPlotServer <- function(id, selected) {
           shape = 21,
           colour = "#262626"
         ) +
+        annotate("text", x = 0, y = 3.75, label = "bold(Mean)", parse = TRUE) +
         theme_minimal() +
         theme(
           legend.position = "top",
@@ -63,7 +64,7 @@ jitterPlotServer <- function(id, selected) {
         ) +
         scale_alpha(guide = "none") +
         labs(x = NULL, y = NULL) +
-        theme(axis.text = element_text(face = "bold", size = 15))
+        theme(text = element_text(face = "bold", size = 15))
     })
   })
 }
