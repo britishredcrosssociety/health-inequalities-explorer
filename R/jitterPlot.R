@@ -4,10 +4,11 @@ jitterPlotUI <- function(id) {
   )
 }
 
-jitterPlotServer <- function(id, selected, type) {
+jitterPlotServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
-    
-    dataset <- reactive({ltla_vul_england})
+    dataset <- reactive({
+      ltla_summary_metrics_england
+    })
 
     output$plot <- renderPlot({
 
@@ -27,7 +28,7 @@ jitterPlotServer <- function(id, selected, type) {
             )
           ) |>
           dplyr::mutate(
-            alpha = dplyr::if_else(selected != "not selected", 1, 0.2)
+            alpha = dplyr::if_else(selected != "not selected", 1, 0.1)
           ) |>
           dplyr::mutate(selected = factor(selected)) |>
           dplyr::mutate(selected = relevel(selected, ref = "not selected"))
@@ -36,22 +37,28 @@ jitterPlotServer <- function(id, selected, type) {
 
       # Create plot object
       dataset |>
-        ggplot(aes(x = value, y = variable, colour = selected)) +
+        ggplot(aes(x = value, y = variable, fill = selected)) +
         geom_vline(
-          xintercept = 150, size = 2, alpha = .5, colour = "#5C747A"
+          xintercept = 0,
+          size = 1,
+          alpha = .7,
+          colour = "#262626",
+          linetype = "dashed"
         ) +
         geom_point(
           aes(alpha = alpha),
-          position = position_jitter(height = 0.25, seed = 123),
-          size = 4
+          position = position_jitter(height = 0.25, width = 0.1, seed = 123),
+          size = 5,
+          shape = 21,
+          colour = "#262626"
         ) +
         theme_minimal() +
         theme(
           legend.position = "top",
           legend.title = element_blank()
         ) +
-        scale_color_viridis_d(
-          option = "C", begin = .2, end = .8, direction = -1,
+        scale_fill_manual(
+          values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA"),
           breaks = legend_break_name
         ) +
         scale_alpha(guide = "none") +
@@ -60,7 +67,7 @@ jitterPlotServer <- function(id, selected, type) {
   })
 }
 
-jitterPlotTest <- function(type) {
+jitterPlotTest <- function() {
   ui <- fluidPage(
     jitterPlotUI("test")
   )
@@ -69,11 +76,11 @@ jitterPlotTest <- function(type) {
     selected <- reactiveValues(
       areas = vector(), geography = "ltla_shp_england"
     )
-    jitterPlotServer("test", selected, type)
+    jitterPlotServer("test", selected)
   }
 
   shinyApp(ui, server)
 }
 
 # Examples
-# jitterPlotTest(type = "vulnerability")
+# jitterPlotTest()
