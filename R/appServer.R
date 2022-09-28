@@ -16,7 +16,7 @@ server <- function(input, output, session) {
   mapServer("leafletMap", selected)
 
   # - Jitter Plot Left (module) -
-  jitterPlotServer("jitterPlotVulnerability", selected, "vulnerability")
+  jitterPlotServer("jitterPlotVulnerability", selected)
 
   # Debug
   # observe({
