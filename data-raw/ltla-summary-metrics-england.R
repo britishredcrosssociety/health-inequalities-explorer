@@ -86,7 +86,7 @@ health_index <-
   health_index_missing_added |>
   mutate(health_index_score = health_index_score * -1)
 
-# ---- Combine ----
+# ---- Combine & reanme (pretty printing) ----
 metrics_joined <-
   ltla |>
   left_join(imd) |>
@@ -95,7 +95,14 @@ metrics_joined <-
   pivot_longer(cols = !starts_with("ltla21_"), names_to = "variable") |>
   select(-ltla21_code) |>
   mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
-  rename(area_name = ltla21_name)
+  rename(area_name = ltla21_name) |>
+  mutate(
+    variable = case_when(
+      variable == "imd_score" ~ "Indices of \nMultiple Deprivation",
+      variable == "lba_percentage" ~ "Proportion of \nLeft-behind areas",
+      variable == "health_index_score" ~ "ONS Health Index"
+    )
+  )
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
