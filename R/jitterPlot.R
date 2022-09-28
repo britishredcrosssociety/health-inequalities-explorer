@@ -62,7 +62,8 @@ jitterPlotServer <- function(id, selected) {
           breaks = legend_break_name
         ) +
         scale_alpha(guide = "none") +
-        labs(x = NULL, y = NULL)
+        labs(x = NULL, y = NULL) +
+        theme(axis.text = element_text(face = "bold", size = 15))
     })
   })
 }
