@@ -42,6 +42,7 @@ ui <- function(request) {
     grid_card(
       "demographics",
       title = "Demographics",
+      agePlotUI("agePlot"),
       has_border = TRUE
     ),
     grid_card(
