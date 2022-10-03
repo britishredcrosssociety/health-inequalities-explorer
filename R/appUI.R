@@ -36,7 +36,7 @@ ui <- function(request) {
     grid_card(
       "summary_metrics",
       title = "Summary metrics",
-      jitterPlotUI("jitterPlotVulnerability"),
+      jitterPlotUI("summaryPlot"),
       has_border = TRUE
     ),
     grid_card(
