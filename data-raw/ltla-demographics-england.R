@@ -93,15 +93,15 @@ population_relative <-
   group_by(area_code) |>
   mutate(population_ltla = sum(population)) |>
   ungroup() |>
-  mutate(population_relative = population / population_ltla) |> 
-  mutate(population_label = str_c(population, "\npeople")) |> 
+  mutate(population_relative = population / population_ltla) |>
+  mutate(population_label = str_c(population, " people")) |>
   select(-population, -population_ltla)
 
 ltla_demographics_age_england <-
-  population_relative |> 
-  left_join(ltla, by = c("area_code" = "ltla21_code")) |> 
-  select(-area_code) |> 
-  rename(area_name = ltla21_name) |> 
+  population_relative |>
+  left_join(ltla, by = c("area_code" = "ltla21_code")) |>
+  select(-area_code) |>
+  rename(area_name = ltla21_name) |>
   relocate(area_name)
 
 usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
