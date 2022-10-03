@@ -49,7 +49,7 @@ population_tidy_age <-
     )
   )
 
-population_regroup <-
+population_grouppings <-
   population_tidy_age |>
   mutate(
     age = case_when(
@@ -76,20 +76,37 @@ population_regroup <-
   ) |>
   group_by(area_code, sex, age) |>
   summarise(population = sum(population)) |>
-  ungroup() |>
+  ungroup()
+
+population_sex_age_joined <-
+  population_grouppings |>
+  mutate(
+    age = case_when(
+      sex == "Female" & age == "Older \npeople (65+)" ~ "Older \nfemales (65+)",
+      sex == "Female" & age == "Working \nage (18-65)" ~ "Working age \nfemales (18-65)",
+      sex == "Female" & age == "Younger \npeople (< 18)" ~ "Younger \nfemales (< 18)",
+      sex == "Male" & age == "Older \npeople (65+)" ~ "Older \nmales (65+)",
+      sex == "Male" & age == "Working \nage (18-65)" ~ "Working age \nmales (18-65)",
+      sex == "Male" & age == "Younger \npeople (< 18)" ~ "Younger \nmales (< 18)"
+    )
+  ) |>
   mutate(
     age = factor(
       age,
       levels = c(
-        "Younger \npeople (< 18)",
-        "Working \nage (18-65)",
-        "Older \npeople (65+)"
+        "Younger \nfemales (< 18)",
+        "Younger \nmales (< 18)",
+        "Working age \nfemales (18-65)",
+        "Working age \nmales (18-65)",
+        "Older \nfemales (65+)",
+        "Older \nmales (65+)"
       )
     )
-  )
+  ) |> 
+  select(-sex)
 
 population_relative <-
-  population_regroup |>
+  population_sex_age_joined |>
   group_by(area_code) |>
   mutate(population_ltla = sum(population)) |>
   ungroup() |>
@@ -104,6 +121,28 @@ ltla_demographics_age_england <-
   relocate(area_name)
 
 usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
+
+ltla_demographics_age_england |>
+  dplyr::filter(area_name == "Hartlepool" | area_name == "Rochdale" | area_name == "Bury") |>
+  ggplot(aes(x = population_relative, y = age, fill = area_name)) +
+  geom_point(
+    position = position_jitter(height = 0.25, width = 0.1, seed = 123),
+    size = 5,
+    shape = 21,
+    colour = "#262626"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank()
+  ) +
+  scale_fill_manual(
+    values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA")
+  ) +
+  labs(x = NULL, y = NULL) +
+  theme(text = element_text(face = "bold", size = 15))
+
+
 
 # ltla_demographics_age_england |>
 #   filter(area_name == "Hartlepool" | area_name == "Rochdale" | area_name == "Bury") |>
