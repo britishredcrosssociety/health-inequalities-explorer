@@ -15,7 +15,7 @@ agePlotServer <- function(id, selected) {
         dplyr::filter(area_name == "Hartlepool" | area_name == "Rochdale" | area_name == "Bury") |>
         ggplot(aes(x = population_relative, y = age, fill = area_name)) +
         facet_wrap(vars(sex), strip.position = "top") +
-        geom_col(position = "dodge", colour = "black", alpha = .7) +
+        geom_col(position = "dodge", alpha = .4) +
         geom_text(
           aes(label = population_label),
           position = position_dodge(width = .9),
@@ -27,10 +27,10 @@ agePlotServer <- function(id, selected) {
           values = c("#D0021B", "#40A22A", "#F1B13B")
         ) +
         scale_x_continuous(labels = scales::percent) +
-        labs(x = "Area population", y = NULL) +
+        labs(title = "Area populations", x = NULL, y = NULL) +
         theme_minimal() +
         theme(
-          legend.position = "top",
+          legend.position = "right",
           legend.title = element_blank(),
           text = element_text(face = "bold", size = 15)
         )
