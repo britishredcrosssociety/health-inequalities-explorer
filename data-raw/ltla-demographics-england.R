@@ -122,51 +122,5 @@ ltla_demographics_age_england <-
 
 usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
 
-ltla_demographics_age_england |>
-  dplyr::filter(area_name == "Hartlepool" | area_name == "Rochdale" | area_name == "Bury") |>
-  ggplot(aes(x = population_relative, y = age, fill = area_name)) +
-  geom_point(
-    position = position_jitter(height = 0.25, width = 0.1, seed = 123),
-    size = 5,
-    shape = 21,
-    colour = "#262626"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.position = "top",
-    legend.title = element_blank()
-  ) +
-  scale_fill_manual(
-    values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA")
-  ) +
-  labs(x = NULL, y = NULL) +
-  theme(text = element_text(face = "bold", size = 15))
-
-
-
-# ltla_demographics_age_england |>
-#   filter(area_name == "Hartlepool" | area_name == "Rochdale" | area_name == "Bury") |>
-#   ggplot(aes(x = population_relative, y = age, fill = area_name)) +
-#   facet_wrap(vars(sex), strip.position = "top") +
-#   geom_col(position = "dodge", colour = "black", alpha = .7) +
-#   geom_text(
-#     aes(label = population_label),
-#     position = position_dodge(width = .9),
-#     hjust = 1.35,
-#     fontface = "bold",
-#     colour = "#262626"
-#   ) +
-#   scale_fill_manual(
-#     values = c("#D0021B", "#40A22A", "#F1B13B")
-#   ) +
-#   scale_x_continuous(labels = scales::percent) +
-#   labs(x = "Population (percentage of selected area)", y = NULL) +
-#   theme_minimal() +
-#   theme(
-#     legend.position = "top",
-#     legend.title = element_blank(),
-#     text = element_text(face = "bold", size = 15)
-#   )
-
 # see comparisons-across-nations.R in ad-hoc for other demographic stats that
 # could be included. Ad-hoc also contains code to scrape ethnicity data from NOMIS
