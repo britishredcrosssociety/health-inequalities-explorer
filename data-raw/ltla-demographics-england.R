@@ -88,31 +88,39 @@ population_regroup <-
     )
   )
 
-ltla_demographics_age_england <-
+population_relative <-
   population_regroup |>
   group_by(area_code) |>
   mutate(population_ltla = sum(population)) |>
   ungroup() |>
-  mutate(population_relative = population / population_ltla)
+  mutate(population_relative = population / population_ltla) |> 
+  select(- population_ltla)
+
+ltla_demographics_age_england <-
+  population_relative |> 
+  left_join(ltla, by = c("area_code" = "ltla21_code")) |> 
+  select(-area_code) |> 
+  rename(area_name = ltla21_name) |> 
+  relocate(area_name)
 
 usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
 
-# population_relative |>
-#   filter(area_code == "E06000002" | area_code == "E06000003" | area_code == "E06000004") |>
-#   ggplot(aes(x = population_relative, y = age, fill = area_code)) +
-#   facet_wrap(vars(sex), strip.position = "top") +
-#   geom_col(position = "dodge", colour = "black", alpha = .7) +
-#   scale_fill_manual(
-#     values = c("#D0021B", "#40A22A", "#F1B13B")
-#   ) +
-#   scale_x_continuous(labels = scales::percent) +
-#   labs(x = "Population (percentage of selected area)", y = NULL) +
-#   theme_minimal() +
-#   theme(
-#     legend.position = "top",
-#     legend.title = element_blank(),
-#     text = element_text(face = "bold", size = 15)
-#   )
+ltla_demographics_age_england |>
+  filter(area_code == "E06000002" | area_code == "E06000003" | area_code == "E06000004") |>
+  ggplot(aes(x = population_relative, y = age, fill = area_code)) +
+  facet_wrap(vars(sex), strip.position = "top") +
+  geom_col(position = "dodge", colour = "black", alpha = .7) +
+  scale_fill_manual(
+    values = c("#D0021B", "#40A22A", "#F1B13B")
+  ) +
+  scale_x_continuous(labels = scales::percent) +
+  labs(x = "Population (percentage of selected area)", y = NULL) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank(),
+    text = element_text(face = "bold", size = 15)
+  )
 
 # see comparisons-across-nations.R in ad-hoc for other demographic stats that
 # could be included. Ad-hoc also contains code to scrape ethnicity data from NOMIS
