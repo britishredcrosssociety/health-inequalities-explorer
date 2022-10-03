@@ -15,20 +15,25 @@ population_file <- compositr::download_file(
   ".xlsx"
 )
 
-population_unprocessed <-
+population_raw <-
   readxl::read_excel(
     population_file,
     sheet = "P03",
     range = "A8:AO383"
   )
 
-# Finish processing
-population_all_ages <-
-  population_unprocessed |>
+population_longer <-
+  population_raw |>
   select(-`Area name`, -`All persons`) |>
   rename(area_code = `Area code [note 2]`) |>
-  pivot_longer(!area_code, names_to = "age", values_to = "population") |>
-  filter(area_code %in% ltla$ltla21_code) |>
+  pivot_longer(!area_code, names_to = "age", values_to = "population")
+
+population_filter_areas <-
+  population_longer |>
+  filter(area_code %in% ltla$ltla21_code)
+
+population_tidy_age <-
+  population_filter_areas |>
   mutate(sex = if_else(str_detect(age, "^Females"), "Female", "Male")) |>
   relocate(sex, .after = area_code) |>
   mutate(age = str_remove_all(age, "Females:\r\nAged ")) |>
@@ -44,8 +49,8 @@ population_all_ages <-
     )
   )
 
-population_sub_groups <-
-  population_all_ages |>
+population_regroup <-
+  population_tidy_age |>
   mutate(
     age = case_when(
       age == "0-4" ~ "Younger \npeople (< 18)",
@@ -83,31 +88,31 @@ population_sub_groups <-
     )
   )
 
-population_totals <-
-  population_sub_groups |>
-  group_by(area_code, age) |>
-  summarise(population = sum(population)) |>
-  mutate(sex = "Total") |>
-  relocate(sex, .after = "area_code") |>
-  bind_rows(population_sub_groups) |>
-  arrange(area_code, sex)
+ltla_demographics_age_england <-
+  population_regroup |>
+  group_by(area_code) |>
+  mutate(population_ltla = sum(population)) |>
+  ungroup() |>
+  mutate(population_relative = population / population_ltla)
 
-population_totals |>
-  filter(area_code == "E06000002" | area_code == "E06000003" | area_code == "E06000004") |>
-  ggplot(aes(x = population, y = age, fill = area_code)) +
-  facet_wrap(vars(sex), strip.position = "top") +
-  geom_col(position = "dodge", colour = "black", alpha = .7) +
-  scale_fill_manual(
-    values = c("#D0021B", "#40A22A", "#F1B13B")
-  ) +
-  labs(x = "Count", y = NULL) +
-  theme_light() +
-  theme(
-    legend.position = "top",
-    legend.title = element_blank(),
-    text = element_text(face = "bold", size = 15),
-    strip.background = element_rect(fill = "#5C747A")
-  )
+usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
+
+# population_relative |>
+#   filter(area_code == "E06000002" | area_code == "E06000003" | area_code == "E06000004") |>
+#   ggplot(aes(x = population_relative, y = age, fill = area_code)) +
+#   facet_wrap(vars(sex), strip.position = "top") +
+#   geom_col(position = "dodge", colour = "black", alpha = .7) +
+#   scale_fill_manual(
+#     values = c("#D0021B", "#40A22A", "#F1B13B")
+#   ) +
+#   scale_x_continuous(labels = scales::percent) +
+#   labs(x = "Population (percentage of selected area)", y = NULL) +
+#   theme_minimal() +
+#   theme(
+#     legend.position = "top",
+#     legend.title = element_blank(),
+#     text = element_text(face = "bold", size = 15)
+#   )
 
 # see comparisons-across-nations.R in ad-hoc for other demographic stats that
 # could be included. Ad-hoc also contains code to scrape ethnicity data from NOMIS
