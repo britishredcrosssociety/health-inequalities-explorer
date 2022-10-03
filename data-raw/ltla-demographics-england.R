@@ -94,8 +94,7 @@ population_relative <-
   mutate(population_ltla = sum(population)) |>
   ungroup() |>
   mutate(population_relative = population / population_ltla) |>
-  mutate(population_label = str_c(population, " people")) |>
-  select(-population, -population_ltla)
+  select(-population_ltla)
 
 ltla_demographics_age_england <-
   population_relative |>
