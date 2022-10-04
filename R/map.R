@@ -36,7 +36,7 @@ mapServer <- function(id, selected) {
               icon = awesomeIcons(
                 icon = "hospital-o",
                 library = "fa",
-                markerColor = "cadetblue",
+                markerColor = "lightgray",
                 iconColor = "#FFFFFF"
               )
             ) |>
@@ -55,7 +55,7 @@ mapServer <- function(id, selected) {
               icon = awesomeIcons(
                 icon = "hospital-o",
                 library = "fa",
-                markerColor = "red",
+                markerColor = "cadetblue",
                 iconColor = "#FFFFFF"
               )
             ) |>
@@ -90,12 +90,12 @@ mapServer <- function(id, selected) {
             label = ~area_name,
             weight = 0.7,
             opacity = 0.5,
-            color = "#D0021B",
+            color = "#193351",
             dashArray = "0.1",
             fillOpacity = 0.4,
             highlight = highlightOptions(
               weight = 5,
-              color = "#D0021B",
+              color = "#193351",
               dashArray = "",
               fillOpacity = 0.4,
               bringToFront = TRUE
