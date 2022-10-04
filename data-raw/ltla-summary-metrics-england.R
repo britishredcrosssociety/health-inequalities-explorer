@@ -112,7 +112,8 @@ scale_1_1 <- function(x) {
 ltla_summary_metrics_england <-
   metrics_joined |>
   group_by(variable) |>
-  mutate(value = scale_1_1(value))
+  mutate(value = scale_1_1(value)) |>
+  ungroup()
 
 # Check distributions
 ltla_summary_metrics_england |>
