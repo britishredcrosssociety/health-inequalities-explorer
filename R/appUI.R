@@ -42,7 +42,7 @@ ui <- function(request) {
     grid_card(
       "demographics",
       title = "Demographics",
-      agePlotUI("agePlot"),
+      jitterPlotUI("agePlot"),
       has_border = TRUE
     ),
     grid_card(

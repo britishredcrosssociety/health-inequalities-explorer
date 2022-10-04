@@ -4,14 +4,19 @@ jitterPlotUI <- function(id) {
   )
 }
 
-jitterPlotServer <- function(id, selected) {
+jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
+
+    # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      ltla_summary_metrics_england
+      if (selected$geography == "ltla_shp_england" & type == "demographics_age") {
+        ltla_demographics_age_england
+      } else if (selected$geography == "ltla_shp_england" & type == "summary_metrics") {
+        ltla_summary_metrics_england
+      }
     })
 
     output$plot <- renderPlot({
-
       # Set sensible plot/legend default if no area has been selected
       if (is.null(selected$areas)) {
         dataset <- dataset() |>
@@ -35,36 +40,62 @@ jitterPlotServer <- function(id, selected) {
         legend_break_name <- selected$areas
       }
 
-      # Create plot object
-      dataset |>
-        ggplot(aes(x = value, y = variable, fill = selected)) +
-        geom_vline(
-          xintercept = 0,
-          size = 1,
-          alpha = .7,
-          colour = "#262626",
-          linetype = "dashed"
-        ) +
-        geom_point(
-          aes(alpha = alpha),
-          position = position_jitter(height = 0.25, width = 0.1, seed = 123),
-          size = 5,
-          shape = 21,
-          colour = "#262626"
-        ) +
-        annotate("text", x = 0, y = 3.75, label = "bold(Mean)", parse = TRUE) +
-        theme_minimal() +
-        theme(
-          legend.position = "top",
-          legend.title = element_blank()
-        ) +
-        scale_fill_manual(
-          values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA"),
-          breaks = legend_break_name
-        ) +
-        scale_alpha(guide = "none") +
-        labs(x = NULL, y = NULL) +
-        theme(text = element_text(face = "bold", size = 15))
+      # Create plot objects
+      if (type == "demographics_age") {
+        dataset |>
+          ggplot(aes(x = population_relative, y = age, fill = selected)) +
+          geom_point(
+            aes(alpha = alpha),
+            position = position_jitter(height = 0.25, width = 0.1, seed = 123),
+            size = 5,
+            shape = 21,
+            colour = "#262626"
+          ) +
+          scale_x_continuous(labels = scales::percent) +
+          theme_minimal() +
+          theme(
+            legend.position = "top",
+            legend.title = element_blank()
+          ) +
+          scale_fill_manual(
+            values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA"),
+            breaks = legend_break_name
+          ) +
+          scale_alpha(guide = "none") +
+          labs(x = NULL, y = NULL) +
+          theme(text = element_text(face = "bold", size = 15))
+      } else if (type == "summary_metrics") {
+        # - Summary Metrics
+        dataset |>
+          ggplot(aes(x = value, y = variable, fill = selected)) +
+          geom_vline(
+            xintercept = 0,
+            size = 1,
+            alpha = .7,
+            colour = "#262626",
+            linetype = "dashed"
+          ) +
+          geom_point(
+            aes(alpha = alpha),
+            position = position_jitter(height = 0.25, width = 0.1, seed = 123),
+            size = 5,
+            shape = 21,
+            colour = "#262626"
+          ) +
+          annotate("text", x = 0, y = 3.75, label = "bold(Mean)", parse = TRUE) +
+          theme_minimal() +
+          theme(
+            legend.position = "top",
+            legend.title = element_blank()
+          ) +
+          scale_fill_manual(
+            values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA"),
+            breaks = legend_break_name
+          ) +
+          scale_alpha(guide = "none") +
+          labs(x = NULL, y = NULL) +
+          theme(text = element_text(face = "bold", size = 15))
+      }
     })
   })
 }
@@ -78,7 +109,7 @@ jitterPlotTest <- function() {
     selected <- reactiveValues(
       areas = vector(), geography = "ltla_shp_england"
     )
-    jitterPlotServer("test", selected)
+    jitterPlotServer("test", selected, type = "demographics_age")
   }
 
   shinyApp(ui, server)
