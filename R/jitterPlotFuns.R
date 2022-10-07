@@ -44,23 +44,42 @@ jitter_plot_summary_null <- function(data, x, y) {
       fill = "#717171",
       colour = "#262626",
     ) +
-    geom_vline(
-      xintercept = 0,
-      size = 1,
-      alpha = .7,
+    annotate(
+      "segment",
+      x = 0,
+      xend = 0,
+      y = 0.5,
+      yend = 3.5,
       colour = "#262626",
-      linetype = "dashed"
+      linetype = "dashed",
+      alpha = .5,
+      size = 1
     ) +
     annotate(
       "text",
       x = 0,
-      y = 3.75,
+      y = 3.7,
       label = "bold(Mean)",
+      parse = TRUE
+    ) +
+    annotate(
+      "text",
+      x = -0.5,
+      y = 3.7,
+      label = "bold('◄ Worse than the mean')",
+      parse = TRUE
+    ) +
+    annotate(
+      "text",
+      x = 0.5,
+      y = 3.7,
+      label = "bold('Better than the mean ►')",
       parse = TRUE
     ) +
     theme_minimal() +
     labs(x = NULL, y = NULL) +
-    theme(text = element_text(face = "bold", size = 15))
+    theme(text = element_text(face = "bold", size = 15)) +
+    coord_cartesian(clip = "off")
 
   return(plot_object)
 }
@@ -102,20 +121,38 @@ jitter_plot_summary_selected <- function(data, x, y, fill, selected_areas) {
       shape = 21,
       colour = "#262626"
     ) +
-    geom_vline(
-      xintercept = 0,
-      size = 1,
-      alpha = .7,
+    annotate(
+      "segment",
+      x = 0,
+      xend = 0,
+      y = 0.5,
+      yend = 3.5,
       colour = "#262626",
-      linetype = "dashed"
+      linetype = "dashed",
+      alpha = .5,
+      size = 1
     ) +
     annotate(
       "text",
       x = 0,
-      y = 3.75,
+      y = 3.7,
       label = "bold(Mean)",
       parse = TRUE
     ) +
+    annotate(
+      "text",
+      x = -0.5,
+      y = 3.7,
+      label = "bold('◄ Worse than the mean')",
+      parse = TRUE
+    ) +
+    annotate(
+      "text",
+      x = 0.5,
+      y = 3.7,
+      label = "bold('Better than the mean ►')",
+      parse = TRUE
+    )  +
     theme_minimal() +
     theme(
       legend.position = "top",
@@ -127,7 +164,8 @@ jitter_plot_summary_selected <- function(data, x, y, fill, selected_areas) {
     ) +
     scale_alpha(guide = "none") +
     labs(x = NULL, y = NULL) +
-    theme(text = element_text(face = "bold", size = 15))
+    theme(text = element_text(face = "bold", size = 15)) +
+    coord_cartesian(clip = "off")
 
   return(plot_object)
 }
