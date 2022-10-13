@@ -5,13 +5,8 @@ library(sf)
 library(healthyr)
 library(compositr)
 
-# ---- Trust to ltla lookup ----
-raw <- download_file(
-  "https://github.com/britishredcrosssociety/resilience-index/blob/main/data/lookup_trust_lad.rds?raw=true",
-  ".rds"
-)
-
-trust_ltla_lookup <- read_rds(raw)
+# ---- Trust to msoa lookup ----
+lookup_nhs_trusts22_ltla21
 
 # ---- Trust names ----
 trust_names <-
