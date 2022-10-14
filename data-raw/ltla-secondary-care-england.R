@@ -46,15 +46,15 @@ criteria_to_reside_trust <-
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
   mutate(mean_perc_not_meet_criteria = mean(perc_not_meet_criteria)) |>
-  ungroup() |> 
-  select(starts_with("nhs_"), criteria_to_reside = mean_perc_not_meet_criteria) |> 
+  ungroup() |>
+  select(starts_with("nhs_"), criteria_to_reside = mean_perc_not_meet_criteria) |>
   distinct()
 
 criteria_to_reside_ltla <-
-  criteria_to_reside_trust |> 
-  left_join(lookup_nhs_trusts22_ltla21) |> 
-  mutate(proportion_criteria_to_reside = criteria_to_reside * proportion_trust_came_from_ltla) |> 
-  group_by(ltla21_code) |> 
+  criteria_to_reside_trust |>
+  left_join(lookup_nhs_trusts22_ltla21) |>
+  mutate(proportion_criteria_to_reside = criteria_to_reside * proportion_trust_came_from_ltla) |>
+  group_by(ltla21_code) |>
   summarise(criteria_to_reside = sum(proportion_criteria_to_reside))
 
 # ---- Dishcarged patients ----
@@ -73,19 +73,36 @@ discharged_patients_trust <-
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
   mutate(mean_perc_discharged_patients = mean(perc_discharged_patients)) |>
-  ungroup() |> 
-  select(starts_with("nhs_"), discharged_patients = mean_perc_discharged_patients) |> 
+  ungroup() |>
+  select(starts_with("nhs_"), discharged_patients = mean_perc_discharged_patients) |>
   distinct()
 
 discharged_patients_ltla <-
-  discharged_patients_trust |> 
-  left_join(lookup_nhs_trusts22_ltla21) |> 
-  mutate(proportion_discharged_patients = discharged_patients * proportion_trust_came_from_ltla) |> 
-  group_by(ltla21_code) |> 
+  discharged_patients_trust |>
+  left_join(lookup_nhs_trusts22_ltla21) |>
+  mutate(proportion_discharged_patients = discharged_patients * proportion_trust_came_from_ltla) |>
+  group_by(ltla21_code) |>
   summarise(discharged_patients = sum(proportion_discharged_patients))
 
-# ---- A & E ----
+# ---- Bed Occupancy ----
+bed_occupancy_ltla <-
+  nhs_critical_general_acute_beds_22 |>
+  select(nhs_trust22_code, ends_with("rate")) |>
+  group_by(nhs_trust22_code) |>
+  summarise(across(ends_with("rate"), ~ mean(.x, na.rm = TRUE))) |>
+  left_join(lookup_nhs_trusts22_ltla21) |>
+  mutate(across(ends_with("rate"), ~ .x * proportion_trust_came_from_ltla)) |>
+  group_by(ltla21_code) |>
+  summarise(across(ends_with("rate"), ~ sum(.x, na.rm = TRUE)))
+
+# ---- IAPT ----
+
+# ---- Reattendance ----
+
+# ---- Ambulance waiting times ----
+
+# ---- Social care demand / need ----
 
 # ---- RTT ----
 
-# ---- Diagnostic Waiting Times ----
+# ---- A & E ----
