@@ -58,6 +58,31 @@ criteria_to_reside_ltla <-
   summarise(criteria_to_reside = sum(proportion_criteria_to_reside))
 
 # ---- Dishcarged patients ----
+discharged_patients_trust <-
+  nhs_discharged_patients_22 |>
+  mutate(
+    month = str_c(
+      as.character(month(date, label = TRUE, abbr = FALSE)),
+      " 2022"
+    )
+  ) |>
+  left_join(available_beds) |>
+  mutate(perc_discharged_patients = discharged_total / available_beds) |>
+  select(nhs_trust22_code, perc_discharged_patients) |>
+  left_join(trust_names) |>
+  relocate(nhs_trust22_name) |>
+  group_by(nhs_trust22_code) |>
+  mutate(mean_perc_discharged_patients = mean(perc_discharged_patients)) |>
+  ungroup() |> 
+  select(starts_with("nhs_"), discharged_patients = mean_perc_discharged_patients) |> 
+  distinct()
+
+discharged_patients_ltla <-
+  discharged_patients_trust |> 
+  left_join(lookup_nhs_trusts22_ltla21) |> 
+  mutate(proportion_discharged_patients = discharged_patients * proportion_trust_came_from_ltla) |> 
+  group_by(ltla21_code) |> 
+  summarise(discharged_patients = sum(proportion_discharged_patients))
 
 # ---- A & E ----
 
