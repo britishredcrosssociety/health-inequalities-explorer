@@ -5,10 +5,6 @@ library(sf)
 library(healthyr)
 library(compositr)
 
-# ---- Trust to msoa lookup ----
-lookup_nhs_trusts22_ltla21
-
-# ---- Trust names ----
 trust_names <-
   points_nhs_trusts22 |>
   st_drop_geometry() |>
@@ -35,8 +31,8 @@ available_beds <-
   select(nhs_trust22_code, month = date, available_beds)
 
 # Divide criteria to reside by bed availability, matching by month
-criteria_to_reside <-
-  nhs_discharge_criteria_22 |>
+criteria_to_reside_trust <-
+  nhs_criteria_to_reside_22 |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -54,4 +50,17 @@ criteria_to_reside <-
   select(starts_with("nhs_"), criteria_to_reside = mean_perc_not_meet_criteria) |> 
   distinct()
 
-# ---- Aggregate ----
+criteria_to_reside_ltla <-
+  criteria_to_reside_trust |> 
+  left_join(lookup_nhs_trusts22_ltla21) |> 
+  mutate(proportion_criteria_to_reside = criteria_to_reside * proportion_trust_came_from_ltla) |> 
+  group_by(ltla21_code) |> 
+  summarise(criteria_to_reside = sum(proportion_criteria_to_reside))
+
+# ---- Dishcarged patients ----
+
+# ---- A & E ----
+
+# ---- RTT ----
+
+# ---- Diagnostic Waiting Times ----
