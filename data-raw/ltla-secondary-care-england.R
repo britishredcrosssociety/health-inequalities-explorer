@@ -96,6 +96,15 @@ bed_occupancy_ltla <-
   summarise(across(ends_with("rate"), ~ sum(.x, na.rm = TRUE)))
 
 # ---- IAPT ----
+# Not enough data?
+iapt_ltla <- nhs_iapt_22 |>
+  filter(name == "Percentage_FirstTreatment18WeeksFinishedCourseTreatment") |>
+  select(nhs_trust22_code, iapt = value) |>
+  mutate(iapt = as.double(iapt)) |>
+  left_join(lookup_nhs_trusts22_ltla21) |>
+  mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
+  group_by(ltla21_code) |>
+  summarise(iapt = sum(proportion_iapt))
 
 # ---- Reattendance ----
 
