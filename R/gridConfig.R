@@ -3,7 +3,7 @@ main_layout <- c(
   "120px header           bookmark        ",
   "auto  select_geography select_areas    ",
   "1fr   map              summary_metrics ",
-  "1fr   demographics     secondary_care  "
+  "1fr   secondary_care   demographics    "
 )
 
 mobile_layout <- c(
@@ -14,8 +14,8 @@ mobile_layout <- c(
   "100px select_areas    ",
   "1fr   map             ",
   "1fr   summary_metrics ",
-  "1fr   demographics    ",
-  "1fr   secondary_care  "
+  "1fr   secondary_care  ",
+  "1fr   demographics    "
 )
 
 grid_config <- new_gridlayout(
