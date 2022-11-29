@@ -8,8 +8,9 @@ server <- function(input, output, session) {
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
+  jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("agePlot", selected, "demographics_age")
-
+  
   # Debug
   # observe({
   #   print(selected$geography)

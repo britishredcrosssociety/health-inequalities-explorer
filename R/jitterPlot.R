@@ -6,13 +6,14 @@ jitterPlotUI <- function(id) {
 
 jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
-
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
       if (selected$geography == "ltla_shp_england" & type == "demographics_age") {
         ltla_demographics_age_england
       } else if (selected$geography == "ltla_shp_england" & type == "summary_metrics") {
         ltla_summary_metrics_england
+      } else if (selected$geography == "ltla_shp_england" & type == "secondary_care") {
+        ltla_secondary_care_england
       }
     })
 
@@ -24,6 +25,12 @@ jitterPlotServer <- function(id, selected, type) {
           y = age
         )
       } else if (is.null(selected$areas) & type == "summary_metrics") {
+        jitter_plot_summary_null(
+          data = dataset(),
+          x = value,
+          y = variable
+        )
+      } else if (is.null(selected$areas) & type == "secondary_care") {
         jitter_plot_summary_null(
           data = dataset(),
           x = value,
@@ -41,6 +48,17 @@ jitterPlotServer <- function(id, selected, type) {
             selected_areas = selected$areas
           )
       } else if (type == "summary_metrics") {
+        jitter_plot_prep(
+          data = dataset(),
+          selected_areas = selected$areas
+        ) |>
+          jitter_plot_summary_selected(
+            x = value,
+            y = variable,
+            fill = selected,
+            selected_areas = selected$areas
+          )
+      } else if (type == "secondary_care") {
         jitter_plot_prep(
           data = dataset(),
           selected_areas = selected$areas

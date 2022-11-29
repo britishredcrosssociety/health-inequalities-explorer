@@ -40,14 +40,15 @@ ui <- function(request) {
       has_border = TRUE
     ),
     grid_card(
-      "demographics",
-      title = "Demographics",
-      jitterPlotUI("agePlot"),
+      "secondary_care",
+      title = "Secondary Care",
+      jitterPlotUI("secondaryCarePlot"),
       has_border = TRUE
     ),
     grid_card(
-      "secondary_care",
-      title = "Secondary Care",
+      "demographics",
+      title = "Demographics",
+      jitterPlotUI("agePlot"),
       has_border = TRUE
     )
   )
