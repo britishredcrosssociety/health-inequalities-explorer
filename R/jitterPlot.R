@@ -19,19 +19,13 @@ jitterPlotServer <- function(id, selected, type) {
 
     output$plot <- renderPlot({
       if (is.null(selected$areas) & type == "demographics_age") {
-        jitter_plot_age_null(
+        jitter_plot_demographics_null(
           data = dataset(),
           x = population_relative,
           y = age
         )
-      } else if (is.null(selected$areas) & type == "summary_metrics") {
-        jitter_plot_summary_null(
-          data = dataset(),
-          x = value,
-          y = variable
-        )
-      } else if (is.null(selected$areas) & type == "secondary_care") {
-        jitter_plot_summary_null(
+      } else if (is.null(selected$areas) & (type == "summary_metrics" | type == "secondary_care")) {
+        jitter_plot_health_null(
           data = dataset(),
           x = value,
           y = variable
@@ -41,29 +35,18 @@ jitterPlotServer <- function(id, selected, type) {
           data = dataset(),
           selected_areas = selected$areas
         ) |>
-          jitter_plot_age_selected(
+          jitter_plot_demographics_selected(
             x = population_relative,
             y = age,
             fill = selected,
             selected_areas = selected$areas
           )
-      } else if (type == "summary_metrics") {
+      } else if (type == "summary_metrics" | type == "secondary_care") {
         jitter_plot_prep(
           data = dataset(),
           selected_areas = selected$areas
         ) |>
-          jitter_plot_summary_selected(
-            x = value,
-            y = variable,
-            fill = selected,
-            selected_areas = selected$areas
-          )
-      } else if (type == "secondary_care") {
-        jitter_plot_prep(
-          data = dataset(),
-          selected_areas = selected$areas
-        ) |>
-          jitter_plot_summary_selected(
+          jitter_plot_health_selected(
             x = value,
             y = variable,
             fill = selected,

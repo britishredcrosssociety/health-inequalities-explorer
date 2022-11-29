@@ -14,7 +14,7 @@ jitter_plot_prep <- function(data, selected_areas) {
     dplyr::mutate(selected = relevel(selected, ref = "not selected"))
 }
 
-jitter_plot_age_null <- function(data, x, y) {
+jitter_plot_demographics_null <- function(data, x, y) {
   plot_object <- data |>
     ggplot(aes(x = {{ x }}, y = {{ y }})) +
     geom_point(
@@ -33,7 +33,7 @@ jitter_plot_age_null <- function(data, x, y) {
   return(plot_object)
 }
 
-jitter_plot_summary_null <- function(data, x, y) {
+jitter_plot_health_null <- function(data, x, y) {
   plot_object <- data |>
     ggplot(aes(x = {{ x }}, y = {{ y }})) +
     geom_point(
@@ -84,7 +84,7 @@ jitter_plot_summary_null <- function(data, x, y) {
   return(plot_object)
 }
 
-jitter_plot_age_selected <- function(data, x, y, fill, selected_areas) {
+jitter_plot_demographics_selected <- function(data, x, y, fill, selected_areas) {
   plot_object <- data |>
     ggplot(aes(x = {{ x }}, y = {{ y }}, fill = {{ fill }})) +
     geom_point(
@@ -111,7 +111,7 @@ jitter_plot_age_selected <- function(data, x, y, fill, selected_areas) {
   return(plot_object)
 }
 
-jitter_plot_summary_selected <- function(data, x, y, fill, selected_areas) {
+jitter_plot_health_selected <- function(data, x, y, fill, selected_areas) {
   plot_object <- data |>
     ggplot(aes(x = {{ x }}, y = {{ y }}, fill = {{ fill }})) +
     geom_point(
