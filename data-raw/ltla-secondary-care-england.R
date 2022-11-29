@@ -4,11 +4,17 @@ library(geographr)
 library(sf)
 library(healthyr)
 library(compositr)
+library(ggridges)
 
 trust_names <-
   points_nhs_trusts22 |>
   st_drop_geometry() |>
   select(starts_with("nhs_"))
+
+ltla <-
+  boundaries_ltla21 |>
+  st_drop_geometry() |>
+  filter(str_detect(ltla21_code, "^E"))
 
 # ---- Criteria to reside ----
 # The hospital discharge data states:
@@ -20,7 +26,7 @@ trust_names <-
 
 # Match available bed numbers to requirements above (18+ including critical)
 available_beds <-
-  nhs_critical_general_acute_beds_22 |>
+  england_critical_general_acute_beds |>
   select(
     nhs_trust22_code,
     date,
@@ -32,7 +38,7 @@ available_beds <-
 
 # Divide criteria to reside by bed availability, matching by month
 criteria_to_reside_trust <-
-  nhs_criteria_to_reside_22 |>
+  england_criteria_to_reside |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -59,7 +65,7 @@ criteria_to_reside_ltla <-
 
 # ---- Dishcarged patients ----
 discharged_patients_trust <-
-  nhs_discharged_patients_22 |>
+  england_discharged_patients |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -86,33 +92,70 @@ discharged_patients_ltla <-
 
 # ---- Bed Occupancy ----
 bed_occupancy_ltla <-
-  nhs_critical_general_acute_beds_22 |>
+  england_critical_general_acute_beds |>
   select(nhs_trust22_code, ends_with("rate")) |>
   group_by(nhs_trust22_code) |>
   summarise(across(ends_with("rate"), ~ mean(.x, na.rm = TRUE))) |>
   left_join(lookup_nhs_trusts22_ltla21) |>
   mutate(across(ends_with("rate"), ~ .x * proportion_trust_came_from_ltla)) |>
   group_by(ltla21_code) |>
-  summarise(across(ends_with("rate"), ~ sum(.x, na.rm = TRUE)))
+  summarise(across(ends_with("rate"), ~ sum(.x, na.rm = TRUE))) |>
+  select(ltla21_code, general_acute_beds_occupancy_rate)
 
 # ---- IAPT ----
 # Not enough data?
-iapt_ltla <- nhs_iapt_22 |>
+iapt_ltla <- england_iapt |>
   filter(name == "Percentage_FirstTreatment18WeeksFinishedCourseTreatment") |>
   select(nhs_trust22_code, iapt = value) |>
   mutate(iapt = as.double(iapt)) |>
   left_join(lookup_nhs_trusts22_ltla21) |>
   mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
   group_by(ltla21_code) |>
-  summarise(iapt = sum(proportion_iapt))
+  summarise(iapt = sum(proportion_iapt)) |>
+  drop_na()
 
-# ---- Reattendance ----
+# ---- Combine & rename (pretty printing) ----
+metrics_joined <- ltla |>
+  left_join(discharged_patients_ltla) |>
+  left_join(criteria_to_reside_ltla) |>
+  left_join(bed_occupancy_ltla) |>
+  pivot_longer(cols = !starts_with("ltla21_"), names_to = "variable") |>
+  select(-ltla21_code) |>
+  mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
+  rename(area_name = ltla21_name) |>
+  mutate(
+    variable = case_when(
+      variable == "discharged_patients" ~ "Rate of discharged \nbeds (Apr-Oct)",
+      variable == "criteria_to_reside" ~ "Rate of beds \nnot meeting criteria \nto reside (Apr-Oct)",
+      variable == "general_acute_beds_occupancy_rate" ~ "Rate of acute bed \noccupancy (Apr-Oct)"
+    )
+  )
 
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
 
-# ---- Ambulance waiting times ----
+ltla_secondary_care_england <-
+  metrics_joined |>
+  group_by(variable) |>
+  mutate(value = scale_1_1(value)) |>
+  ungroup()
 
-# ---- Social care demand / need ----
+# Check distributions
+ltla_secondary_care_england |>
+  ggplot(aes(x = value, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
+  scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
+  coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
+  theme_ridges()
 
-# ---- RTT ----
+usethis::use_data(ltla_secondary_care_england, overwrite = TRUE)
 
-# ---- A & E ----
+# Datasets to add:
+#   - Reattendance
+#   - Ambulance waiting times
+#   - Social care demand / need
+#   - RTT
+#   - A & E
