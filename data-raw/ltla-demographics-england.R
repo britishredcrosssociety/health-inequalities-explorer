@@ -1,13 +1,16 @@
+# ---- Load libs ----
 library(tidyverse)
 library(sf)
 library(demographr)
 library(geographr)
 
+# ---- Create England ltla lookup ----
 ltla <-
   boundaries_ltla21 |>
   st_drop_geometry() |>
   filter(str_detect(ltla21_code, "^E"))
 
+# ---- Population ----
 # source: https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationandhouseholdestimatesenglandandwalescensus2021
 # Note: the data is available in demographr, but not with the breakdown of sex
 population_file <- compositr::download_file(
@@ -102,7 +105,7 @@ population_sex_age_joined <-
         "Older \nmales (65+)"
       )
     )
-  ) |> 
+  ) |>
   select(-sex)
 
 population_relative <-
@@ -113,14 +116,65 @@ population_relative <-
   mutate(population_relative = population / population_ltla) |>
   select(-population_ltla)
 
-ltla_demographics_age_england <-
+age_england <-
   population_relative |>
   left_join(ltla, by = c("area_code" = "ltla21_code")) |>
-  select(-area_code) |>
-  rename(area_name = ltla21_name) |>
-  relocate(area_name)
+  select(
+    area_name = ltla21_name,
+    indicator = age,
+    number = population,
+    percent = population_relative
+  )
 
-usethis::use_data(ltla_demographics_age_england, overwrite = TRUE)
+# ---- Ethnicity ----
+# Keep only english LTLA's
+ethnicity_english_ltlas <-
+  ethnicity21_ltla21 |>
+  filter(ltla21_code %in% ltla$ltla21_code)
 
-# see comparisons-across-nations.R in ad-hoc for other demographic stats that
-# could be included. Ad-hoc also contains code to scrape ethnicity data from NOMIS
+# Create group summaries inline with ONS groupings:
+# https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/ethnicity/bulletins/ethnicgroupenglandandwales/census2021
+ethnicity_higher_level_groupings <- ethnicity_english_ltlas |>
+  mutate(
+    high_level_category =
+      case_when(
+        str_detect(ethnic_group, "^Asian.*\\(number\\)$") ~ "Asian, Asian \nBritish or \nAsian Welsh: number",
+        str_detect(ethnic_group, "^Asian.*\\(percent\\)$") ~ "Asian, Asian \nBritish or \nAsian Welsh: percent",
+        str_detect(ethnic_group, "^Black.*\\(number\\)$") ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African: number",
+        str_detect(ethnic_group, "^Black.*\\(percent\\)$") ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African: percent",
+        str_detect(ethnic_group, "^Mixed.*\\(number\\)$") ~ "Mixed or Multiple \nethnic groups: number",
+        str_detect(ethnic_group, "^Mixed.*\\(percent\\)$") ~ "Mixed or Multiple \nethnic groups: percent",
+        str_detect(ethnic_group, "^White.*\\(number\\)$") ~ "White: number",
+        str_detect(ethnic_group, "^White.*\\(percent\\)$") ~ "White: percent",
+        str_detect(ethnic_group, "^Other.*\\(number\\)$") ~ "Other ethnic \ngroup: number",
+        str_detect(ethnic_group, "^Other.*\\(percent\\)$") ~ "Other ethnic \ngroup: percent",
+      )
+  ) |>
+  group_by(ltla21_code, high_level_category) |>
+  summarise(value = sum(value)) |>
+  ungroup()
+
+# Separate into number/percent cols
+ethnicity_separate_cols <- ethnicity_higher_level_groupings |>
+  separate(high_level_category, into = c("indicator", "value_type"), ": ") |>
+  pivot_wider(names_from = "value_type", values_from = "value")
+
+# Format percentages and select cols
+ethnicity_england <- ethnicity_separate_cols |>
+  mutate(percent = percent / 100) |>
+  left_join(ltla) |>
+  select(
+    area_name = ltla21_name,
+    indicator,
+    number,
+    percent
+  )
+
+ltla_demographics_england <-
+  bind_rows(
+    age_england,
+    ethnicity_england
+  )
+
+# ---- Export data ----
+usethis::use_data(ltla_demographics_england, overwrite = TRUE)
