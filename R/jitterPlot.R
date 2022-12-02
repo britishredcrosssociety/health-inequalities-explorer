@@ -8,8 +8,8 @@ jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      if (selected$geography == "ltla_shp_england" & type == "demographics_age") {
-        ltla_demographics_age_england
+      if (selected$geography == "ltla_shp_england" & type == "demographics") {
+        ltla_demographics_england
       } else if (selected$geography == "ltla_shp_england" & type == "summary_metrics") {
         ltla_summary_metrics_england
       } else if (selected$geography == "ltla_shp_england" & type == "secondary_care") {
@@ -18,11 +18,11 @@ jitterPlotServer <- function(id, selected, type) {
     })
 
     output$plot <- renderPlot({
-      if (is.null(selected$areas) & type == "demographics_age") {
+      if (is.null(selected$areas) & type == "demographics") {
         jitter_plot_demographics_null(
           data = dataset(),
-          x = population_relative,
-          y = age
+          x = percent,
+          y = indicator
         )
       } else if (is.null(selected$areas) & (type == "summary_metrics" | type == "secondary_care")) {
         jitter_plot_health_null(
@@ -30,14 +30,14 @@ jitterPlotServer <- function(id, selected, type) {
           x = value,
           y = variable
         )
-      } else if (type == "demographics_age") {
+      } else if (type == "demographics") {
         jitter_plot_prep(
           data = dataset(),
           selected_areas = selected$areas
         ) |>
           jitter_plot_demographics_selected(
-            x = population_relative,
-            y = age,
+            x = percent,
+            y = indicator,
             fill = selected,
             selected_areas = selected$areas
           )
