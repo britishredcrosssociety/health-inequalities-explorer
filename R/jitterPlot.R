@@ -18,35 +18,18 @@ jitterPlotServer <- function(id, selected, type) {
     })
 
     output$plot <- renderPlot({
-      if (is.null(selected$areas) & type == "demographics") {
-        jitter_plot_demographics_null(
-          data = dataset(),
-          x = percent,
-          y = indicator
-        )
-      } else if (is.null(selected$areas) & (type == "summary_metrics" | type == "secondary_care")) {
-        jitter_plot_health_null(
+      if (is.null(selected$areas)) {
+        jitter_plot_null(
           data = dataset(),
           x = value,
           y = variable
         )
-      } else if (type == "demographics") {
+      } else {
         jitter_plot_prep(
           data = dataset(),
           selected_areas = selected$areas
         ) |>
-          jitter_plot_demographics_selected(
-            x = percent,
-            y = indicator,
-            fill = selected,
-            selected_areas = selected$areas
-          )
-      } else if (type == "summary_metrics" | type == "secondary_care") {
-        jitter_plot_prep(
-          data = dataset(),
-          selected_areas = selected$areas
-        ) |>
-          jitter_plot_health_selected(
+          jitter_plot_selected(
             x = value,
             y = variable,
             fill = selected,

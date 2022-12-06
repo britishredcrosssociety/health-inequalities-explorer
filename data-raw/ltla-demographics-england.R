@@ -121,9 +121,8 @@ age_england <-
   left_join(ltla, by = c("area_code" = "ltla21_code")) |>
   select(
     area_name = ltla21_name,
-    indicator = age,
-    number = population,
-    percent = population_relative
+    variable = age,
+    value = population_relative
   )
 
 # ---- Ethnicity ----
@@ -165,16 +164,26 @@ ethnicity_england <- ethnicity_separate_cols |>
   left_join(ltla) |>
   select(
     area_name = ltla21_name,
-    indicator,
-    number,
-    percent
+    variable = indicator,
+    value = percent
   )
 
-ltla_demographics_england <-
+joined <-
   bind_rows(
     age_england,
     ethnicity_england
   )
+
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
+
+ltla_demographics_england <-
+  joined |>
+  group_by(variable) |>
+  mutate(value = scale_1_1(value)) |>
+  ungroup()
 
 # ---- Export data ----
 usethis::use_data(ltla_demographics_england, overwrite = TRUE)
