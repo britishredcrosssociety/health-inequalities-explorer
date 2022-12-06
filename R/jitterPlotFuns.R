@@ -66,14 +66,14 @@ jitter_plot_health_null <- function(data, x, y) {
       "text",
       x = -0.5,
       y = 3.7,
-      label = "bold('◄ Worse than the mean')",
+      label = "bold('◄ Lower than the mean')",
       parse = TRUE
     ) +
     annotate(
       "text",
       x = 0.5,
       y = 3.7,
-      label = "bold('Better than the mean ►')",
+      label = "bold('Higher than the mean ►')",
       parse = TRUE
     ) +
     theme_minimal() +
@@ -143,14 +143,14 @@ jitter_plot_health_selected <- function(data, x, y, fill, selected_areas) {
       "text",
       x = -0.5,
       y = 3.7,
-      label = "bold('◄ Worse than the mean')",
+      label = "bold('◄ Lower than the mean')",
       parse = TRUE
     ) +
     annotate(
       "text",
       x = 0.5,
       y = 3.7,
-      label = "bold('Better than the mean ►')",
+      label = "bold('Higher than the mean ►')",
       parse = TRUE
     )  +
     theme_minimal() +
