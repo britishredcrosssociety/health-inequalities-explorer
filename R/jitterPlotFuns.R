@@ -1,3 +1,4 @@
+# ---- Prepare selected data ----
 jitter_plot_prep <- function(data, selected_areas) {
   data |>
     dplyr::mutate(
@@ -12,16 +13,67 @@ jitter_plot_prep <- function(data, selected_areas) {
     dplyr::mutate(selected = relevel(selected, ref = "not selected"))
 }
 
-jitter_plot_null <- function(data, x, y) {
-  plot_object <- data |>
-    ggplot(aes(x = {{ x }}, y = {{ y }})) +
+# ---- ggplotly fun ----
+ggplotly_default <- function(plot) {
+  ggplotly(
+    plot,
+    tooltip = c("text")
+  ) |>
+    config(displayModeBar = FALSE) |>
+    layout(
+      legend = list(
+        orientation = "h",
+        title = NA,
+        x = 0,
+        y = 1.1
+      )
+    ) |>
+    add_annotations(
+      x = 0,
+      y = 3.6,
+      # xref = "x",
+      # yref = "y",
+      text = "Mean",
+      showarrow = F
+    ) |>
+    add_annotations(
+      x = -0.75,
+      y = 3.6,
+      # xref = "x",
+      # yref = "y",
+      text = "◄ Lower",
+      showarrow = F
+    ) |>
+    add_annotations(
+      x = 0.75,
+      y = 3.6,
+      # xref = "x",
+      # yref = "y",
+      text = "Higher ►",
+      showarrow = F
+    )
+}
+
+# ---- Plot while waiting for selection ----
+jitter_plot_null <- function(data) {
+  plot <- ggplot(
+    data,
+    aes(
+      x = value,
+      y = variable,
+      text = paste0(
+        "<b>", area_name, "</b>",
+        "<br>some value:", value
+      )
+    )
+  ) +
     geom_point(
       position = position_jitter(height = 0.25, width = 0.1, seed = 123),
       size = 5,
       shape = 21,
       alpha = 0.1,
       fill = "#717171",
-      colour = "#262626",
+      colour = "#262626"
     ) +
     annotate(
       "segment",
@@ -32,40 +84,29 @@ jitter_plot_null <- function(data, x, y) {
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
-      size = 1
-    ) +
-    annotate(
-      "text",
-      x = 0,
-      y = 3.7,
-      label = "bold(Mean)",
-      parse = TRUE
-    ) +
-    annotate(
-      "text",
-      x = -0.5,
-      y = 3.7,
-      label = "bold('◄ Lower than the mean')",
-      parse = TRUE
-    ) +
-    annotate(
-      "text",
-      x = 0.5,
-      y = 3.7,
-      label = "bold('Higher than the mean ►')",
-      parse = TRUE
+      size = .5
     ) +
     theme_minimal() +
     labs(x = NULL, y = NULL) +
-    theme(text = element_text(face = "bold", size = 15)) +
-    coord_cartesian(clip = "off")
+    theme(text = element_text(size = 12))
 
-  return(plot_object)
+    ggplotly_default(plot)
 }
 
-jitter_plot_selected <- function(data, x, y, fill, selected_areas) {
-  plot_object <- data |>
-    ggplot(aes(x = {{ x }}, y = {{ y }}, fill = {{ fill }})) +
+# ---- Plot selected areas ----
+jitter_plot_selected <- function(data, selected_areas) {
+  plot <- ggplot(
+    data,
+    aes(
+      x = value,
+      y = variable,
+      fill = selected,
+      text = paste0(
+        "<b>", area_name, "</b>",
+        "<br>some value:", value
+      )
+    )
+  ) +
     geom_point(
       aes(alpha = alpha),
       position = position_jitter(height = 0.25, width = 0.1, seed = 123),
@@ -82,42 +123,15 @@ jitter_plot_selected <- function(data, x, y, fill, selected_areas) {
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
-      size = 1
+      size = .5
     ) +
-    annotate(
-      "text",
-      x = 0,
-      y = 3.7,
-      label = "bold(Mean)",
-      parse = TRUE
-    ) +
-    annotate(
-      "text",
-      x = -0.5,
-      y = 3.7,
-      label = "bold('◄ Lower than the mean')",
-      parse = TRUE
-    ) +
-    annotate(
-      "text",
-      x = 0.5,
-      y = 3.7,
-      label = "bold('Higher than the mean ►')",
-      parse = TRUE
-    )  +
     theme_minimal() +
-    theme(
-      legend.position = "top",
-      legend.title = element_blank()
-    ) +
     scale_fill_manual(
       values = c("#D0021B", "#40A22A", "#F1B13B", "#6A9EAA"),
       breaks = selected_areas
     ) +
-    scale_alpha(guide = "none") +
     labs(x = NULL, y = NULL) +
-    theme(text = element_text(face = "bold", size = 15)) +
-    coord_cartesian(clip = "off")
+    theme(text = element_text(size = 12))
 
-  return(plot_object)
+    ggplotly_default(plot)
 }

@@ -1,5 +1,5 @@
 jitterPlotUI <- function(id) {
-  plotOutput(
+  plotlyOutput(
     NS(id, "plot")
   )
 }
@@ -17,22 +17,12 @@ jitterPlotServer <- function(id, selected, type) {
       }
     })
 
-    output$plot <- renderPlot({
+    output$plot <- renderPlotly({
       if (is.null(selected$areas)) {
-        jitter_plot_null(
-          data = dataset(),
-          x = value,
-          y = variable
-        )
+        jitter_plot_null(data = dataset())
       } else {
-        jitter_plot_prep(
-          data = dataset(),
-          selected_areas = selected$areas
-        ) |>
+        jitter_plot_prep(data = dataset(), selected_areas = selected$areas) |>
           jitter_plot_selected(
-            x = value,
-            y = variable,
-            fill = selected,
             selected_areas = selected$areas
           )
       }
