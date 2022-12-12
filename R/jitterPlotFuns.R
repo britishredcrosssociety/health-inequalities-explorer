@@ -21,6 +21,7 @@ ggplotly_default <- function(plot) {
   ) |>
     config(displayModeBar = FALSE) |>
     layout(
+      xaxis = list(range = list(-1.15, 1.15)),
       legend = list(
         orientation = "h",
         title = NA,
@@ -90,7 +91,7 @@ jitter_plot_null <- function(data) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-    ggplotly_default(plot)
+  ggplotly_default(plot)
 }
 
 # ---- Plot selected areas ----
@@ -133,5 +134,5 @@ jitter_plot_selected <- function(data, selected_areas) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-    ggplotly_default(plot)
+  ggplotly_default(plot)
 }
