@@ -14,7 +14,7 @@ jitter_plot_prep <- function(data, selected_areas) {
 }
 
 # ---- ggplotly fun ----
-ggplotly_default <- function(plot) {
+ggplotly_default <- function(plot, annotation_y) {
   ggplotly(
     plot,
     tooltip = c("text")
@@ -31,25 +31,19 @@ ggplotly_default <- function(plot) {
     ) |>
     add_annotations(
       x = 0,
-      y = 3.6,
-      # xref = "x",
-      # yref = "y",
+      y = annotation_y,
       text = "Mean",
       showarrow = F
     ) |>
     add_annotations(
       x = -0.75,
-      y = 3.6,
-      # xref = "x",
-      # yref = "y",
+      y = annotation_y,
       text = "◄ Lower",
       showarrow = F
     ) |>
     add_annotations(
       x = 0.75,
-      y = 3.6,
-      # xref = "x",
-      # yref = "y",
+      y = annotation_y,
       text = "Higher ►",
       showarrow = F
     )
@@ -91,7 +85,9 @@ jitter_plot_null <- function(data) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-  ggplotly_default(plot)
+  annotation_y <- length(unique(data$variable)) + 0.6
+
+  ggplotly_default(plot, annotation_y)
 }
 
 # ---- Plot selected areas ----
@@ -134,5 +130,7 @@ jitter_plot_selected <- function(data, selected_areas) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-  ggplotly_default(plot)
+  annotation_y <- length(unique(data$variable)) + 0.6
+
+  ggplotly_default(plot, annotation_y)
 }
