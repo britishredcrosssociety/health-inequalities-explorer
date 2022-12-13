@@ -171,7 +171,8 @@ metrics_joined <- bind_rows(
   criteria_to_reside_ltla,
   discharged_patients_ltla,
   bed_occupancy_ltla
-)
+) |>
+  rename(area_name = ltla21_code)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {

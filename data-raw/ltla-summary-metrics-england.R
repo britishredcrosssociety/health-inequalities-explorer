@@ -82,7 +82,8 @@ metrics_joined <- bind_rows(
   imd,
   lba,
   health_index
-)
+) |>
+  rename(area_name = ltla21_code)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
