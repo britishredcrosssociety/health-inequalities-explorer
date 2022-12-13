@@ -24,7 +24,9 @@ imd <-
   left_join(lookup_england_ltla, by = "ltla19_code") |>
   select(ltla21_code, imd_score) |>
   group_by(ltla21_code) |>
-  summarise(imd_score = mean(imd_score))
+  summarise(number = mean(imd_score)) |>
+  mutate(variable = "IMD Score", .after = ltla21_code) |>
+  mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
 # Higher score = more deprived
@@ -34,12 +36,14 @@ lba <-
   select(ward17_code, ltla21_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
   count(lba) |>
-  mutate(lba_percentage = n / sum(n)) |>
+  mutate(percent = n / sum(n)) |>
   ungroup() |>
   filter(lba == TRUE) |>
   right_join(ltla) |>
-  select(ltla21_code, lba_percentage) |>
-  mutate(lba_percentage = replace_na(lba_percentage, 0))
+  mutate(percent = replace_na(percent, 0)) |>
+  mutate(n = replace_na(n, 0)) |>
+  select(ltla21_code, number = n, percent) |>
+  mutate(variable = "Left-beind areas", .after = ltla21_code)
 
 # ---- ONS Health Index score ----
 health_index_2020 <- england_health_index |>
@@ -67,25 +71,18 @@ health_index_missing_added <-
 # Scores need flipping so polarity matches other summary metrics
 health_index <-
   health_index_missing_added |>
-  mutate(health_index_score = health_index_score * -1)
+  mutate(health_index_score = health_index_score * -1) |>
+  mutate(number = rank(health_index_score)) |> # Higher rank = worse health
+  mutate(percent = NA) |>
+  mutate(variable = "ONS Health Index \nrank", .after = ltla21_code) |>
+  select(-health_index_score)
 
 # ---- Combine & reanme (pretty printing) ----
-metrics_joined <-
-  ltla |>
-  left_join(imd) |>
-  left_join(lba) |>
-  left_join(health_index) |>
-  pivot_longer(cols = !starts_with("ltla21_"), names_to = "variable") |>
-  select(-ltla21_code) |>
-  mutate(ltla21_name = str_replace_all(ltla21_name, "'", "")) |>
-  rename(area_name = ltla21_name) |>
-  mutate(
-    variable = case_when(
-      variable == "imd_score" ~ "Indices of \nMultiple Deprivation",
-      variable == "lba_percentage" ~ "Proportion of \nLeft-behind areas",
-      variable == "health_index_score" ~ "ONS Health Index"
-    )
-  )
+metrics_joined <- bind_rows(
+  imd,
+  lba,
+  health_index
+)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -95,12 +92,18 @@ scale_1_1 <- function(x) {
 ltla_summary_metrics_england <-
   metrics_joined |>
   group_by(variable) |>
-  mutate(value = scale_1_1(value)) |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "IMD Score" ~ scale_1_1(number),
+      variable == "Left-beind areas" ~ scale_1_1(percent),
+      variable == "ONS Health Index \nrank" ~ scale_1_1(number)
+    )
+  ) |>
   ungroup()
 
 # Check distributions
 ltla_summary_metrics_england |>
-  ggplot(aes(x = value, y = variable)) +
+  ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
   scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding

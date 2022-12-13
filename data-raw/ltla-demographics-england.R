@@ -122,7 +122,8 @@ age_england <-
   select(
     area_name = ltla21_name,
     variable = age,
-    value = population_relative
+    number = population,
+    percent = population_relative
   )
 
 # ---- Ethnicity ----
@@ -165,7 +166,8 @@ ethnicity_england <- ethnicity_separate_cols |>
   select(
     area_name = ltla21_name,
     variable = indicator,
-    value = percent
+    number,
+    percent
   )
 
 joined <-
@@ -182,7 +184,7 @@ scale_1_1 <- function(x) {
 ltla_demographics_england <-
   joined |>
   group_by(variable) |>
-  mutate(value = scale_1_1(value)) |>
+  mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
 
 # ---- Export data ----
