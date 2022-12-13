@@ -54,11 +54,11 @@ jitter_plot_null <- function(data) {
   plot <- ggplot(
     data,
     aes(
-      x = value,
+      x = scaled_1_1,
       y = variable,
       text = paste0(
         "<b>", area_name, "</b>",
-        "<br>some value:", value
+        "<br>number:", number
       )
     )
   ) +
@@ -95,12 +95,12 @@ jitter_plot_selected <- function(data, selected_areas) {
   plot <- ggplot(
     data,
     aes(
-      x = value,
+      x = scaled_1_1,
       y = variable,
       fill = selected,
       text = paste0(
         "<b>", area_name, "</b>",
-        "<br>some value:", value
+        "<br>number:", number
       )
     )
   ) +
