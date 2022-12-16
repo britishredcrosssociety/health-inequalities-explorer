@@ -58,7 +58,8 @@ jitter_plot_null <- function(data) {
       y = variable,
       text = paste0(
         "<b>", area_name, "</b>",
-        "<br>number:", number
+        "<br>", "Number: ", round(number),
+        "<br>", "Percent: ", round(percent * 100, 1)
       )
     )
   ) +
@@ -100,7 +101,8 @@ jitter_plot_selected <- function(data, selected_areas) {
       fill = selected,
       text = paste0(
         "<b>", area_name, "</b>",
-        "<br>number:", number
+        "<br>", "Number: ", round(number),
+        "<br>", "Percent: ", round(percent * 100, 1)
       )
     )
   ) +
