@@ -2,17 +2,35 @@ ui <- function(request) {
   grid_page(
     includeCSS("inst/www/styles.css"),
     layout = grid_config,
+
+    # Card layout specified in R/gridConfig.R
     grid_card(
-      "header",
-      title = "Header",
-      tags$h3("Health Inequalities Explorer"),
-      alignment = "center",
-      has_border = TRUE
+      "left_margin",
+      has_border = FALSE
+    ),
+    grid_card(
+      "right_margin",
+      has_border = FALSE
+    ),
+    grid_card(
+      "github",
+      tags$a(
+        href = "https://github.com/britishredcrosssociety/health-inequalities-explorer",
+        target = "_blank",
+        icon("github", "fa-2x")
+      ),
+      has_border = FALSE
     ),
     grid_card(
       "bookmark",
-      title = "Bookmark button",
-      bookmarkButton()
+      bookmarkButton(),
+      has_border = FALSE
+    ),
+    grid_card(
+      "header",
+      tags$h3("Health Inequalities Explorer"),
+      alignment = "center",
+      has_border = FALSE
     ),
     grid_card(
       "select_geography",
