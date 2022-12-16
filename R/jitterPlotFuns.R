@@ -65,7 +65,7 @@ jitter_plot_null <- function(data) {
   ) +
     geom_point(
       position = position_jitter(height = 0.25, width = 0.1, seed = 123),
-      size = 5,
+      size = 4,
       shape = 21,
       alpha = 0.1,
       fill = "#717171",
@@ -109,7 +109,7 @@ jitter_plot_selected <- function(data, selected_areas) {
     geom_point(
       aes(alpha = alpha),
       position = position_jitter(height = 0.25, width = 0.1, seed = 123),
-      size = 5,
+      size = 4,
       shape = 21,
       colour = "#262626"
     ) +
