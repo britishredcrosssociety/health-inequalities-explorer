@@ -23,10 +23,10 @@ ggplotly_default <- function(plot, annotation_y) {
     layout(
       xaxis = list(range = list(-1.15, 1.15)),
       legend = list(
-        orientation = "h",
-        title = NA,
-        x = 0,
-        y = 1.1
+        orientation = "v",
+        title = NA
+        # x = 0,
+        # y = 1.4
       )
     ) |>
     add_annotations(
