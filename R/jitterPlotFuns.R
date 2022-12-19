@@ -51,6 +51,9 @@ ggplotly_default <- function(plot, annotation_y) {
 
 # ---- Plot while waiting for selection ----
 jitter_plot_null <- function(data) {
+
+  annotation_y <- length(unique(data$variable)) + 0.6
+
   plot <- ggplot(
     data,
     aes(
@@ -76,7 +79,7 @@ jitter_plot_null <- function(data) {
       x = 0,
       xend = 0,
       y = 0.5,
-      yend = 3.5,
+      yend = annotation_y - 0.1,
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
@@ -86,13 +89,14 @@ jitter_plot_null <- function(data) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-  annotation_y <- length(unique(data$variable)) + 0.6
-
   ggplotly_default(plot, annotation_y)
 }
 
 # ---- Plot selected areas ----
 jitter_plot_selected <- function(data, selected_areas) {
+
+  annotation_y <- length(unique(data$variable)) + 0.6
+
   plot <- ggplot(
     data,
     aes(
@@ -118,7 +122,7 @@ jitter_plot_selected <- function(data, selected_areas) {
       x = 0,
       xend = 0,
       y = 0.5,
-      yend = 3.5,
+      yend = annotation_y - 0.1,
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
@@ -131,8 +135,6 @@ jitter_plot_selected <- function(data, selected_areas) {
     ) +
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
-
-  annotation_y <- length(unique(data$variable)) + 0.6
 
   ggplotly_default(plot, annotation_y)
 }
