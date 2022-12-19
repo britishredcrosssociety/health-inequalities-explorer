@@ -28,8 +28,32 @@ ui <- function(request) {
     ),
     grid_card(
       "header",
-      tags$h3("Health Inequalities Explorer"),
-      alignment = "center",
+      tags$h1("Health Inequalities Explorer"),
+      tags$h5(
+        "Use this interactive tool to explore health statistics in your local
+        area."
+      ),
+      tags$p(
+        "Select a geography type and then select up to three areas in that
+      geography by clicking the map or using the", tags$i("Select areas"),
+        "box."
+      ),
+      tags$p(
+        "Data in the plots are presented on a normalised range from -1 to 1 to
+        allow statistics to be compared side-by-side and to see the underlying
+        distributions in the data. Hover over points on the plots to find the
+        relative (percent) and abolsute (number) values of the statistics."
+      ),
+      tags$p(
+        "This app is open-source, and based on open datasets. Click the GitHub
+        logo in the top-left corner for more information."
+      ),
+      tags$p(
+        tags$i(
+          "This is a new tool under development. Please provide feedback or bugs
+          to mpage@redcross.org.uk"
+        )
+      ),
       has_border = FALSE
     ),
     grid_card(

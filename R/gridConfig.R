@@ -1,6 +1,6 @@
 main_layout <- c(
   "1rem   1fr          500px            500px            1fr         ",
-  "100px  github       header           header           bookmark    ",
+  "500px  github       header           header           bookmark    ",
   "150px  left_margin  map              select_geography right_margin",
   "150px  left_margin  map              select_areas     right_margin",
   "350px  left_margin  summary_metrics  summary_metrics  right_margin",
