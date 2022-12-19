@@ -1,6 +1,7 @@
 jitterPlotUI <- function(id) {
   plotlyOutput(
-    NS(id, "plot")
+    NS(id, "plot"),
+    height = "100%"
   )
 }
 

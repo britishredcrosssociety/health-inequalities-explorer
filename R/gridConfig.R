@@ -3,9 +3,9 @@ main_layout <- c(
   "100px  github       header           header           bookmark    ",
   "150px  left_margin  map              select_geography right_margin",
   "150px  left_margin  map              select_areas     right_margin",
-  "300px  left_margin  summary_metrics  summary_metrics  right_margin",
-  "300px  left_margin  secondary_care   secondary_care   right_margin",
-  "450px  left_margin  demographics     demographics     right_margin"
+  "350px  left_margin  summary_metrics  summary_metrics  right_margin",
+  "350px  left_margin  secondary_care   secondary_care   right_margin",
+  "850px  left_margin  demographics     demographics     right_margin"
 )
 
 mobile_layout <- c(
