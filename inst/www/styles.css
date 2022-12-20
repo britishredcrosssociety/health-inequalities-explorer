@@ -6,11 +6,20 @@
   color:#262626;
 }
 
+h4 {
+  padding: 0px 0px 20px 0px;
+  color: #193351;
+}
+
 h5 {
-  margin:10px 225px 10px 225px;
+  margin: 10px 225px 10px 225px;
 }
 
 p {
   margin: 10px 225px 10px 225px;
   text-align: left;
+}
+
+.select-box .panel-content {
+  background-color: #6A9EAA30;
 }

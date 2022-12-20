@@ -58,17 +58,19 @@ ui <- function(request) {
     ),
     grid_card(
       "select_geography",
-      title = "Select type of geography",
+      tags$h4("Select a statistical geography"),
       selectGeographyUI("geography"),
       has_border = TRUE,
-      scrollable = FALSE
+      scrollable = FALSE,
+      class = "select-box"
     ),
     grid_card(
       "select_areas",
-      title = "Select areas",
+      tags$h4("Select areas to compare"),
       selectAreasUI("areas"),
       has_border = TRUE,
-      scrollable = FALSE
+      scrollable = FALSE,
+      class = "select-box"
     ),
     grid_card(
       "map",
@@ -77,21 +79,21 @@ ui <- function(request) {
     ),
     grid_card(
       "summary_metrics",
-      title = "Summary metrics",
+      # title = "Summary metrics",
       jitterPlotUI("summaryPlot"),
-      has_border = TRUE
+      has_border = FALSE
     ),
     grid_card(
       "secondary_care",
-      title = "Secondary Care",
+      # title = "Secondary Care",
       jitterPlotUI("secondaryCarePlot"),
-      has_border = TRUE
+      has_border = FALSE
     ),
     grid_card(
       "demographics",
-      title = "Demographics",
+      # title = "Demographics",
       jitterPlotUI("demographicsPlot"),
-      has_border = TRUE
+      has_border = FALSE
     )
   )
 }
