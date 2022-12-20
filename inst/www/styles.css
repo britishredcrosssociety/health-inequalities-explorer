@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+* {
+  font-family: 'Lato', sans-serif;
+}
+
 .grid_card {
   overflow: visible;
 }
@@ -12,7 +18,7 @@ h4 {
 }
 
 h5 {
-  margin: 10px 0px 10px 0px;
+  margin-top: 40px;
 }
 
 p {
