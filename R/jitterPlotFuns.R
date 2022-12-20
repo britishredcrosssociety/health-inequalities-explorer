@@ -38,13 +38,13 @@ ggplotly_default <- function(plot, annotation_y) {
     add_annotations(
       x = -0.75,
       y = annotation_y,
-      text = "◄ Lower",
+      text = "◄ Worse then mean",
       showarrow = F
     ) |>
     add_annotations(
       x = 0.75,
       y = annotation_y,
-      text = "Higher ►",
+      text = "Better than mean ►",
       showarrow = F
     )
 }
