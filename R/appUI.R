@@ -30,23 +30,23 @@ ui <- function(request) {
       "header",
       tags$h1("Health Inequalities Explorer"),
       tags$h5(
-        "Use this interactive tool to explore health statistics in your local
-        area."
+        "Use this interactive tool to explore health statistics and demographics
+         in your local area."
       ),
       tags$p(
-        "Select a geography type and then select up to three areas in that
-      geography by clicking the map or using the", tags$i("Select areas"),
-        "box."
+        "Compare different areas by selecting a statistical geography (e.g., 
+        Local Authorities) and then selecting up to three areas using the map 
+        or", tags$i("Select areas"), "box."
       ),
       tags$p(
-        "Data in the plots are presented on a normalised range from -1 to 1 to
-        allow statistics to be compared side-by-side and to see the underlying
-        distributions in the data. Hover over points on the plots to find the
-        relative (percent) and abolsute (number) values of the statistics."
+        "Data in the plots are presented on a scale from -1 to 1 to allow
+        different indicators to be compared side-by-side while maintaining their
+        underlying distributions. Hover over indivudal points on each plot to
+        see their actual non-scaled values."
       ),
       tags$p(
         "This app is open-source, and based on open datasets. Click the GitHub
-        logo in the top-left corner for more information."
+        logo in the top-left corner for licenses and more information."
       ),
       tags$p(
         tags$i(
