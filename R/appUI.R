@@ -28,14 +28,20 @@ ui <- function(request) {
     ),
     grid_card(
       "header",
-      tags$h1("Health Inequalities Explorer"),
+      tags$h1(tags$b("Health Inequalities Explorer")),
+      has_border = FALSE
+    ),
+    grid_card(
+      "intro",
       tags$h5(
-        "Use this interactive tool to explore health statistics and demographics
+        tags$b(
+          "Use this interactive tool to explore health statistics and demographics
          in your local area."
+        )
       ),
       tags$p(
-        "Compare different areas by selecting a statistical geography (e.g., 
-        Local Authorities) and then selecting up to three areas using the map 
+        "Compare different areas by selecting a statistical geography (e.g.,
+        Local Authorities) and then selecting up to three areas using the map
         or", tags$i("Select areas"), "box."
       ),
       tags$p(
@@ -49,7 +55,7 @@ ui <- function(request) {
         logo in the top-left corner for licenses and more information."
       ),
       tags$p(
-        tags$i(
+        tags$em(
           "This is a new tool under development. Please provide feedback or bugs
           to mpage@redcross.org.uk"
         )

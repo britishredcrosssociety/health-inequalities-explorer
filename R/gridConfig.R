@@ -1,7 +1,8 @@
 grid_config <- new_gridlayout(
   c(
     "1rem   1fr          250px            250px            250px            250px            1fr         ",
-    "500px  blank1       blank1           header           header           blank2           blank2      ",
+    "80px   github       header           header           header           header           bookmark    ",
+    "500px  left_margin  blank1           intro            intro            blank2           right_margin",
     "175px  left_margin  select_geography select_geography map              map              right_margin",
     "175px  left_margin  select_areas     select_areas     map              map              right_margin",
     "350px  left_margin  summary_metrics  summary_metrics  summary_metrics  summary_metrics  right_margin",
