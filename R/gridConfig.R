@@ -1,15 +1,15 @@
 grid_config <- new_gridlayout(
   c(
-    "1rem   1fr          250px            250px            250px            250px            1fr         ",
-    "auto   github       header           header           header           header           bookmark    ",
+    "1rem   1fr          200px            300px            300px            200px            1fr         ",
+    "auto   github       blank1           header           header           blank2           bookmark    ",
     "auto   left_margin  blank1           intro            intro            blank2           right_margin",
-    "175px  left_margin  select_geography select_geography map              map              right_margin",
-    "175px  left_margin  select_areas     select_areas     map              map              right_margin",
-    "auto   left_margin  blank3           summary_intro    summary_intro    blank4           right_margin",
+    "175px  left_margin  blank1           select_geography map              blank2           right_margin",
+    "175px  left_margin  blank1           select_areas     map              blank2           right_margin",
+    "auto   left_margin  blank1           summary_intro    summary_intro    blank2           right_margin",
     "350px  left_margin  summary_metrics  summary_metrics  summary_metrics  summary_metrics  right_margin",
     "350px  left_margin  secondary_care   secondary_care   secondary_care   secondary_care   right_margin",
     "850px  left_margin  demographics     demographics     demographics     demographics     right_margin",
-    "auto   left_margin  blank9           footer           footer           blank10          right_margin"
+    "auto   left_margin  blank3           footer           footer           blank4           right_margin"
   )
 )
 # mobile_layout <- c(

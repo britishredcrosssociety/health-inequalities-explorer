@@ -33,7 +33,7 @@ ui <- function(request) {
     ),
     grid_card(
       "intro",
-      tags$h5(
+      tags$h4(
         tags$b(
           "Use this interactive tool to explore health statistics and demographics
          in your local area."
@@ -46,7 +46,7 @@ ui <- function(request) {
       ),
       tags$p(
         "Data in the plots will then be populated and are presented on a scale
-        from -1 to 1 to allow different indicators to be compared side-by-side
+        from -1 to 1 to allow different indicators to be compared side-by-side,
         while maintaining their underlying distributions. Hover over indivudal
         points on each plot to see their actual non-scaled values."
       ),
@@ -55,7 +55,7 @@ ui <- function(request) {
     ),
     grid_card(
       "select_geography",
-      tags$h4("Select a statistical geography"),
+      tags$h4(tags$b("Select a statistical geography")),
       selectGeographyUI("geography"),
       has_border = TRUE,
       scrollable = FALSE,
@@ -77,7 +77,7 @@ ui <- function(request) {
     ),
     grid_card(
       "summary_intro",
-      tags$h5("Summary Indicators"),
+      tags$h4("Summary Indicators"),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -127,12 +127,77 @@ ui <- function(request) {
       jitterPlotUI("summaryPlot"),
       has_border = FALSE
     ),
+    # grid_card(
+    #   "secondary_intro",
+    #   tags$h4(tags$b("Secondary Care Indicators")),
+    #   tags$p(
+    #     "The indicators report system performance."
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://britishredcross.shinyapps.io/left-behind-areas/",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   has_border = FALSE
+    # ),
     grid_card(
       "secondary_care",
       # title = "Secondary Care",
       jitterPlotUI("secondaryCarePlot"),
       has_border = FALSE
     ),
+    # grid_card(
+    #   "demographics_intro",
+    #   tags$h4(tags$b("Demographic Indicators")),
+    #   tags$p(
+    #     "These indicators can be used alongside other indicators to understand
+    # the populations being studied?"
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://britishredcross.shinyapps.io/left-behind-areas/",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   tags$p(
+    #     "",
+    #     tags$a(
+    #         href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
+    #         target = "_blank",
+    #         "here."
+    #       )
+    #   ),
+    #   has_border = FALSE
+    # ),
     grid_card(
       "demographics",
       # title = "Demographics",
