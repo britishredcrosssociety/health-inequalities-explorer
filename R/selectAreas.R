@@ -8,7 +8,7 @@ selectAreasUI <- function(id) {
       maxItems = 3,
       onInitialize = I('function() { this.setValue(""); }'),
       plugins = list("remove_button"),
-      placeholder = "Select areas to compare..."
+      placeholder = "Type to search or click the map..."
     )
   )
 }
