@@ -1,15 +1,8 @@
+/* Typography */
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 * {
   font-family: 'Lato', sans-serif;
-}
-
-.grid_card {
-  overflow: visible;
-}
-
-.fa-github {
-  color:#262626;
 }
 
 h4 {
@@ -17,15 +10,25 @@ h4 {
   color: #193351;
 }
 
-h5 {
-  margin-top: 40px;
-}
-
 p {
   margin: 10px 0px 10px 0px;
   text-align: left;
 }
 
+/* Card settings */
+.grid_card {
+  overflow: visible;
+}
+
 .select-box .panel-content {
   background-color: #6A9EAA30;
+}
+
+.map .panel-content {
+  background-color: #d4dadc;
+}
+
+/* Other elements */
+.fa-github {
+  color:#262626;
 }
