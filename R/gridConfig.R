@@ -8,7 +8,8 @@ grid_config <- new_gridlayout(
     "auto   left_margin  blank3           summary_intro    summary_intro    blank4           right_margin",
     "350px  left_margin  summary_metrics  summary_metrics  summary_metrics  summary_metrics  right_margin",
     "350px  left_margin  secondary_care   secondary_care   secondary_care   secondary_care   right_margin",
-    "850px  left_margin  demographics     demographics     demographics     demographics     right_margin"
+    "850px  left_margin  demographics     demographics     demographics     demographics     right_margin",
+    "auto   left_margin  blank9           footer           footer           blank10          right_margin"
   )
 )
 # mobile_layout <- c(
