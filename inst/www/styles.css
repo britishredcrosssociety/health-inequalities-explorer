@@ -27,6 +27,10 @@ a:hover {
   overflow: visible;
 }
 
+.grid_card.vertical_stack .panel-content {
+  align-items: start;
+}
+
 .select-box h4 {
   padding: 0px 0px 20px 0px;
   color: #193351;
@@ -46,9 +50,4 @@ a:hover {
 
 .footer .panel-content {
   border-top: 2px solid #262626;
-}
-
-/* Other elements */
-.fa-github {
-  color:#262626;
 }

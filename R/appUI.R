@@ -5,28 +5,6 @@ ui <- function(request) {
 
     # Card layout specified in R/gridConfig.R
     grid_card(
-      "left_margin",
-      has_border = FALSE
-    ),
-    grid_card(
-      "right_margin",
-      has_border = FALSE
-    ),
-    grid_card(
-      "github",
-      tags$a(
-        href = "https://github.com/britishredcrosssociety/health-inequalities-explorer",
-        target = "_blank",
-        icon("github", "fa-2x")
-      ),
-      has_border = FALSE
-    ),
-    grid_card(
-      "bookmark",
-      bookmarkButton(),
-      has_border = FALSE
-    ),
-    grid_card(
       "header",
       tags$h1(tags$b("Health Inequalities Explorer")),
       has_border = FALSE
@@ -55,7 +33,7 @@ ui <- function(request) {
     ),
     grid_card(
       "select_geography",
-      tags$h4(tags$b("Select a statistical geography")),
+      tags$h4("Select a statistical geography"),
       selectGeographyUI("geography"),
       has_border = TRUE,
       scrollable = FALSE,
@@ -77,24 +55,24 @@ ui <- function(request) {
     ),
     grid_card(
       "summary_intro",
-      tags$h4("Summary Indicators"),
+      tags$h4(tags$b("Summary Indicators")),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
-        areas and are a good place to start. But, They should not be used in 
+        areas and are a good place to start. But, They should not be used in
         isolation to make judgements about all aspects of an areas health. For
         example, an area may score poorly in a summary metric, yet still excel
         in certain aspects of health."
       ),
       tags$p(
-        "The ONS Health Index provides an indication of health outcomes, risk 
+        "The ONS Health Index provides an indication of health outcomes, risk
         factors, and the wider determinants of health. A detailed breakdown
         of the index can be viewed ",
         tags$a(
-            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
-            target = "_blank",
-            "here."
-          )
+          href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
+          target = "_blank",
+          "here."
+        )
       ),
       tags$p(
         "Left-behind areas are places high in deprivation and socio-economic
@@ -103,23 +81,24 @@ ui <- function(request) {
         inequalities. More information and an interactive map of these areas
         can be found ",
         tags$a(
-            href = "https://britishredcross.shinyapps.io/left-behind-areas/",
-            target = "_blank",
-            "here."
-          )
+          href = "https://britishredcross.shinyapps.io/left-behind-areas/",
+          target = "_blank",
+          "here."
+        )
       ),
       tags$p(
         "The Indices of Multiple Deprivation (IMD) include a measure of health
-        that measures the risk of premature death and the impairment of quality 
+        that measures the risk of premature death and the impairment of quality
         of life through poor physical or mental health. More information can be
         viewed ",
         tags$a(
-            href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
-            target = "_blank",
-            "here."
-          )
+          href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
+          target = "_blank",
+          "here."
+        )
       ),
-      has_border = FALSE
+      has_border = FALSE,
+      class = "summary-intro"
     ),
     grid_card(
       "summary_metrics",
@@ -127,77 +106,45 @@ ui <- function(request) {
       jitterPlotUI("summaryPlot"),
       has_border = FALSE
     ),
-    # grid_card(
-    #   "secondary_intro",
-    #   tags$h4(tags$b("Secondary Care Indicators")),
-    #   tags$p(
-    #     "The indicators report system performance."
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://britishredcross.shinyapps.io/left-behind-areas/",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   has_border = FALSE
-    # ),
+    grid_card(
+      "secondary_intro",
+      tags$h4(tags$b("Secondary Care Indicators")),
+      tags$p(
+        "Secondary care indicators report on the direct performance of the national
+         health service. Most secondary care statistics are reported only at
+         the Trust level. This means that if you are viewing these statistics at
+         a different statistical geography, we have aggregated these statistics
+          using catchment population data. Fore more information on how we have
+          done this, see ",
+        tags$a(
+          href = "https://britishredcrosssociety.github.io/resilience-index-book/technical.html#health-capacity---england",
+          target = "_blank",
+          "here."
+        )
+      ),
+      has_border = FALSE
+    ),
     grid_card(
       "secondary_care",
       # title = "Secondary Care",
       jitterPlotUI("secondaryCarePlot"),
       has_border = FALSE
     ),
-    # grid_card(
-    #   "demographics_intro",
-    #   tags$h4(tags$b("Demographic Indicators")),
-    #   tags$p(
-    #     "These indicators can be used alongside other indicators to understand
-    # the populations being studied?"
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://britishredcross.shinyapps.io/left-behind-areas/",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   tags$p(
-    #     "",
-    #     tags$a(
-    #         href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
-    #         target = "_blank",
-    #         "here."
-    #       )
-    #   ),
-    #   has_border = FALSE
-    # ),
+    grid_card(
+      "demographics_intro",
+      tags$h4(tags$b("Demographic Indicators")),
+      tags$p(
+        "These indicators can be used alongside other indicators to understand
+        the population breakdowns of the areas being assesed. All data come from
+        the latest ",
+        tags$a(
+          href = "https://www.ons.gov.uk/census",
+          target = "_blank",
+          "2021 census."
+        )
+      ),
+      has_border = FALSE
+    ),
     grid_card(
       "demographics",
       # title = "Demographics",
@@ -206,9 +153,21 @@ ui <- function(request) {
     ),
     grid_card(
       "footer",
-       tags$p(
-        "This app is open-source and uses open datasets. Click the GitHub
-        logo in the top-left corner for license information and more."
+      tags$h4(tags$b("Additional Information")),
+      tags$p(
+        "This app can remember your selections and activity so that you can share
+        your findings with others. Click the bookmark button below to generate
+        a shareable link:"
+      ),
+      bookmarkButton(),
+      tags$p(
+        "This app is open-source and uses open datasets. Click ",
+        tags$a(
+          href = "https://github.com/britishredcrosssociety/health-inequalities-explorer",
+          target = "_blank",
+          "here"
+        ),
+        " for licenses and more information."
       ),
       tags$p(
         tags$em(
