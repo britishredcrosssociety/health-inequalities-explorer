@@ -38,20 +38,19 @@ ggplotly_default <- function(plot, annotation_y) {
     add_annotations(
       x = -0.75,
       y = annotation_y,
-      text = "◄ Worse then mean",
+      text = "◄ Lower than mean",
       showarrow = F
     ) |>
     add_annotations(
       x = 0.75,
       y = annotation_y,
-      text = "Better than mean ►",
+      text = "Higher than mean ►",
       showarrow = F
     )
 }
 
 # ---- Plot while waiting for selection ----
 jitter_plot_null <- function(data) {
-
   annotation_y <- length(unique(data$variable)) + 0.6
 
   plot <- ggplot(
@@ -59,10 +58,23 @@ jitter_plot_null <- function(data) {
     aes(
       x = scaled_1_1,
       y = variable,
-      text = paste0(
-        "<b>", area_name, "</b>",
-        "<br>", "Number: ", round(number),
-        "<br>", "Percent: ", round(percent * 100, 1)
+      text = dplyr::case_when(
+        is.na(percent) ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (number): ", round(number)
+          ),
+        is.na(number) ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (percent): ", round(percent * 100, 1)
+          ),
+        TRUE ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (number): ", round(number),
+            "<br>", variable, " (percent): ", round(percent * 100, 1)
+          )
       )
     )
   ) +
@@ -94,7 +106,6 @@ jitter_plot_null <- function(data) {
 
 # ---- Plot selected areas ----
 jitter_plot_selected <- function(data, selected_areas) {
-
   annotation_y <- length(unique(data$variable)) + 0.6
 
   plot <- ggplot(
@@ -103,10 +114,23 @@ jitter_plot_selected <- function(data, selected_areas) {
       x = scaled_1_1,
       y = variable,
       fill = selected,
-      text = paste0(
-        "<b>", area_name, "</b>",
-        "<br>", "Number: ", round(number),
-        "<br>", "Percent: ", round(percent * 100, 1)
+      text = dplyr::case_when(
+        is.na(percent) ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (number): ", round(number)
+          ),
+        is.na(number) ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (percent): ", round(percent * 100, 1)
+          ),
+        TRUE ~
+          paste0(
+            "<b>", area_name, "</b>",
+            "<br>", variable, " (number): ", round(number),
+            "<br>", variable, " (percent): ", round(percent * 100, 1)
+          )
       )
     )
   ) +

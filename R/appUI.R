@@ -97,6 +97,10 @@ ui <- function(request) {
           "here."
         )
       ),
+      tags$p(
+        "For all of the summary indicators below, higher scores equal higher
+        (i.e., worse) health inequalities."
+      ),
       has_border = FALSE,
       class = "summary-intro"
     ),
