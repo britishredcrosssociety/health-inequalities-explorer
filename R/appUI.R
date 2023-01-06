@@ -18,7 +18,7 @@ ui <- function(request) {
         )
       ),
       tags$p(
-        "Compare different areas by first selecting a statistical geography (e.g.,
+        "Compare different areas by first selecting a geography (e.g.,
         Local Authorities) and then selecting up to three areas using the map
         or", tags$i("Select areas"), "box."
       ),
@@ -33,7 +33,7 @@ ui <- function(request) {
     ),
     grid_card(
       "select_geography",
-      tags$h4("Select a statistical geography"),
+      tags$h4("Select a geography"),
       selectGeographyUI("geography"),
       has_border = TRUE,
       scrollable = FALSE,
@@ -59,7 +59,7 @@ ui <- function(request) {
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
-        areas and are a good place to start. But, They should not be used in
+        areas and are a good place to start. But, they should not be used in
         isolation to make judgements about all aspects of an areas health. For
         example, an area may score poorly in a summary metric, yet still excel
         in certain aspects of health."
@@ -113,7 +113,7 @@ ui <- function(request) {
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
          the Trust level. This means that if you are viewing these statistics at
-         a different statistical geography, we have aggregated these statistics
+         a different geography, we have aggregated these statistics
           using catchment population data. Fore more information on how we have
           done this, see ",
         tags$a(
