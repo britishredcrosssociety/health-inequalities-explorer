@@ -28,6 +28,13 @@ ui <- function(request) {
         while maintaining their underlying distributions. Hover over indivudal
         points on each plot to see their actual non-scaled values."
       ),
+      tags$p(
+        tags$em(
+          "This is a new tool under development and currently has limitd
+          functionality. Other geographical areas and nations will be add shortly.
+          Please provide feedback or bugs to mpage@redcross.org.uk"
+        )
+      ),
       has_border = FALSE,
       class = "intro"
     ),
@@ -172,12 +179,6 @@ ui <- function(request) {
           "here"
         ),
         " for licenses and more information."
-      ),
-      tags$p(
-        tags$em(
-          "This is a new tool under development. Please provide feedback or bugs
-          to mpage@redcross.org.uk"
-        )
       ),
       has_border = FALSE,
       class = "footer"
