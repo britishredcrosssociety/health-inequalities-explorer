@@ -30,8 +30,8 @@ ui <- function(request) {
       ),
       tags$p(
         tags$em(
-          "This is a new tool under development and currently has limitd
-          functionality. Other geographical areas and nations will be add shortly.
+          "This is a new tool under development and currently has limited
+          functionality. Other geographical areas and nations will be added shortly.
           Please provide feedback or bugs to mpage@redcross.org.uk"
         )
       ),
@@ -129,6 +129,16 @@ ui <- function(request) {
           done this, see ",
         tags$a(
           href = "https://britishredcrosssociety.github.io/resilience-index-book/technical.html#health-capacity---england",
+          target = "_blank",
+          "here."
+        )
+      ),
+      tags$p(
+        "In addition to the secondary care markers presented below, our team has
+        also produced a NHS England winter situation report explorer which can
+        be seen ",
+        tags$a(
+          href = "https://britishredcross.shinyapps.io/sitrep-explorer/",
           target = "_blank",
           "here."
         )
