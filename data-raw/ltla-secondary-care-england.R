@@ -75,7 +75,7 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "beds \nnot meeting criteria \nto reside (Apr-Oct)",
+    variable = "beds \nnot meeting criteria \nto reside (Apr-Nov)",
     .after = ltla21_code
   )
 
@@ -115,7 +115,7 @@ discharged_patients_ltla <-
     percent = sum(proportion_mean_percentage_discharged)
   ) |>
   mutate(
-    variable = "Discharged \nbeds (Apr-Oct)",
+    variable = "Discharged \nbeds (Apr-Nov)",
     .after = ltla21_code
   )
 
@@ -150,27 +150,34 @@ bed_occupancy_ltla <-
     percent = sum(percent)
   ) |>
   mutate(
-    variable = "Bed availability (Apr-Oct)",
+    variable = "Bed availability (Apr-Nov)",
     .after = ltla21_code
   )
 
 # ---- IAPT ----
-# # Not enough data?
-# iapt_ltla <- england_iapt |>
-#   filter(name == "Percentage_FirstTreatment18WeeksFinishedCourseTreatment") |>
-#   select(nhs_trust22_code, iapt = value) |>
-#   mutate(iapt = as.double(iapt)) |>
-#   left_join(lookup_nhs_trusts22_ltla21) |>
-#   mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
-#   group_by(ltla21_code) |>
-#   summarise(iapt = sum(proportion_iapt)) |>
-#   drop_na()
+iapt_ltla <- england_iapt |>
+  filter(name == "Percentage_AccessingServices18WeeksFinishedCourseTreatment") |>
+  filter(str_detect(date, "2022")) |>
+  select(nhs_trust22_code, iapt = value) |>
+  drop_na() |>
+  group_by(nhs_trust22_code) |>
+  summarise(iapt = mean(iapt)) |>
+  right_join(lookup_nhs_trusts22_ltla21) |>
+  mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
+  group_by(ltla21_code) |>
+  summarise(iapt = sum(proportion_iapt, na.rm = TRUE)) |>
+  mutate(
+    variable = "IAPT: finished a \ncourse of treatment \nin 18 weeks (2022)",
+    number = NA
+  ) |>
+  select(ltla21_code, variable, number, percent = iapt)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   criteria_to_reside_ltla,
   discharged_patients_ltla,
-  bed_occupancy_ltla
+  bed_occupancy_ltla,
+  iapt_ltla
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
