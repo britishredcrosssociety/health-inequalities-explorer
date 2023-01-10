@@ -9,7 +9,7 @@ grid_config <- new_gridlayout(
     "auto   blank1  blank3           summary_intro      summary_intro      blank4           blank2",
     "350px  blank1  summary_metrics  summary_metrics    summary_metrics    summary_metrics  blank2",
     "auto   blank1  blank5           secondary_intro    secondary_intro    blank6           blank2",
-    "350px  blank1  secondary_care   secondary_care     secondary_care     secondary_care   blank2",
+    "450px  blank1  secondary_care   secondary_care     secondary_care     secondary_care   blank2",
     "auto   blank1  blank7           demographics_intro demographics_intro blank8           blank2",
     "850px  blank1  demographics     demographics       demographics       demographics     blank2",
     "auto   blank1  blank9           footer             footer             blank10          blank2"
