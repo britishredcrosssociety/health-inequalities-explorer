@@ -4,6 +4,8 @@ ui <- function(request) {
     layout = grid_config,
 
     # Card layout specified in R/gridConfig.R
+
+    # ---- Header & Intro ----
     grid_card(
       "header",
       tags$h1(tags$b("Health Inequalities Explorer")),
@@ -38,6 +40,8 @@ ui <- function(request) {
       has_border = FALSE,
       class = "intro"
     ),
+
+    # ---- Selection ----
     grid_card(
       "select_geography",
       tags$h4("Select a geography"),
@@ -60,6 +64,8 @@ ui <- function(request) {
       has_border = TRUE,
       class = "map"
     ),
+
+    # ---- Summary indicators ----
     grid_card(
       "summary_intro",
       tags$h4(tags$b("Summary Indicators")),
@@ -117,6 +123,8 @@ ui <- function(request) {
       jitterPlotUI("summaryPlot"),
       has_border = FALSE
     ),
+
+    # ---- Secondary care ----
     grid_card(
       "secondary_intro",
       tags$h4(tags$b("Secondary Care Indicators")),
@@ -166,6 +174,8 @@ ui <- function(request) {
       ),
       has_border = FALSE
     ),
+
+    # ---- Demographics ----
     grid_card(
       "demographics",
       # title = "Demographics",
