@@ -1,12 +1,12 @@
 guide <- Cicerone$
   new()$
   step(
-    el = "select_geography",
+    el = "geography",
     title = "Geographies",
     description = "Test geographies"
   )$
   step(
-    el = "select_areas",
+    el = "areas",
     title = "Areas",
     description = "Test areas"
   )
