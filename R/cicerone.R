@@ -1,12 +1,9 @@
+# https://github.com/JohnCoene/cicerone/issues/27
+
 guide <- Cicerone$
   new()$
   step(
-    el = "geography",
-    title = "Geographies",
-    description = "Test geographies"
-  )$
-  step(
-    el = "areas",
-    title = "Areas",
-    description = "Test areas"
-  )
+  el = "geography-selectGeography",
+  title = "Geographies",
+  description = "Test geographies"
+)
