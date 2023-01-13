@@ -27,14 +27,15 @@ ui <- function(request) {
       tags$p(
         "Data in the plots will then be populated and are presented on a scale
         from -1 to 1 to allow different indicators to be compared side-by-side,
-        while maintaining their underlying distributions. Hover over indivudal
+        while maintaining their underlying distributions. Hover over individudal
         points on each plot to see their actual non-scaled values."
       ),
       tags$p(
         tags$em(
           "This is a new tool under development and currently has limited
-          functionality. Other geographical areas and nations will be added shortly.
-          Please provide feedback or bugs to mpage@redcross.org.uk"
+          functionality. Other geographical areas, nations, and datasets
+          will be added shortly. Please provide feedback or bugs to 
+          mpage@redcross.org.uk"
         )
       ),
       has_border = FALSE,
@@ -132,9 +133,9 @@ ui <- function(request) {
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
          the Trust level. This means that if you are viewing these statistics at
-         a different geography, we have aggregated these statistics
-          using catchment population data. Fore more information on how we have
-          done this, see ",
+         a different geography, we have aggregated these statistics using 
+         catchment population data. Fore more information on how we have done 
+         this, see ",
         tags$a(
           href = "https://britishredcrosssociety.github.io/resilience-index-book/technical.html#health-capacity---england",
           target = "_blank",
@@ -142,9 +143,43 @@ ui <- function(request) {
         )
       ),
       tags$p(
-        "In addition to the secondary care markers presented below, our team has
-        also produced a NHS England winter situation report explorer which can
-        be seen ",
+        "The Improving Access to Pyschological Therapies (IAPT) programme offers
+        talking therapies for mental health problems. To address both access to
+        mental health services and the success rate of their interventions, the
+        percentage of referrals to were able to access a service within 18 weeks
+        and also finished the first course of treatment, are presented below.
+        More detailed statistics can be accessed ",
+        tags$a(
+          href = "https://digital.nhs.uk/data-and-information/data-collections-and-data-sets/data-sets/improving-access-to-psychological-therapies-data-set/improving-access-to-psychological-therapies-data-set-reports",
+          target = "_blank",
+          "here."
+        )
+      ),
+      tags$p(
+        "Discharged beds indicates the total number of patients discharged from
+        beds, and the percentage this makes up of all beds. More detailed
+        breakdowns can be viewed ",
+        tags$a(
+          href = "https://www.england.nhs.uk/statistics/statistical-work-areas/discharge-delays-acute-data/",
+          target = "_blank",
+          "here."
+        )
+      ),
+      tags$p(
+        "Beds not meeting criteria to reside shows the number of patients who
+        are no longer eligible to occupy a bed, and the percentage of these of
+        all beds. This indicator is often a good proxy for where social care is
+        low. For a more detailed breakdown, see",
+        tags$a(
+          href = "https://britishredcross.shinyapps.io/trust-discharge-criteria/",
+          target = "_blank",
+          "here."
+        )
+      ),
+      tags$p(
+        "In addition to the bed availability indicator presented below, our team
+         has also produced a NHS England winter situation report explorer, with
+         detailed breakdowns by type of bed, which can be seen ",
         tags$a(
           href = "https://britishredcross.shinyapps.io/sitrep-explorer/",
           target = "_blank",
