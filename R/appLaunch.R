@@ -1,8 +1,9 @@
 library(shiny)
+library(cicerone)
+library(gridlayout)
 library(leaflet)
 library(ggplot2)
 library(sf)
-library(gridlayout)
 library(plotly)
 
 appLaunch <- function() {

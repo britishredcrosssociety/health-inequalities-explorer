@@ -1,5 +1,8 @@
 server <- function(input, output, session) {
 
+  # Initialise Cicerone guide
+  guide$init()$start()
+
   # Set an empty global reactive values list to be passed between modules
   selected <- reactiveValues(areas = vector(), geography = vector())
 

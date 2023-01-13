@@ -1,9 +1,12 @@
 ui <- function(request) {
   grid_page(
-    includeCSS("inst/www/styles.css"),
-    layout = grid_config,
 
-    # Card layout specified in R/gridConfig.R
+    # ---- Non-grid elements ----
+    includeCSS("inst/www/styles.css"),
+    use_cicerone(),
+
+    # ---- Layout specified in R/gridConfig.R ----
+    layout = grid_config,
 
     # ---- Header & Intro ----
     grid_card(
