@@ -3,7 +3,7 @@
 guide <- Cicerone$
   new()$
   step(
-  el = "geography-selectGeography",
+  el = "card_select_geography",
   title = "Geographies",
   description = "Test geographies"
 )
