@@ -11,11 +11,13 @@ ui <- function(request) {
     # ---- Header & Intro ----
     grid_card(
       "header",
+      id = "card_header",
       tags$h1(tags$b("Health Inequalities Explorer")),
       has_border = FALSE
     ),
     grid_card(
       "intro",
+      id = "card_intro",
       tags$h4(
         tags$b(
           "Use this interactive tool to explore health statistics and demographics
@@ -37,7 +39,7 @@ ui <- function(request) {
         tags$em(
           "This is a new tool under development and currently has limited
           functionality. Other geographical areas, nations, and datasets
-          will be added shortly. Please provide feedback or bugs to 
+          will be added shortly. Please provide feedback or bugs to
           mpage@redcross.org.uk"
         )
       ),
@@ -48,6 +50,7 @@ ui <- function(request) {
     # ---- Selection ----
     grid_card(
       "select_geography",
+      id = "card_select_geography",
       tags$h4("Select a geography"),
       selectGeographyUI("geography"),
       has_border = TRUE,
@@ -56,6 +59,7 @@ ui <- function(request) {
     ),
     grid_card(
       "select_areas",
+      id = "card_select_areas",
       tags$h4("Select areas to compare"),
       selectAreasUI("areas"),
       has_border = TRUE,
@@ -64,6 +68,7 @@ ui <- function(request) {
     ),
     grid_card(
       "map",
+      id = "card_map",
       mapUI("leafletMap"),
       has_border = TRUE,
       class = "map"
@@ -72,6 +77,7 @@ ui <- function(request) {
     # ---- Summary indicators ----
     grid_card(
       "summary_intro",
+      id = "card_summary_intro",
       tags$h4(tags$b("Summary Indicators")),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
@@ -123,6 +129,7 @@ ui <- function(request) {
     ),
     grid_card(
       "summary_metrics",
+      id = "card_summary_metrics",
       # title = "Summary metrics",
       jitterPlotUI("summaryPlot"),
       has_border = FALSE
@@ -131,13 +138,14 @@ ui <- function(request) {
     # ---- Secondary care ----
     grid_card(
       "secondary_intro",
+      id = "card_secondary_intro",
       tags$h4(tags$b("Secondary Care Indicators")),
       tags$p(
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
          the Trust level. This means that if you are viewing these statistics at
-         a different geography, we have aggregated these statistics using 
-         catchment population data. Fore more information on how we have done 
+         a different geography, we have aggregated these statistics using
+         catchment population data. Fore more information on how we have done
          this, see ",
         tags$a(
           href = "https://britishredcrosssociety.github.io/resilience-index-book/technical.html#health-capacity---england",
@@ -193,12 +201,16 @@ ui <- function(request) {
     ),
     grid_card(
       "secondary_care",
+      id = "card_secondary_care",
       # title = "Secondary Care",
       jitterPlotUI("secondaryCarePlot"),
       has_border = FALSE
     ),
+
+    # ---- Demographics ----
     grid_card(
       "demographics_intro",
+      id = "card_demographics_intro",
       tags$h4(tags$b("Demographic Indicators")),
       tags$p(
         "These indicators can be used alongside other indicators to understand
@@ -212,14 +224,15 @@ ui <- function(request) {
       ),
       has_border = FALSE
     ),
-
-    # ---- Demographics ----
     grid_card(
       "demographics",
+      id = "card_demographics",
       # title = "Demographics",
       jitterPlotUI("demographicsPlot"),
       has_border = FALSE
     ),
+
+    # ---- Footer ----
     grid_card(
       "footer",
       tags$h4(tags$b("Additional Information")),
