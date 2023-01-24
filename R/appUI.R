@@ -235,6 +235,7 @@ ui <- function(request) {
     # ---- Footer ----
     grid_card(
       "footer",
+      id = "card_footer",
       tags$h4(tags$b("Additional Information")),
       tags$p(
         "This app can remember your selections and activity so that you can share
