@@ -1,16 +1,16 @@
 # ---- Prepare selected data ----
 jitter_plot_prep <- function(data, selected_areas) {
   data |>
-    dplyr::mutate(
-      selected = dplyr::if_else(
+    mutate(
+      selected = if_else(
         area_name %in% selected_areas,
         area_name,
         "not selected"
       )
     ) |>
-    dplyr::mutate(alpha = dplyr::if_else(selected != "not selected", 1, 0.1)) |>
-    dplyr::mutate(selected = factor(selected)) |>
-    dplyr::mutate(selected = relevel(selected, ref = "not selected"))
+    mutate(alpha = if_else(selected != "not selected", 1, 0.1)) |>
+    mutate(selected = factor(selected)) |>
+    mutate(selected = relevel(selected, ref = "not selected"))
 }
 
 # ---- ggplotly fun ----
@@ -58,7 +58,7 @@ jitter_plot_null <- function(data) {
     aes(
       x = scaled_1_1,
       y = variable,
-      text = dplyr::case_when(
+      text = case_when(
         is.na(percent) ~
           paste0(
             "<b>", area_name, "</b>",
@@ -114,7 +114,7 @@ jitter_plot_selected <- function(data, selected_areas) {
       x = scaled_1_1,
       y = variable,
       fill = selected,
-      text = dplyr::case_when(
+      text = case_when(
         is.na(percent) ~
           paste0(
             "<b>", area_name, "</b>",
