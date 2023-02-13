@@ -19,7 +19,27 @@ ggplotly_default <- function(plot, annotation_y) {
     plot,
     tooltip = c("text")
   ) |>
-    config(displayModeBar = FALSE) |>
+    config(
+      # displayModeBar = TRUE,
+      displaylogo = FALSE,
+      modeBarButtonsToRemove = list(
+        "zoom",
+        "pan",
+        "select",
+        "zoomIn",
+        "zoomOut",
+        "autoScale",
+        "resetScale",
+        "lasso2d",
+        "hoverClosestCartesian",
+        "hoverCompareCartesian"
+      ),
+      toImageButtonOptions = list(
+        height = NULL,
+        width = NULL,
+        scale = 6
+      )
+    ) |>
     layout(
       xaxis = list(range = list(-1.15, 1.15)),
       legend = list(
