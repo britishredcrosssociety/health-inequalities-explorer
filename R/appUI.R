@@ -81,11 +81,24 @@ ui <- function(request) {
 
     # ---- Summary indicators ----
     grid_card(
-      area = "summary_intro",
-      id = "card_summary_intro",
+      area = "summary_title",
+      id = "card_summary_title",
       has_border = FALSE,
-      class = "summary-intro",
-      tags$h4(tags$b("Summary Indicators")),
+      class = "summary-title",
+      tags$h4(tags$b("Summary Indicators"))
+    ),
+    grid_card(
+      area = "summary_metrics",
+      id = "card_summary_metrics",
+      has_border = FALSE,
+      jitterPlotUI("summaryPlot")
+    ),
+    grid_card(
+      area = "summary_descriptions",
+      id = "card_summary_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = "Additional information",
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -126,25 +139,28 @@ ui <- function(request) {
           target = "_blank",
           "here."
         )
-      ),
-      tags$p(
-        "For all of the summary indicators below, higher scores equal higher
-        (i.e., worse) health inequalities."
       )
-    ),
-    grid_card(
-      area = "summary_metrics",
-      id = "card_summary_metrics",
-      has_border = FALSE,
-      jitterPlotUI("summaryPlot")
     ),
 
     # ---- Secondary care ----
     grid_card(
-      area = "secondary_intro",
-      id = "card_secondary_intro",
+      area = "secondary_title",
+      id = "card_secondary_title",
       has_border = FALSE,
-      tags$h4(tags$b("Secondary Care Indicators")),
+      tags$h4(tags$b("Secondary Care Indicators"))
+    ),
+    grid_card(
+      area = "secondary_care",
+      id = "card_secondary_care",
+      has_border = FALSE,
+      jitterPlotUI("secondaryCarePlot")
+    ),
+    grid_card(
+      area = "secondary_descriptions",
+      id = "card_secondary_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = "Additional information",
       tags$p(
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
@@ -203,19 +219,26 @@ ui <- function(request) {
         )
       )
     ),
-    grid_card(
-      area = "secondary_care",
-      id = "card_secondary_care",
-      has_border = FALSE,
-      jitterPlotUI("secondaryCarePlot")
-    ),
 
     # ---- Demographics ----
     grid_card(
-      area = "demographics_intro",
-      id = "card_demographics_intro",
+      area = "demographics_title",
+      id = "card_demographics_title",
       has_border = FALSE,
-      tags$h4(tags$b("Demographic Indicators")),
+      tags$h4(tags$b("Demographic Indicators"))
+    ),
+    grid_card(
+      area = "demographics",
+      id = "card_demographics",
+      has_border = FALSE,
+      jitterPlotUI("demographicsPlot")
+    ),
+    grid_card(
+      area = "demographics_descriptions",
+      id = "card_demographics_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = "Additional information",
       tags$p(
         "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assesed. All data come from
@@ -227,20 +250,13 @@ ui <- function(request) {
         )
       )
     ),
-    grid_card(
-      area = "demographics",
-      id = "card_demographics",
-      has_border = FALSE,
-      jitterPlotUI("demographicsPlot")
-    ),
 
     # ---- Footer ----
     grid_card(
       area = "footer",
       id = "card_footer",
-       has_border = FALSE,
+      has_border = FALSE,
       class = "footer",
-      tags$h4(tags$b("Additional Information")),
       tags$p(
         "This app is open-source and uses open datasets. Click ",
         tags$a(

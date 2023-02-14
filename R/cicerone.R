@@ -27,13 +27,13 @@ guide <- Cicerone$
   description =
     "You can also select/deselect areas by clicking the map."
 )$step(
-  el = "card_summary_intro",
+  el = "card_summary_title",
   title = " ",
   description =
     "You will then be presented with statistical indicators, grouped by section
-    (here, summary statistics). Each section has a short narrative describing
-    the indicators, with links to further resources, followed by an interactive
-    plot."
+    (here, summary statistics). Each section has an interactive plot, followe by
+    a short narrative describing the indicators, with links to further
+    resources."
 )$step(
   el = "card_summary_metrics",
   title = " ",
