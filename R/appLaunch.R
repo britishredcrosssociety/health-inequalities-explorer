@@ -8,5 +8,5 @@ library(sf)
 library(shiny)
 
 appLaunch <- function() {
-  shinyApp(ui, server, enableBookmarking = "url")
+  shinyApp(ui, server)
 }
