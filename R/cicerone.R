@@ -48,15 +48,4 @@ guide <- Cicerone$
     </br>
     </br>
     Hover over points to bring up an interactive pop-up with more information."
-)$step(
-  el = "card_footer",
-  title = " ",
-  description =
-    "Additional information and a button to bookmark the current state of the
-    app can be found here.
-    </br>
-    </br>
-    Please note, This is a new tool under development and currently has limited
-    functionality. Other geographical areas, nations, and datasets will be added
-    shortly. Please provide feedback or bugs to mpage@redcross.org.uk"
 )

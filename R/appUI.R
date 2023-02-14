@@ -238,12 +238,6 @@ ui <- function(request) {
       id = "card_footer",
       tags$h4(tags$b("Additional Information")),
       tags$p(
-        "This app can remember your selections and activity so that you can share
-        your findings with others. Click the bookmark button below to generate
-        a shareable link:"
-      ),
-      bookmarkButton(),
-      tags$p(
         "This app is open-source and uses open datasets. Click ",
         tags$a(
           href = "https://github.com/britishredcrosssociety/health-inequalities-explorer",
