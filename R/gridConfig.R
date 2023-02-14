@@ -1,7 +1,7 @@
 # Note: the blank_* elements do not have a matching card in appUI
 grid_config <- new_gridlayout(
   c(
-    "1rem   1fr     200px            300px              300px              200px            1fr         ",
+    "1rem   1fr     200px            300px              300px              200px            1fr   ",
     "auto   blank1  blank3           header             header             blank4           blank2",
     "auto   blank1  blank3           intro              intro              blank4           blank2",
     "175px  blank1  blank3           select_geography   map                blank4           blank2",
