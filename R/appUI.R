@@ -98,7 +98,7 @@ ui <- function(request) {
       id = "card_summary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = "Additional information",
+      title = title_collapsible("Additional information"),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -140,7 +140,8 @@ ui <- function(request) {
           "here."
         )
       )
-    ),
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Secondary care ----
     grid_card(
@@ -160,7 +161,7 @@ ui <- function(request) {
       id = "card_secondary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = "Additional information",
+      title = title_collapsible("Additional information"),
       tags$p(
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
@@ -218,7 +219,8 @@ ui <- function(request) {
           "here."
         )
       )
-    ),
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
     grid_card(
@@ -238,7 +240,7 @@ ui <- function(request) {
       id = "card_demographics_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = "Additional information",
+      title = title_collapsible("Additional information"),
       tags$p(
         "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assesed. All data come from
@@ -249,7 +251,8 @@ ui <- function(request) {
           "2021 census."
         )
       )
-    ),
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Footer ----
     grid_card(
