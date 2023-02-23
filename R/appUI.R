@@ -1,6 +1,11 @@
 ui <- function(request) {
   grid_page(
 
+    # `grid_card()` notes:
+    # - `area` arg is used in R/gridConfig.R
+    # - `id` arg is used in R/cicerone.R
+    # - `class` arg is used in inst/www/styles.css
+
     # ---- Non-grid elements ----
     includeCSS("inst/www/styles.css"),
     use_cicerone(),
@@ -10,14 +15,16 @@ ui <- function(request) {
 
     # ---- Header & Intro ----
     grid_card(
-      "header",
+      area = "header",
       id = "card_header",
-      tags$h1(tags$b("Health Inequalities Explorer")),
-      has_border = FALSE
+      has_border = FALSE,
+      tags$h1(tags$b("Health Inequalities Explorer"))
     ),
     grid_card(
-      "intro",
+      area = "intro",
       id = "card_intro",
+      has_border = FALSE,
+      class = "intro",
       tags$h4(
         tags$b(
           "Use this interactive tool to explore health statistics and demographics
@@ -42,43 +49,56 @@ ui <- function(request) {
           will be added shortly. Please provide feedback or bugs to
           mpage@redcross.org.uk"
         )
-      ),
-      has_border = FALSE,
-      class = "intro"
+      )
     ),
 
     # ---- Selection ----
     grid_card(
-      "select_geography",
+      area = "select_geography",
       id = "card_select_geography",
+      has_border = TRUE,
+      scrollable = FALSE,
+      class = "select-box",
       tags$h4("Select a geography"),
-      selectGeographyUI("geography"),
-      has_border = TRUE,
-      scrollable = FALSE,
-      class = "select-box"
+      selectGeographyUI("geography")
     ),
     grid_card(
-      "select_areas",
+      area = "select_areas",
       id = "card_select_areas",
-      tags$h4("Select areas to compare"),
-      selectAreasUI("areas"),
       has_border = TRUE,
       scrollable = FALSE,
-      class = "select-box"
+      class = "select-box",
+      tags$h4("Select areas to compare"),
+      selectAreasUI("areas")
     ),
     grid_card(
-      "map",
+      area = "map",
       id = "card_map",
-      mapUI("leafletMap"),
       has_border = TRUE,
-      class = "map"
+      class = "map",
+      mapUI("leafletMap")
     ),
 
     # ---- Summary indicators ----
     grid_card(
-      "summary_intro",
-      id = "card_summary_intro",
-      tags$h4(tags$b("Summary Indicators")),
+      area = "summary_title",
+      id = "card_summary_title",
+      has_border = FALSE,
+      class = "summary-title",
+      tags$h4(tags$b("Summary Indicators"))
+    ),
+    grid_card(
+      area = "summary_metrics",
+      id = "card_summary_metrics",
+      has_border = FALSE,
+      jitterPlotUI("summaryPlot")
+    ),
+    grid_card(
+      area = "summary_descriptions",
+      id = "card_summary_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = title_collapsible("Additional information"),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -119,27 +139,29 @@ ui <- function(request) {
           target = "_blank",
           "here."
         )
-      ),
-      tags$p(
-        "For all of the summary indicators below, higher scores equal higher
-        (i.e., worse) health inequalities."
-      ),
-      has_border = FALSE,
-      class = "summary-intro"
-    ),
-    grid_card(
-      "summary_metrics",
-      id = "card_summary_metrics",
-      # title = "Summary metrics",
-      jitterPlotUI("summaryPlot"),
-      has_border = FALSE
-    ),
+      )
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Secondary care ----
     grid_card(
-      "secondary_intro",
-      id = "card_secondary_intro",
-      tags$h4(tags$b("Secondary Care Indicators")),
+      area = "secondary_title",
+      id = "card_secondary_title",
+      has_border = FALSE,
+      tags$h4(tags$b("Secondary Care Indicators"))
+    ),
+    grid_card(
+      area = "secondary_care",
+      id = "card_secondary_care",
+      has_border = FALSE,
+      jitterPlotUI("secondaryCarePlot")
+    ),
+    grid_card(
+      area = "secondary_descriptions",
+      id = "card_secondary_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = title_collapsible("Additional information"),
       tags$p(
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
@@ -196,22 +218,29 @@ ui <- function(request) {
           target = "_blank",
           "here."
         )
-      ),
-      has_border = FALSE
-    ),
-    grid_card(
-      "secondary_care",
-      id = "card_secondary_care",
-      # title = "Secondary Care",
-      jitterPlotUI("secondaryCarePlot"),
-      has_border = FALSE
-    ),
+      )
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
     grid_card(
-      "demographics_intro",
-      id = "card_demographics_intro",
-      tags$h4(tags$b("Demographic Indicators")),
+      area = "demographics_title",
+      id = "card_demographics_title",
+      has_border = FALSE,
+      tags$h4(tags$b("Demographic Indicators"))
+    ),
+    grid_card(
+      area = "demographics",
+      id = "card_demographics",
+      has_border = FALSE,
+      jitterPlotUI("demographicsPlot")
+    ),
+    grid_card(
+      area = "demographics_descriptions",
+      id = "card_demographics_descriptions",
+      has_border = FALSE,
+      collapsible = TRUE,
+      title = title_collapsible("Additional information"),
       tags$p(
         "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assesed. All data come from
@@ -221,22 +250,16 @@ ui <- function(request) {
           target = "_blank",
           "2021 census."
         )
-      ),
-      has_border = FALSE
-    ),
-    grid_card(
-      "demographics",
-      id = "card_demographics",
-      # title = "Demographics",
-      jitterPlotUI("demographicsPlot"),
-      has_border = FALSE
-    ),
+      )
+    ) |>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Footer ----
     grid_card(
-      "footer",
+      area = "footer",
       id = "card_footer",
-      tags$h4(tags$b("Additional Information")),
+      has_border = FALSE,
+      class = "footer",
       tags$p(
         "This app is open-source and uses open datasets. Click ",
         tags$a(
@@ -245,9 +268,7 @@ ui <- function(request) {
           "here"
         ),
         " for licenses and more information."
-      ),
-      has_border = FALSE,
-      class = "footer"
+      )
     )
   )
 }

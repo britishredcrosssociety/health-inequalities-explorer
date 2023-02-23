@@ -14,12 +14,11 @@ p {
 }
 
 a {
-  color: #2B7586;
-  text-decoration: none;
+  color: #1d70b8;
 }
 
 a:hover {
-  color: #6A9EAA;
+  color: #102f73;
 }
 
 /* Card settings */
@@ -29,6 +28,18 @@ a:hover {
 
 .grid_card.vertical_stack .panel-content {
   align-items: start;
+}
+
+.card-header {
+  width: 35%;
+  background-color: transparent;
+  border-bottom: none;
+  text-decoration: underline;
+  color: #1d70b8;
+}
+
+.card-header:hover {
+  color: #102f73;
 }
 
 .select-box h4 {
