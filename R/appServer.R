@@ -10,9 +10,6 @@ server <- function(input, output, session) {
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("demographicsPlot", selected, "demographics")
-
-  # Initialise Cicerone guide
-  guide$init()$start()
   
   # Debug
   # observe({

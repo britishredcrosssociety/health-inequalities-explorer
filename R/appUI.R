@@ -3,12 +3,10 @@ ui <- function(request) {
 
     # `grid_card()` notes:
     # - `area` arg is used in R/gridConfig.R
-    # - `id` arg is used in R/cicerone.R
     # - `class` arg is used in inst/www/styles.css
 
     # ---- Non-grid elements ----
     includeCSS("inst/www/styles.css"),
-    use_cicerone(),
 
     # ---- Layout specified in R/gridConfig.R ----
     layout = grid_config,
@@ -16,13 +14,11 @@ ui <- function(request) {
     # ---- Header & Intro ----
     grid_card(
       area = "header",
-      id = "card_header",
       has_border = FALSE,
       tags$h1(tags$b("Health Inequalities Explorer"))
     ),
     grid_card(
       area = "intro",
-      id = "card_intro",
       has_border = FALSE,
       class = "intro",
       tags$h4(
@@ -55,7 +51,6 @@ ui <- function(request) {
     # ---- Selection ----
     grid_card(
       area = "select_geography",
-      id = "card_select_geography",
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
@@ -64,7 +59,6 @@ ui <- function(request) {
     ),
     grid_card(
       area = "select_areas",
-      id = "card_select_areas",
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
@@ -73,7 +67,6 @@ ui <- function(request) {
     ),
     grid_card(
       area = "map",
-      id = "card_map",
       has_border = TRUE,
       class = "map",
       mapUI("leafletMap")
@@ -82,20 +75,17 @@ ui <- function(request) {
     # ---- Summary indicators ----
     grid_card(
       area = "summary_title",
-      id = "card_summary_title",
       has_border = FALSE,
       class = "summary-title",
       tags$h4(tags$b("Summary Indicators"))
     ),
     grid_card(
       area = "summary_metrics",
-      id = "card_summary_metrics",
       has_border = FALSE,
       jitterPlotUI("summaryPlot")
     ),
     grid_card(
       area = "summary_descriptions",
-      id = "card_summary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
       title = title_collapsible("Additional information"),
@@ -146,19 +136,16 @@ ui <- function(request) {
     # ---- Secondary care ----
     grid_card(
       area = "secondary_title",
-      id = "card_secondary_title",
       has_border = FALSE,
       tags$h4(tags$b("Secondary Care Indicators"))
     ),
     grid_card(
       area = "secondary_care",
-      id = "card_secondary_care",
       has_border = FALSE,
       jitterPlotUI("secondaryCarePlot")
     ),
     grid_card(
       area = "secondary_descriptions",
-      id = "card_secondary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
       title = title_collapsible("Additional information"),
@@ -225,19 +212,16 @@ ui <- function(request) {
     # ---- Demographics ----
     grid_card(
       area = "demographics_title",
-      id = "card_demographics_title",
       has_border = FALSE,
       tags$h4(tags$b("Demographic Indicators"))
     ),
     grid_card(
       area = "demographics",
-      id = "card_demographics",
       has_border = FALSE,
       jitterPlotUI("demographicsPlot")
     ),
     grid_card(
       area = "demographics_descriptions",
-      id = "card_demographics_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
       title = title_collapsible("Additional information"),
@@ -257,7 +241,6 @@ ui <- function(request) {
     # ---- Footer ----
     grid_card(
       area = "footer",
-      id = "card_footer",
       has_border = FALSE,
       class = "footer",
       tags$p(
