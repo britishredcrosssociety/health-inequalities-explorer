@@ -27,8 +27,7 @@ ui <- function(request) {
       class = "intro",
       tags$p(
         tags$span(class = "phase-banner", "ALPHA"),
-        "This is a new tool under development. Please provide feedback to
-         mpage@redcross.org.uk"
+        "This is a new service - new data will be added soon."
       ),
       tags$h4(
         tags$b(
