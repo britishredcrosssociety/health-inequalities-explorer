@@ -11,6 +11,7 @@ h1 {
 
 p {
   margin: 10px 0px 10px 0px;
+  line-height: 1.6;
 }
 
 a {
@@ -19,6 +20,19 @@ a {
 
 a:hover {
   color: #102f73;
+}
+
+.phase-banner {
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  background-color: #1f70b8;
+  padding-top: 5px;
+  padding-right: 8px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  margin-right: 10px;
 }
 
 /* Card settings */
@@ -47,8 +61,8 @@ a:hover {
   color: #193351;
 }
 
-.intro .panel-content {
-  border-top: 2px solid #262626;
+.header .panel-content {
+  border-bottom: 2px solid #262626;
 }
 
 .select-box .panel-content {

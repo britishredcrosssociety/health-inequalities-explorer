@@ -4,6 +4,9 @@ ui <- function(request) {
     # `grid_card()` notes:
     # - `area` arg is used in R/gridConfig.R
     # - `class` arg is used in inst/www/styles.css
+    # - To make some cards act like accordions (which are hidden by default),
+    #   they are piped into calls to `tagAppendAttributes(class = "collapsed")`
+    #   and provided special card titles (from R/utils.R)
 
     # ---- Non-grid elements ----
     includeCSS("inst/www/styles.css"),
@@ -15,35 +18,22 @@ ui <- function(request) {
     grid_card(
       area = "header",
       has_border = FALSE,
+      class = "header",
       tags$h1(tags$b("Health Inequalities Explorer"))
     ),
     grid_card(
       area = "intro",
       has_border = FALSE,
       class = "intro",
+      tags$p(
+        tags$span(class = "phase-banner", "ALPHA"),
+        "This is a new tool under development. Please provide feedback to
+         mpage@redcross.org.uk"
+      ),
       tags$h4(
         tags$b(
-          "Use this interactive tool to explore health statistics and demographics
-         in your local area."
-        )
-      ),
-      tags$p(
-        "Compare different areas by first selecting a geography (e.g.,
-        Local Authorities) and then selecting up to three areas using the map
-        or", tags$i("Select areas"), "box."
-      ),
-      tags$p(
-        "Data in the plots will then be populated and are presented on a scale
-        from -1 to 1 to allow different indicators to be compared side-by-side,
-        while maintaining their underlying distributions. Hover over individudal
-        points on each plot to see their actual non-scaled values."
-      ),
-      tags$p(
-        tags$em(
-          "This is a new tool under development and currently has limited
-          functionality. Other geographical areas, nations, and datasets
-          will be added shortly. Please provide feedback or bugs to
-          mpage@redcross.org.uk"
+          "Use this interactive tool to explore health statistics and
+           demographics in your local area."
         )
       )
     ),
