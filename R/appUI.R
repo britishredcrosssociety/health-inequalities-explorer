@@ -69,6 +69,11 @@ ui <- function(request) {
       tags$h4(tags$b("Summary Indicators"))
     ),
     grid_card(
+      area = "help_button",
+      has_border = FALSE,
+      actionButton("help", "Explain the plot")
+    ),
+    grid_card(
       area = "summary_metrics",
       has_border = FALSE,
       jitterPlotUI("summaryPlot")
