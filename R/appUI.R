@@ -71,7 +71,7 @@ ui <- function(request) {
     grid_card(
       area = "help_button",
       has_border = FALSE,
-      actionButton("help", "Explain the plot")
+      helpButtonUI("help")
     ),
     grid_card(
       area = "summary_metrics",
