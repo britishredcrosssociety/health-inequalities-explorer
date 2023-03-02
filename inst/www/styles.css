@@ -37,25 +37,24 @@ a:hover {
 }
 
 .action-button {
-  color: white;
-  font-size: 1.2rem;
-  letter-spacing: 1px;
-  background-color: #193351;
+  background-color: #f8f9fa;
+  border: 1px solid #E0E0E0;
   padding-top: 9px;
   padding-right: 18px;
   padding-bottom: 9px;
   padding-left: 18px;
-  box-shadow: 0px 3px 3px #9CAAAE;
-  transition: all 0.3s ease 0s;
-  border-color: transparent;
+  
 }
 
 .action-button:hover {
-  background-color: #475C74;
-  border-color: transparent;
-  box-shadow: 0px 3px 3px #475C74;
-  color: white;
-  transform: translateY(-5px);
+  background-color: #f8f9fa;
+  border-color: #717171;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 1px;
+}
+
+.action-button:active {
+  outline: none;
+  transform: translateY(2px);
 }
 
 /* Card settings */
