@@ -37,13 +37,14 @@ a:hover {
 }
 
 .action-button {
+  font-weight: 700;
   background-color: #f8f9fa;
   border: 1px solid #E0E0E0;
+  border-radius: 100%;
   padding-top: 9px;
   padding-right: 18px;
   padding-bottom: 9px;
   padding-left: 18px;
-  
 }
 
 .action-button:hover {
