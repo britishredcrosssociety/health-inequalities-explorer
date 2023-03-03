@@ -1,7 +1,7 @@
 helpButtonUI <- function(id) {
   actionButton(
     NS(id, "button"),
-    label = "Plot guide"
+    label = "?"
   )
 }
 
