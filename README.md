@@ -7,4 +7,4 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 
 ## Overview
 An open access web app to *explore* location based health inequalities across
-different UK geographies.
+different UK geographies. Access the app [here](https://britishredcross.shinyapps.io/health-inequalities-explorer/).
