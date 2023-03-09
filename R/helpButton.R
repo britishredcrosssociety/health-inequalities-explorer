@@ -11,30 +11,30 @@ helpButtonServer <- function(id) {
       showModal(modalDialog(
         title = NULL,
         easyClose = TRUE,
-        tags$h5("Download a plot"),
+        tags$h5("Why do the indicators go from -1 to 1?"),
+        tags$p(
+          "Because each indicator uses different scales, the data was
+          standardised into the range of -1 to 1 to make them comparable. The
+          underlying distribution of points for each indicator remains
+          unchanged."
+        ),
+        tags$h5("How do I find the original indicator values?"),
+        tags$p(
+          "Hover over points to view the non-standardised values."
+        ),
+        tags$h5("How do I download a plot?"),
         tags$p(
           "Hover over the top-right corner of the plot and press the camera
            symbol."
         ),
-        tags$h5("Understand the x-axes"),
+        tags$h5("How do I zoom into a set of points?"),
         tags$p(
-          "Because the indicators use different units, they have all been
-          squashed to a range of -1 to 1 so they can all be lined up on the same
-          plot."
+          "Click and drag the cursor to zoom into a set of points. Double-click
+          anywhere in the plot to cancel."
         ),
-        tags$h5("View the original units"),
+        tags$h5("How do I toggle points on/off the plot?"),
         tags$p(
-          "Hover over any point on the plot."
-        ),
-        tags$h5("Zoom into an area"),
-        tags$p(
-          "Click and drag the cursor in the plot area to create a box and select
-          a set of points to zoom in on. Double click in the plot area to return
-          to the original view."
-        ),
-        tags$h5("Remove points from the plot"),
-        tags$p(
-          "Click any points in the legend to toggle them on/off the plot."
+          "Click any points in the legend to toggle them on/off."
         )
       ))
     })
