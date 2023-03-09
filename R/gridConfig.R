@@ -1,21 +1,21 @@
 # Note: the blank* elements do not have a matching card in appUI
 grid_config <- new_gridlayout(
   c(
-    "1rem   1fr     200px            300px                     300px                     200px            1fr   ",
-    "auto   blank1  blank3           header                    header                    blank4           blank2",
-    "auto   blank1  blank3           intro                     intro                     blank4           blank2",
-    "175px  blank1  blank3           select_geography          map                       blank4           blank2",
-    "175px  blank1  blank3           select_areas              map                       blank4           blank2",
-    "auto   blank1  blank3           summary_title             summary_title             blank4           blank2",
-    "350px  blank1  summary_metrics  summary_metrics           summary_metrics           summary_metrics  blank2",
-    "auto   blank1  blank5           summary_descriptions      summary_descriptions      blank6           blank2",
-    "auto   blank1  blank5           secondary_title           secondary_title           blank6           blank2",
-    "450px  blank1  secondary_care   secondary_care            secondary_care            secondary_care   blank2",
-    "auto   blank1  blank7           secondary_descriptions    secondary_descriptions    blank8           blank2",
-    "auto   blank1  blank7           demographics_title        demographics_title        blank8           blank2",
-    "850px  blank1  demographics     demographics              demographics              demographics     blank2",
-    "auto   blank1  blank9           demographics_descriptions demographics_descriptions blank10          blank2",
-    "auto   blank1  blank9           footer                    footer                    blank10          blank2"
+    "1rem    1fr     10px            175px            300px                     300px                     175px           10px                     1fr   ",
+    "auto    blank1  blank11         blank3           header                    header                    blank4          blank15                  blank2",
+    "auto    blank1  blank11         blank3           intro                     intro                     blank4          blank15                  blank2",
+    "175px   blank1  blank11         blank3           select_geography          map                       blank4          blank15                  blank2",
+    "175px   blank1  blank11         blank3           select_areas              map                       blank4          blank15                  blank2",
+    "auto    blank1  blank11         blank3           summary_title             summary_title             blank4          blank15                  blank2",
+    "360px   blank1  summary_metrics summary_metrics  summary_metrics           summary_metrics           summary_metrics help_button_summary      blank2",
+    "auto    blank1  blank12         blank5           summary_descriptions      summary_descriptions      blank6          blank16                  blank2",
+    "auto    blank1  blank12         blank5           secondary_title           secondary_title           blank6          blank16                  blank2",
+    "480px   blank1  secondary_care  secondary_care   secondary_care            secondary_care            secondary_care  help_button_secondary    blank2",
+    "auto    blank1  blank13         blank7           secondary_descriptions    secondary_descriptions    blank8          blank17                  blank2",
+    "auto    blank1  blank13         blank7           demographics_title        demographics_title        blank8          blank17                  blank2",
+    "1320px  blank1  demographics    demographics     demographics              demographics              demographics    help_button_demographics blank2",
+    "auto    blank1  blank14         blank9           demographics_descriptions demographics_descriptions blank10         blank18                  blank2",
+    "auto    blank1  blank14         blank9           footer                    footer                    blank10         blank18                  blank2"
   )
 )
 

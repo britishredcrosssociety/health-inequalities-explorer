@@ -1,4 +1,3 @@
-library(cicerone)
 library(dplyr)
 library(ggplot2)
 library(gridlayout)

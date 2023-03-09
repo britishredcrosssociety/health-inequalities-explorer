@@ -11,6 +11,7 @@ h1 {
 
 p {
   margin: 10px 0px 10px 0px;
+  line-height: 1.6;
 }
 
 a {
@@ -19,6 +20,44 @@ a {
 
 a:hover {
   color: #102f73;
+}
+
+.phase-banner {
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  background-color: #6A9EAA;
+  padding-top: 5px;
+  padding-right: 8px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.action-button {
+  font-weight: 700;
+  background-color: #f8f9fa;
+  border: 1px solid #E0E0E0;
+  border-radius: 100%;
+  margin-top: 6px;
+  margin-left: -30px;
+  padding-top: 9px;
+  padding-right: 18px;
+  padding-bottom: 9px;
+  padding-left: 18px;
+}
+
+.action-button:hover {
+  background-color: #f8f9fa;
+  border-color: #717171;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 1px;
+}
+
+.action-button:active {
+  outline: none;
+  transform: translateY(2px);
 }
 
 /* Card settings */
@@ -31,7 +70,7 @@ a:hover {
 }
 
 .card-header {
-  width: 35%;
+  width: 34%;
   background-color: transparent;
   border-bottom: none;
   text-decoration: underline;
@@ -47,8 +86,8 @@ a:hover {
   color: #193351;
 }
 
-.intro .panel-content {
-  border-top: 2px solid #262626;
+.header .panel-content {
+  border-bottom: 2px solid #262626;
 }
 
 .select-box .panel-content {
