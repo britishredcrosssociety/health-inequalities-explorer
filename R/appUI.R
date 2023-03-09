@@ -82,7 +82,7 @@ ui <- function(request) {
       area = "summary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = title_collapsible("Additional information"),
+      title = title_collapsible("Show indicator details"),
       tags$p(
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -147,7 +147,7 @@ ui <- function(request) {
       area = "secondary_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = title_collapsible("Additional information"),
+      title = title_collapsible("Show indicator details"),
       tags$p(
         "Secondary care indicators report on the direct performance of the national
          health service. Most secondary care statistics are reported only at
@@ -228,7 +228,7 @@ ui <- function(request) {
       area = "demographics_descriptions",
       has_border = FALSE,
       collapsible = TRUE,
-      title = title_collapsible("Additional information"),
+      title = title_collapsible("Show indicator details"),
       tags$p(
         "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assesed. All data come from
