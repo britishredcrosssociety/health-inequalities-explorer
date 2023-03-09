@@ -6,10 +6,12 @@ server <- function(input, output, session) {
   selectGeographyServer("geography", selected)
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
-  helpButtonServer("help")
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
+  helpButtonServer("help_summary")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
+  helpButtonServer("help_secondary")
   jitterPlotServer("demographicsPlot", selected, "demographics")
+  helpButtonServer("help_demographics")
 
   # Debug
   # observe({

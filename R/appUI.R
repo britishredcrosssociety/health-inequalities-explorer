@@ -69,14 +69,14 @@ ui <- function(request) {
       tags$h4(tags$b("Summary Indicators"))
     ),
     grid_card(
-      area = "help_button",
-      has_border = FALSE,
-      helpButtonUI("help")
-    ),
-    grid_card(
       area = "summary_metrics",
       has_border = FALSE,
       jitterPlotUI("summaryPlot")
+    ),
+    grid_card(
+      area = "help_button_summary",
+      has_border = FALSE,
+      helpButtonUI("help_summary")
     ),
     grid_card(
       area = "summary_descriptions",
@@ -137,6 +137,11 @@ ui <- function(request) {
       area = "secondary_care",
       has_border = FALSE,
       jitterPlotUI("secondaryCarePlot")
+    ),
+    grid_card(
+      area = "help_button_secondary",
+      has_border = FALSE,
+      helpButtonUI("help_secondary")
     ),
     grid_card(
       area = "secondary_descriptions",
@@ -213,6 +218,11 @@ ui <- function(request) {
       area = "demographics",
       has_border = FALSE,
       jitterPlotUI("demographicsPlot")
+    ),
+    grid_card(
+      area = "help_button_demographics",
+      has_border = FALSE,
+      helpButtonUI("help_demographics")
     ),
     grid_card(
       area = "demographics_descriptions",
