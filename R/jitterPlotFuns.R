@@ -175,7 +175,7 @@ jitter_plot_selected <- function(data, selected_areas) {
     theme_minimal() +
     scale_fill_manual(
       # https://waldyrious.net/viridis-palette-generator/
-      values = c("#7e03a8", "#cc4778", "#f89540", "#f0f921"),
+      values = c("#0d0887", "#6a00a8", "#b12a90", "#e16462", "#fca636", "#f0f921"),
       breaks = selected_areas
     ) +
     labs(x = NULL, y = NULL) +

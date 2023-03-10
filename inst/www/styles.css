@@ -82,7 +82,7 @@ a:hover {
 }
 
 .select-box h4 {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 10px 0px;
   color: #193351;
 }
 
@@ -92,6 +92,7 @@ a:hover {
 
 .select-box .panel-content {
   background-color: #6A9EAA30;
+  padding-top: 0px;
 }
 
 .map .panel-content {
