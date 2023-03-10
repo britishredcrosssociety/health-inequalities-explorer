@@ -104,7 +104,7 @@ ui <- function(request) {
       tags$p(
         "Left-behind areas are places high in deprivation and socio-economic
         challenges, and low in social infrastructure and investment to meet those
-        challenges. Research has shown they are associated with with health
+        challenges. Research has shown they are associated with health
         inequalities. More information and an interactive map of these areas
         can be found ",
         tags$a(
@@ -153,7 +153,7 @@ ui <- function(request) {
          health service. Most secondary care statistics are reported only at
          the Trust level. This means that if you are viewing these statistics at
          a different geography, we have aggregated these statistics using
-         catchment population data. Fore more information on how we have done
+         catchment population data. For more information on how we have done
          this, see ",
         tags$a(
           href = "https://britishredcrosssociety.github.io/resilience-index-book/technical.html#health-capacity---england",
@@ -165,9 +165,9 @@ ui <- function(request) {
         "The Improving Access to Pyschological Therapies (IAPT) programme offers
         talking therapies for mental health problems. To address both access to
         mental health services and the success rate of their interventions, the
-        percentage of referrals to were able to access a service within 18 weeks
-        and also finished the first course of treatment, are presented below.
-        More detailed statistics can be accessed ",
+        percentage of referrals that were able to access a service within 18
+        weeks and also finished the first course of treatment, are presented
+        below. More detailed statistics can be accessed ",
         tags$a(
           href = "https://digital.nhs.uk/data-and-information/data-collections-and-data-sets/data-sets/improving-access-to-psychological-therapies-data-set/improving-access-to-psychological-therapies-data-set-reports",
           target = "_blank",
