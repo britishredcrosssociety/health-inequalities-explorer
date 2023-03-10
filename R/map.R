@@ -125,7 +125,7 @@ mapServer <- function(id, selected) {
       },
       {
         if (selected$geography == "trusts_shp_england") {
-          if (input$map_marker_click$group == "base" & length(clicked$areas) < 3) {
+          if (input$map_marker_click$group == "base" & length(clicked$areas) < 5) {
             selected$areas <- c(selected$areas, input$map_marker_click$id)
             clicked$areas <- c(clicked$areas, input$map_marker_click$id)
             leafletProxy("map") |> showGroup(input$map_marker_click$id)
@@ -136,7 +136,7 @@ mapServer <- function(id, selected) {
             leafletProxy("map") |> hideGroup(input$map_marker_click$group)
           }
         } else {
-          if (input$map_shape_click$group == "base" & length(clicked$areas) < 3) {
+          if (input$map_shape_click$group == "base" & length(clicked$areas) < 5) {
             selected$areas <- c(selected$areas, input$map_shape_click$id)
             clicked$areas <- c(clicked$areas, input$map_shape_click$id)
             leafletProxy("map") |> showGroup(input$map_shape_click$id)
