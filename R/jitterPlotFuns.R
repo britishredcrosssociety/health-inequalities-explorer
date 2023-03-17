@@ -41,7 +41,16 @@ ggplotly_default <- function(plot, annotation_y) {
       )
     ) |>
     layout(
-      xaxis = list(range = list(-1.15, 1.15)),
+      xaxis = list(
+        title = list(
+          text = "Normalised range",
+          font = list(
+            color = "#717171",
+            size = 14
+          )
+        ),
+        range = list(-1.15, 1.15)
+      ),
       legend = list(
         orientation = "v",
         title = NA
