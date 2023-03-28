@@ -25,7 +25,7 @@ helpButtonServer <- function(id) {
         tags$h5("How do I download a plot?"),
         tags$p(
           "Hover over the top-right corner of the plot and press the camera
-           symbol."
+           button."
         ),
         tags$h5("How do I zoom into a set of points?"),
         tags$p(
