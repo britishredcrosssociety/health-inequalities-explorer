@@ -14,18 +14,18 @@ helpButtonServer <- function(id) {
         tags$h5("Why do the indicators go from -1 to 1?"),
         tags$p(
           "Because each indicator uses different scales, the data was
-          standardised into the range of -1 to 1 to make them comparable. The
+          normalised into the range of -1 to 1 to make them comparable. The
           underlying distribution of points for each indicator remains
           unchanged."
         ),
         tags$h5("How do I find the original indicator values?"),
         tags$p(
-          "Hover over points to view the non-standardised values."
+          "Hover over points to view the non-normalised values."
         ),
         tags$h5("How do I download a plot?"),
         tags$p(
           "Hover over the top-right corner of the plot and press the camera
-           symbol."
+           button."
         ),
         tags$h5("How do I zoom into a set of points?"),
         tags$p(
