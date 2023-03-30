@@ -51,7 +51,7 @@ ui <- function(request) {
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
-      tags$h4("Select areas to compare"),
+      tags$h4("Select up to five areas"),
       selectAreasUI("areas")
     ),
     grid_card(
