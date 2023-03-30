@@ -96,7 +96,7 @@ ui <- function(request) {
         factors, and the wider determinants of health. A detailed breakdown
         of the index can be viewed ",
         tags$a(
-          href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresengland",
+          href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
           target = "_blank",
           "here."
         )
@@ -105,8 +105,13 @@ ui <- function(request) {
         "Left-behind areas are places high in deprivation and socio-economic
         challenges, and low in social infrastructure and investment to meet those
         challenges. Research has shown they are associated with high health
-        inequalities. More information and an interactive map of these areas
-        can be found ",
+        inequalities. More information on these areas can be found ",
+        tags$a(
+          href = "https://ocsi.uk/left-behind-neighbourhoods/",
+          target = "_blank",
+          "here."
+        ),
+        " An interactice map to visualise these areas can be found",
         tags$a(
           href = "https://britishredcross.shinyapps.io/left-behind-areas/",
           target = "_blank",
@@ -190,13 +195,13 @@ ui <- function(request) {
         all beds. This indicator is often a good proxy for where social care is
         low. For a more detailed breakdown, see",
         tags$a(
-          href = "https://britishredcross.shinyapps.io/trust-discharge-criteria/",
+          href = "https://www.england.nhs.uk/statistics/statistical-work-areas/discharge-delays-acute-data/",
           target = "_blank",
           "here."
         )
       ),
       tags$p(
-        "In addition to the bed availability indicator presented below, our team
+        "In addition to the bed availability indicator presented above, our team
          has also produced a NHS England winter situation report explorer, with
          detailed breakdowns by type of bed, which can be seen ",
         tags$a(
