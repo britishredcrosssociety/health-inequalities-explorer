@@ -43,7 +43,7 @@ ggplotly_default <- function(plot, annotation_y) {
     layout(
       xaxis = list(
         title = list(
-          text = "Normalised range",
+          text = "Normalised units (see '?' button)",
           font = list(
             color = "#717171",
             size = 14
