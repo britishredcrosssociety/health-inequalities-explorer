@@ -24,8 +24,10 @@ imd <-
   left_join(lookup_england_ltla, by = "ltla19_code") |>
   select(ltla21_code, imd_score) |>
   group_by(ltla21_code) |>
-  summarise(number = mean(imd_score)) |>
-  mutate(variable = "IMD Score", .after = ltla21_code) |>
+  summarise(imd_score = mean(imd_score)) |>
+  mutate(number = rank(imd_score)) |>
+  select(-imd_score) |>
+  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
   mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
@@ -43,7 +45,7 @@ lba <-
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
   select(ltla21_code, number = n, percent) |>
-  mutate(variable = "Left-beind areas", .after = ltla21_code)
+  mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- ONS Health Index score ----
 health_index_2020 <- england_health_index |>
@@ -74,7 +76,7 @@ health_index <-
   mutate(health_index_score = health_index_score * -1) |>
   mutate(number = rank(health_index_score)) |> # Higher rank = worse health
   mutate(percent = NA) |>
-  mutate(variable = "ONS Health Index \nrank", .after = ltla21_code) |>
+  mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) |>
   select(-health_index_score)
 
 # ---- Combine & reanme (pretty printing) ----
@@ -98,9 +100,9 @@ ltla_summary_metrics_england <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "IMD Score" ~ scale_1_1(number),
-      variable == "Left-beind areas" ~ scale_1_1(percent),
-      variable == "ONS Health Index \nrank" ~ scale_1_1(number)
+      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Left-behind areas" ~ scale_1_1(percent),
+      variable == "ONS Health \nIndex rank" ~ scale_1_1(number)
     )
   ) |>
   ungroup()

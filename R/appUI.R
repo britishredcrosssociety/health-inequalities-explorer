@@ -51,7 +51,7 @@ ui <- function(request) {
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
-      tags$h4("Select areas to compare"),
+      tags$h4("Select up to five areas"),
       selectAreasUI("areas")
     ),
     grid_card(
@@ -104,7 +104,7 @@ ui <- function(request) {
       tags$p(
         "Left-behind areas are places high in deprivation and socio-economic
         challenges, and low in social infrastructure and investment to meet those
-        challenges. Research has shown they are associated with health
+        challenges. Research has shown they are associated with high health
         inequalities. More information and an interactive map of these areas
         can be found ",
         tags$a(
@@ -254,7 +254,7 @@ ui <- function(request) {
           target = "_blank",
           "here"
         ),
-        " for licenses and more information."
+        " to see the underlying code, data, and licenses."
       )
     )
   )
