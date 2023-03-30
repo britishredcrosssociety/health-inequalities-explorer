@@ -254,7 +254,7 @@ ui <- function(request) {
           target = "_blank",
           "here"
         ),
-        " for licenses and more information."
+        " to see the underlying code, data, and licenses."
       )
     )
   )
