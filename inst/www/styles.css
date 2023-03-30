@@ -36,6 +36,20 @@ a:hover {
   border-radius: 3px;
 }
 
+.note-banner {
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  background-color: #ffc008;
+  padding-top: 5px;
+  padding-right: 8px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
 .action-button {
   font-weight: 700;
   background-color: #f8f9fa;

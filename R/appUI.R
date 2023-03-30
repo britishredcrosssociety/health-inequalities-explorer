@@ -69,6 +69,15 @@ ui <- function(request) {
       tags$h4(tags$b("Summary Indicators"))
     ),
     grid_card(
+      area = "summary_note",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "Clusters of points have similar values. See the help button for more
+        info."
+      )
+    ),
+    grid_card(
       area = "summary_metrics",
       has_border = FALSE,
       jitterPlotUI("summaryPlot")
@@ -137,6 +146,15 @@ ui <- function(request) {
       area = "secondary_title",
       has_border = FALSE,
       tags$h4(tags$b("Secondary Care Indicators"))
+    ),
+    grid_card(
+      area = "secondary_note",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "Clusters of points have similar values. See the help button for more
+        info."
+      )
     ),
     grid_card(
       area = "secondary_care",
@@ -218,6 +236,15 @@ ui <- function(request) {
       area = "demographics_title",
       has_border = FALSE,
       tags$h4(tags$b("Demographic Indicators"))
+    ),
+    grid_card(
+      area = "demographics_note",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "Clusters of points have similar values. See the help button for more
+        info."
+      )
     ),
     grid_card(
       area = "demographics",
