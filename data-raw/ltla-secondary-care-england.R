@@ -182,7 +182,9 @@ metrics_joined <- bind_rows(
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name)
+  relocate(area_name) |>
+  mutate(data_type = "Secondary care") |>
+  relocate(data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
