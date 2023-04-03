@@ -63,18 +63,6 @@ ggplotly_default <- function(plot, annotation_y) {
       y = annotation_y,
       text = "Mean",
       showarrow = F
-    ) |>
-    add_annotations(
-      x = -0.75,
-      y = annotation_y,
-      text = "◄ Lower than mean",
-      showarrow = F
-    ) |>
-    add_annotations(
-      x = 0.75,
-      y = annotation_y,
-      text = "Higher than mean ►",
-      showarrow = F
     )
 }
 
@@ -130,7 +118,37 @@ jitter_plot_null <- function(data) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-  ggplotly_default(plot, annotation_y)
+  # Set plot annotations to higher/lower if the data is demographics, else set
+  # to better/worse
+  if (unique(data$data_type) == "Demographics") {
+    ggplotly_default(plot, annotation_y) |>
+      add_annotations(
+        x = -0.75,
+        y = annotation_y,
+        text = "◄ Lower than mean",
+        showarrow = F
+      ) |>
+      add_annotations(
+        x = 0.75,
+        y = annotation_y,
+        text = "Higher than mean ►",
+        showarrow = F
+      )
+  } else {
+    ggplotly_default(plot, annotation_y) |>
+      add_annotations(
+        x = -0.75,
+        y = annotation_y,
+        text = "◄ worse than mean",
+        showarrow = F
+      ) |>
+      add_annotations(
+        x = 0.75,
+        y = annotation_y,
+        text = "Better than mean ►",
+        showarrow = F
+      )
+  }
 }
 
 # ---- Plot selected areas ----
@@ -190,5 +208,35 @@ jitter_plot_selected <- function(data, selected_areas) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
-  ggplotly_default(plot, annotation_y)
+  # Set plot annotations to higher/lower if the data is demographics, else set
+  # to better/worse
+  if (unique(data$data_type) == "Demographics") {
+    ggplotly_default(plot, annotation_y) |>
+      add_annotations(
+        x = -0.75,
+        y = annotation_y,
+        text = "◄ Lower than mean",
+        showarrow = F
+      ) |>
+      add_annotations(
+        x = 0.75,
+        y = annotation_y,
+        text = "Higher than mean ►",
+        showarrow = F
+      )
+  } else {
+    ggplotly_default(plot, annotation_y) |>
+      add_annotations(
+        x = -0.75,
+        y = annotation_y,
+        text = "◄ worse than mean",
+        showarrow = F
+      ) |>
+      add_annotations(
+        x = 0.75,
+        y = annotation_y,
+        text = "Better than mean ►",
+        showarrow = F
+      )
+  }
 }

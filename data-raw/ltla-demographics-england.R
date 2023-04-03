@@ -174,7 +174,9 @@ joined <-
   bind_rows(
     age_england,
     ethnicity_england
-  )
+  ) |>
+  mutate(data_type = "Demographics") |>
+  relocate(data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {

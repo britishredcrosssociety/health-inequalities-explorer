@@ -182,18 +182,31 @@ metrics_joined <- bind_rows(
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name)
+  relocate(area_name) |>
+  mutate(data_type = "Secondary care") |>
+  relocate(data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-ltla_secondary_care_england <-
+ltla_secondary_care_england_scaled <-
   metrics_joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
+
+# ---- Align indicator polarity ----
+# Align so higher value = better health
+# Flip criteria to reside, as currently higher = worse health
+ltla_secondary_care_england <- ltla_secondary_care_england_scaled |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "beds \nnot meeting criteria \nto reside (Apr-Nov)" ~ scaled_1_1 * -1,
+      TRUE ~ scaled_1_1
+    )
+  )
 
 # Check distributions
 ltla_secondary_care_england |>
