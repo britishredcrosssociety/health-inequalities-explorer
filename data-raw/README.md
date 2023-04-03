@@ -15,7 +15,7 @@ indicators for ICBs)
   - **percent `<dbl>`**: a relative statistics (i.e, a percentage), can be `NA`
   if unavailable 
   - **scaled_1_1 `<dbl>`**: normalised values scaled from -1 to 1, to be 
-  plotted. It is important that indicators are polarised in the same direction
-  (by multiplying those that aren't by -1) so that higher scores equal better
-  health (or a higher score in the case of demographics), before being
-  normalised.
+  plotted (taken from the number column). It is important that indicators are 
+  polarised in the same direction (by multiplying those that aren't by -1) so
+  that higher scores equal better health (or a higher score in the case of 
+  demographics), before being normalised.
