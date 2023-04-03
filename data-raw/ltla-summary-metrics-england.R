@@ -18,6 +18,7 @@ lookup_england_ltla <-
 
 # ---- IMD score ----
 # Higher score = more deprived
+# Higher rank (calculated here) = more deprived
 imd <-
   imd_england_lad |>
   select(ltla19_code = lad_code, imd_score = Score) |>
@@ -31,7 +32,7 @@ imd <-
   mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
-# Higher score = more deprived
+# Higher number/percent = more left-behind
 lba <-
   cni_england_ward17 |>
   left_join(lookup_england_ltla, by = c("lad19_code" = "ltla19_code")) |>
@@ -48,6 +49,8 @@ lba <-
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- ONS Health Index score ----
+# Higher score = better health
+# Higher rank (calculated here) = better health
 health_index_2020 <- england_health_index |>
   filter(year == "2020") |>
   select(ltla21_code, health_index_score = overall_score)
@@ -73,8 +76,7 @@ health_index_missing_added <-
 # Scores need flipping so polarity matches other summary metrics
 health_index <-
   health_index_missing_added |>
-  mutate(health_index_score = health_index_score * -1) |>
-  mutate(number = rank(health_index_score)) |> # Higher rank = worse health
+  mutate(number = rank(health_index_score)) |>
   mutate(percent = NA) |>
   mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) |>
   select(-health_index_score)
@@ -88,8 +90,8 @@ metrics_joined <- bind_rows(
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name) |> 
-  mutate(data_type = "Summary metrics") |> 
+  relocate(area_name) |>
+  mutate(data_type = "Summary metrics") |>
   relocate(data_type, .after = area_name)
 
 # ---- Normalise/scale ----
@@ -97,7 +99,7 @@ scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-ltla_summary_metrics_england <-
+ltla_summary_metrics_england_scaled <-
   metrics_joined |>
   group_by(variable) |>
   mutate(
@@ -109,13 +111,25 @@ ltla_summary_metrics_england <-
   ) |>
   ungroup()
 
+# ---- Align indicator polarity ----
+# Align so higher value = better health
+# Flip IMD and LBA, as currently higher = worse health
+ltla_summary_metrics_england <- ltla_summary_metrics_england_scaled |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
+      variable == "Left-behind areas" ~ scaled_1_1 * -1,
+      TRUE ~ scaled_1_1
+    )
+  )
+
 # Check distributions
 ltla_summary_metrics_england |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
-  scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
-  scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
-  coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
   theme_ridges()
 
 usethis::use_data(ltla_summary_metrics_england, overwrite = TRUE)
