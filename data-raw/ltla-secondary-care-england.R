@@ -77,7 +77,7 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "Beds \nnot meeting criteria \nto reside (Dec 22 - Feb 23)",
+    variable = "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)",
     .after = ltla21_code
   )
 
@@ -119,7 +119,7 @@ discharged_patients_ltla <-
     percent = sum(proportion_mean_percentage_discharged)
   ) |>
   mutate(
-    variable = "Discharged \nbeds (Dec 22 - Feb 23)",
+    variable = "Discharged beds \n(Dec 22 - Feb 23 average)",
     .after = ltla21_code
   )
 
@@ -156,7 +156,7 @@ bed_occupancy_ltla <-
     percent = sum(percent)
   ) |>
   mutate(
-    variable = "Bed availability (Dec 22 - Feb 23)",
+    variable = "Bed availability \n(Dec 22 - Feb 23 average)",
     .after = ltla21_code
   )
 
@@ -169,12 +169,13 @@ iapt_ltla <- england_iapt |>
   drop_na() |>
   group_by(nhs_trust22_code) |>
   summarise(iapt = mean(iapt)) |>
+  mutate(iapt = iapt/100) |> # Convert percentage to decimal
   right_join(lookup_nhs_trusts22_ltla21) |>
   mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
   group_by(ltla21_code) |>
   summarise(iapt = sum(proportion_iapt, na.rm = TRUE)) |>
   mutate(
-    variable = "Improving Access to \nPsychological therapies: \nfinished a course \nof treatment in 18 \nweeks (Dec 22 - Feb 23)",
+    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)",
     number = NA
   ) |>
   select(ltla21_code, variable, number, percent = iapt)
@@ -210,7 +211,7 @@ ltla_secondary_care_england_scaled <-
 ltla_secondary_care_england <- ltla_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "beds \nnot meeting criteria \nto reside (Apr-Nov)" ~ scaled_1_1 * -1,
+      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
