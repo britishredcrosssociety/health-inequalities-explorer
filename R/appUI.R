@@ -189,8 +189,8 @@ ui <- function(request) {
         talking therapies for mental health problems. To address both access to
         mental health services and the success rate of their interventions, the
         percentage of referrals that were able to access a service within 18
-        weeks and also finished the first course of treatment, are presented
-        below. More detailed statistics can be accessed ",
+        weeks and also finished the first course of treatment are presented. 
+        More detailed statistics can be accessed ",
         tags$a(
           href = "https://digital.nhs.uk/data-and-information/data-collections-and-data-sets/data-sets/improving-access-to-psychological-therapies-data-set/improving-access-to-psychological-therapies-data-set-reports",
           target = "_blank",
