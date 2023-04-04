@@ -43,12 +43,14 @@ criteria_to_reside_trust <-
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
-      " 2022"
+      year(date),
+      sep = " "
     )
   ) |>
   left_join(available_beds) |>
   mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
   select(-month) |>
+  filter(date >= max(date) %m-% months(3)) |> # Last quarter
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
@@ -75,7 +77,7 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "beds \nnot meeting criteria \nto reside (Apr-Nov)",
+    variable = "Beds \nnot meeting criteria \nto reside (Dec 22 - Feb 23)",
     .after = ltla21_code
   )
 
@@ -85,11 +87,13 @@ discharged_patients_trust <-
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
-      " 2022"
+      year(date),
+      sep = " "
     )
   ) |>
   left_join(available_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
+  filter(date >= max(date) %m-% months(3)) |> # Last quarter
   select(nhs_trust22_code, percent_discharged, number_discharged = discharged_total) |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
@@ -115,7 +119,7 @@ discharged_patients_ltla <-
     percent = sum(proportion_mean_percentage_discharged)
   ) |>
   mutate(
-    variable = "Discharged \nbeds (Apr-Nov)",
+    variable = "Discharged \nbeds (Dec 22 - Feb 23)",
     .after = ltla21_code
   )
 
@@ -125,6 +129,8 @@ bed_occupancy_trust <-
   select(nhs_trust22_code, date, ends_with("occupied"), ends_with("available")) |>
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
+  mutate(date = my(date)) |>
+  filter(date >= max(date) %m-% months(2)) |> # Last quarter
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
   group_by(nhs_trust22_code, type) |>
@@ -150,14 +156,15 @@ bed_occupancy_ltla <-
     percent = sum(percent)
   ) |>
   mutate(
-    variable = "Bed availability (Apr-Nov)",
+    variable = "Bed availability (Dec 22 - Feb 23)",
     .after = ltla21_code
   )
 
 # ---- IAPT ----
 iapt_ltla <- england_iapt |>
   filter(name == "Percentage_AccessingServices18WeeksFinishedCourseTreatment") |>
-  filter(str_detect(date, "2022")) |>
+  mutate(date = my(date)) |>
+  filter(date >= max(date) %m-% months(2)) |> # Last quarter
   select(nhs_trust22_code, iapt = value) |>
   drop_na() |>
   group_by(nhs_trust22_code) |>
@@ -167,7 +174,7 @@ iapt_ltla <- england_iapt |>
   group_by(ltla21_code) |>
   summarise(iapt = sum(proportion_iapt, na.rm = TRUE)) |>
   mutate(
-    variable = "IAPT: finished a \ncourse of treatment \nin 18 weeks (2022)",
+    variable = "Improving Access to \nPsychological therapies: \nfinished a course \nof treatment in 18 \nweeks (Dec 22 - Feb 23)",
     number = NA
   ) |>
   select(ltla21_code, variable, number, percent = iapt)
