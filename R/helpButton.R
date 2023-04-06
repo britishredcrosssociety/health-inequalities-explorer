@@ -34,13 +34,12 @@ helpButtonServer <- function(id) {
         ),
         tags$h5("How do I download a plot?"),
         tags$p(
-          "Hover over the top-right corner of the plot and press the camera
-           button."
+          "Press the camera button in the top-right corner of the plot."
         ),
         tags$h5("How do I zoom into a set of points?"),
         tags$p(
-          "Click and drag the cursor to zoom into a set of points. Double-click
-          anywhere in the plot to cancel."
+          "Use the zoom and pan buttons in the top-right corner of the plot.
+          Click the 'Reset axes' button to return to the original view."
         ),
         tags$h5("How do I toggle points on/off the plot?"),
         tags$p(

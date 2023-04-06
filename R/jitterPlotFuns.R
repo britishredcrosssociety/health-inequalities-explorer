@@ -20,20 +20,21 @@ ggplotly_default <- function(plot, annotation_y) {
     tooltip = c("text")
   ) |>
     config(
-      # displayModeBar = TRUE,
+      displayModeBar = TRUE,
       displaylogo = FALSE,
       modeBarButtonsToRemove = list(
         "zoom",
-        "pan",
+        # "pan",
         "select",
-        "zoomIn",
-        "zoomOut",
+        # "zoomIn",
+        # "zoomOut",
         "autoScale",
-        "resetScale",
+        # "resetScale",
         "lasso2d",
         "hoverClosestCartesian",
         "hoverCompareCartesian"
       ),
+      # Download button
       toImageButtonOptions = list(
         height = NULL,
         width = NULL,
@@ -41,6 +42,7 @@ ggplotly_default <- function(plot, annotation_y) {
       )
     ) |>
     layout(
+      margin = list(t = 50),
       xaxis = list(
         title = list(
           text = "Normalised units \n(see help button for more details)",
