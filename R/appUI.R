@@ -96,7 +96,7 @@ ui <- function(request) {
         "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
         areas and are a good place to start. But, they should not be used in
-        isolation to make judgements about all aspects of an areas health. For
+        isolation to make judgements about all aspects of an area's health. For
         example, an area may score poorly in a summary metric, yet still excel
         in certain aspects of health."
       ),

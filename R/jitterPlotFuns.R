@@ -168,7 +168,7 @@ jitter_plot_null <- function(data) {
       add_annotations(
         x = -0.75,
         y = annotation_y,
-        text = "◄ worse than mean",
+        text = "◄ Worse than mean",
         showarrow = F
       ) |>
       add_annotations(
