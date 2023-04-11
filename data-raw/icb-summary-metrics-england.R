@@ -48,3 +48,35 @@ health_index <- health_index_raw |>
   relocate(variable, .after = area_code)
 
 # ---- Left-behind areas ----
+# Wards / ICBs are not coterminous:
+library(leaflet)
+
+leaflet() |>
+  setView(lat = 54.59, lng = -5.93, zoom = 6) |>
+  addProviderTiles(providers$CartoDB.Positron) |>
+  addPolygons(
+    data = boundaries_icb22,
+    weight = 0.7,
+    opacity = 0.5,
+    color = "#482677FF",
+    dashArray = "0.1",
+    fillOpacity = 0.2
+  ) |>
+  addPolygons(
+    data = boundaries_wards21,
+    weight = 0.7,
+    opacity = 0.5,
+    color = "#5C747A",
+    dashArray = "0.1",
+    fillOpacity = 0.05
+  )
+
+# Solution: work backwords:
+# 1. Do a ward to LSOA lookup.
+# 2. Assign LSOA's as left-behind or not.
+# 3. Lookup LSOAs to ICBS.
+# 4. Count the percentage of left-behind LSOAs per ICB.
+# Limitation: it assums all smaller areas share the property of the larger area
+# which is likely not to be the case. This means that areas can be wrongly assigned
+# as left-behind when this is not actually the case. Given wards are already small
+# areas, the effects of this should be low.
