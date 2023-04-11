@@ -115,7 +115,7 @@ mapServer <- function(id, selected) {
 
     # - Track click events and then update both the module and global reactive
     #   values and add/remove polygons from the map. Limit the addition of
-    #   overlapping polygons/markers to three to match the select box.
+    #   overlapping polygons/markers to five to match the select box.
     # - Depending upon the geography selected, change the object event name
     #   (between map_marker_click and map_shape_click)
     observeEvent(
