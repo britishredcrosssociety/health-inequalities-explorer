@@ -43,7 +43,7 @@ ui <- function(request) {
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
-      tags$h4("Select a geography (currently limited to local authorities)"),
+      tags$h4("Select a geography"),
       selectGeographyUI("geography")
     ),
     grid_card(
