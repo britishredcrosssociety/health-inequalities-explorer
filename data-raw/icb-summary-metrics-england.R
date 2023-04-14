@@ -58,7 +58,7 @@ health_index <- health_index_raw |>
 
 # Wards / ICBs are not coterminous. Solution (to work backwards):
 #   1. Do a ward to LSOA lookup to assign LSOA's as left-behind or not.
-#   2. Lookup LSOAs to ICBS.
+#   2. Lookup LSOAs to ICBS (note: LSOAs are coterminous with ICBs).
 #   3. Count the percentage of left-behind LSOAs per ICB.
 # Limitation: it assumes all smaller areas share the property of the larger area
 # which is likely not to be the case. This means that areas can be wrongly
