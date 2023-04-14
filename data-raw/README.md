@@ -19,7 +19,9 @@
     polarised in the same direction (by multiplying those that aren't by -1) so
     that higher scores equal better health (or a higher score in the case of 
     demographics), before being normalised
-
+- `census-raw/` contains 2021 census data from:
+  https://www.nomisweb.co.uk/sources/census_2021_ts used in `-demographics`
+  scripts. The NOMIS API has been unreliable so deferring to manual downloads.
 - `-shp` files export the boundary data for use in the maps and the area
   selection boxes. Each exported `-shp` data set should contains the following
   information:
