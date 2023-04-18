@@ -78,46 +78,92 @@ jitter_plot_null <- function(data) {
       x = scaled_1_1,
       y = variable,
       text = case_when(
-        data_type == "Summary metrics" & variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "Index of Multiple \nDeprivation rank" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "IMD rank: ", round(number)
         ),
-        data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of left-behind wards in the area: ", round(number),
           "<br>", "Percentage of all wards that are left-behind: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Health Index rank: ", round(number)
         ),
-        data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of available beds: ", round(number),
           "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of beds not meeting criteria to reside: ", round(number),
           "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of discharged beds: ", round(number),
           "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Demographics" ~ paste0(
+        geography_type == "LTLA" & data_type == "Demographics" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Count: ", round(number),
+          "<br>", "Percent ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "Deprivation" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "The no. of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(number),
+          "<br>", "Percentage of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
+          "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Health Index rank: ", round(number)
+        ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of available beds: ", round(number),
+        #   "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of beds not meeting criteria to reside: ", round(number),
+        #   "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of discharged beds: ", round(number),
+        #   "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+        # ),
+        geography_type == "ICB" & data_type == "Demographics" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Count: ", round(number),
@@ -193,46 +239,92 @@ jitter_plot_selected <- function(data, selected_areas) {
       y = variable,
       fill = selected,
       text = case_when(
-        data_type == "Summary metrics" & variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "Index of Multiple \nDeprivation rank" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "IMD rank: ", round(number)
         ),
-        data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of left-behind wards in the area: ", round(number),
           "<br>", "Percentage of all wards that are left-behind: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
+        geography_type == "LTLA" & data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Health Index rank: ", round(number)
         ),
-        data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of available beds: ", round(number),
           "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of beds not meeting criteria to reside: ", round(number),
           "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of discharged beds: ", round(number),
           "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
+        geography_type == "LTLA" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
         ),
-        data_type == "Demographics" ~ paste0(
+        geography_type == "LTLA" & data_type == "Demographics" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Count: ", round(number),
+          "<br>", "Percent ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "Deprivation" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "The no. of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(number),
+          "<br>", "Percentage of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "Left-behind areas" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
+          "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Summary metrics" & variable == "ONS Health \nIndex rank" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Health Index rank: ", round(number)
+        ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of available beds: ", round(number),
+        #   "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of beds not meeting criteria to reside: ", round(number),
+        #   "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "No. of discharged beds: ", round(number),
+        #   "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+        # ),
+        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
+        #   "<b>", area_name, "</b>",
+        #   "<br>",
+        #   "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+        # ),
+        geography_type == "ICB" & data_type == "Demographics" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "Count: ", round(number),
