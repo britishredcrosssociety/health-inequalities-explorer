@@ -196,6 +196,15 @@ ethnicity_groupings <- ethnicity_raw |>
     !lsoa21_code,
     names_to = "ethnicity",
     values_to = "group_count"
+  ) |>
+  mutate(
+    ethnicity = case_when(
+      ethnicity == "Asian, Asian British or Asian Welsh" ~ "Asian, Asian \nBritish or \nAsian Welsh",
+      ethnicity == "Black, Black British, Black Welsh, Caribbean or African" ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+      ethnicity == "Mixed or Multiple ethnic groups" ~ "Mixed or Multiple \nethnic group",
+      ethnicity == "White" ~ "White",
+      ethnicity == "Other ethnic group" ~ "Other ethnic \ngroup",
+    )
   )
 
 ethnicity_aggregated <- ethnicity_groupings |>
