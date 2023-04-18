@@ -12,9 +12,9 @@ library(geographr)
 icb <- boundaries_icb22 |>
   st_drop_geometry() |>
   mutate(icb22_name = str_remove_all(icb22_name, "^NHS ")) |>
-  mutate(icb22_name = str_remove_all(icb22_name, " Integrated Care Board$"))\
+  mutate(icb22_name = str_remove_all(icb22_name, " Integrated Care Board$"))
 
-lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |> 
+lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |>
   distinct(lsoa11_code, icb22_code)
 
 # ---- 2011 to 2021 LSOA census changes ----
@@ -161,17 +161,74 @@ population_refactored <- population_groupings |>
 # populations that create a skewed distribution with a long right-tail. This
 # matches the figures and distribtuion of the latest mid-year population
 # estimates that use the same 2011 LSOA areas.
-population_aggregated <- population_refactored |> 
+population_aggregated <- population_refactored |>
   aggregate_census_lsoas(count = population, group = age)
 
 # Aggregate to ICB's
-population_icb <- population_aggregated |> 
-  left_join(lsoa_icb) |> 
-  left_join(icb) |> 
-  group_by(icb22_name, age) |> 
-  summarise(number = sum(number)) |> 
-  mutate(icb_population = sum(number)) |> 
-  ungroup() |> 
-  mutate(percent = number/icb_population) |> 
-  select(-icb_population) |> 
-  rename(variable = age)
+population_icb <- population_aggregated |>
+  left_join(lsoa_icb) |>
+  left_join(icb) |>
+  group_by(icb22_name, age) |>
+  summarise(number = sum(number)) |>
+  mutate(icb_population = sum(number)) |>
+  ungroup() |>
+  mutate(percent = number / icb_population) |>
+  select(-icb_population) |>
+  rename(area_name = icb22_name, variable = age)
+
+# ---- Ethnicity ----
+# Source: https://www.nomisweb.co.uk/sources/census_2021_ts
+# Data set: TS007A - Age by five-year age bands
+ethnicity_raw <- read_csv(
+  "data-raw/census-raw/TS021_ethnic_group_lsoa11.csv",
+  skip = 7
+) |>
+  slice(1:(n() - 5))
+
+ethnicity_groupings <- ethnicity_raw |>
+  filter(str_detect(mnemonic, "^E")) |>
+  select(
+    -`2021 super output area - lower layer`,
+    -`Total: All usual residents`
+  ) |>
+  rename(lsoa21_code = mnemonic) |>
+  pivot_longer(
+    !lsoa21_code,
+    names_to = "ethnicity",
+    values_to = "group_count"
+  )
+
+ethnicity_aggregated <- ethnicity_groupings |>
+  aggregate_census_lsoas(count = group_count, group = ethnicity)
+
+ethnicity_icb <- ethnicity_aggregated |>
+  left_join(lsoa_icb) |>
+  left_join(icb) |>
+  group_by(icb22_name, ethnicity) |>
+  summarise(number = sum(number)) |>
+  mutate(icb_population = sum(number)) |>
+  ungroup() |>
+  mutate(percent = number / icb_population) |>
+  select(-icb_population) |>
+  rename(area_name = icb22_name, variable = ethnicity)
+
+# ---- Join ----
+joined <- bind_rows(
+  population_icb, ethnicity_icb
+) |>
+  mutate(data_type = "Demographics") |>
+  relocate(data_type, .after = area_name)
+
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
+
+icb_demographics_england <-
+  joined |>
+  group_by(variable) |>
+  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  ungroup()
+
+# ---- Export data ----
+usethis::use_data(icb_demographics_england, overwrite = TRUE)
