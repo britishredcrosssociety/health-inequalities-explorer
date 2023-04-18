@@ -102,8 +102,9 @@ metrics_joined <- bind_rows(
   select(-icb22_code) |>
   rename(area_name = icb22_name) |>
   relocate(area_name) |>
+  mutate(geography_type = "ICB") |>
   mutate(data_type = "Summary metrics") |>
-  relocate(data_type, .after = area_name)
+  relocate(geography_type, data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {

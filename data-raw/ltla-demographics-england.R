@@ -175,8 +175,9 @@ joined <-
     age_england,
     ethnicity_england
   ) |>
+  mutate(geography_type = "LTLA") |>
   mutate(data_type = "Demographics") |>
-  relocate(data_type, .after = area_name)
+  relocate(geography_type, data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {

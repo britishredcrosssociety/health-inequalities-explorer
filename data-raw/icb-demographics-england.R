@@ -225,8 +225,9 @@ ethnicity_icb <- ethnicity_aggregated |>
 joined <- bind_rows(
   population_icb, ethnicity_icb
 ) |>
+  mutate(geography_type = "ICB") |>
   mutate(data_type = "Demographics") |>
-  relocate(data_type, .after = area_name)
+  relocate(geography_type, data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {

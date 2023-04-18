@@ -169,7 +169,7 @@ iapt_ltla <- england_iapt |>
   drop_na() |>
   group_by(nhs_trust22_code) |>
   summarise(iapt = mean(iapt)) |>
-  mutate(iapt = iapt/100) |> # Convert percentage to decimal
+  mutate(iapt = iapt / 100) |> # Convert percentage to decimal
   right_join(lookup_nhs_trusts22_ltla21) |>
   mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
   group_by(ltla21_code) |>
@@ -191,8 +191,9 @@ metrics_joined <- bind_rows(
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   relocate(area_name) |>
+  mutate(geography_type = "LTLA") |>
   mutate(data_type = "Secondary care") |>
-  relocate(data_type, .after = area_name)
+  relocate(geography_type, data_type, .after = area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
