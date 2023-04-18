@@ -12,77 +12,97 @@ library(geographr)
 icb <- boundaries_icb22 |>
   st_drop_geometry() |>
   mutate(icb22_name = str_remove_all(icb22_name, "^NHS ")) |>
-  mutate(icb22_name = str_remove_all(icb22_name, " Integrated Care Board$"))
+  mutate(icb22_name = str_remove_all(icb22_name, " Integrated Care Board$"))\
 
+lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |> 
+  distinct(lsoa11_code, icb22_code)
+
+# ---- 2011 to 2021 LSOA census changes ----
 lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
-  select(lsoa11_code, lsoa21_code) |>
-  filter(str_detect(lsoa21_code, "^E"))
+  filter(str_detect(lsoa21_code, "^E")) |>
+  distinct(lsoa11_code, lsoa21_code, change_code) |>
+  relocate(change_code, .after = lsoa21_code)
 
-# 837 LSOAs were split from 2011 to 2021: one 2011 LSOAs to many 2021 LSOAs
-# Run `lsoa_lsoa |> filter(lsoa11_code == "E01033583")` for an example, and then
-# check the lsoa21_codes, and it can be seen that each lsoa21_code comes from
-# the split and no where else
+# Change codes:
+# - U = Unchanged
+# - S = Split
+# - M = Merged
+# - X = Fragmented (irregular lookups that can't be easilt mapped)
+
+# U: 31,810 LSOAs remained unchanged from 2011 to 2021
 lsoa_lsoa |>
-  count(lsoa11_code, sort = TRUE) |>
-  filter(n > 1)
+  filter(change_code == "U") |>
+  distinct(lsoa11_code)
 
-# Note: one 2011 to many 2021
-lsoas_one_to_many <- lsoa_lsoa |>
-  count(lsoa11_code) |>
-  filter(n > 1) |>
-  select(-n)
-
-# 100 LSOAs were merged from 2011 to 2021: many 2011 LSOAs to one 2021 LSOA
-# Run `lsoa_lsoa |> filter(lsoa21_code == "E01033769")` for an example, and then
-# check the lsoa11_codes, and it can be seen that each lsoa11_code went directly
-# into the merge and no where else
+# S: 834 LSOAs were split from 2011 to 2021
 lsoa_lsoa |>
-  count(lsoa21_code, sort = TRUE) |>
-  filter(n > 1)
+  filter(change_code == "S") |>
+  distinct(lsoa11_code)
 
-# Note: many 2011 to one 2021
-lsoas_many_to_one <- lsoa_lsoa |>
-  count(lsoa21_code) |>
-  filter(n > 1) |>
-  select(-n)
+# M: 194 LSOAs were merged from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "M") |>
+  distinct(lsoa11_code)
 
-# Three LSOAs are involved in both splits and merge in a many to many
-# relationship
-lsoas_many_to_many <- lsoa_lsoa |>
-  mutate(
-    one_to_many = if_else(
-      lsoa11_code %in% lsoas_one_to_many$lsoa11_code, TRUE, FALSE
-    )
-  ) |>
-  mutate(
-    many_to_one = if_else(
-      lsoa21_code %in% lsoas_many_to_one$lsoa21_code, TRUE, FALSE
-    )
-  ) |>
-  filter(one_to_many == TRUE & many_to_one == TRUE) |>
-  select(starts_with("lsoa"))
+# X: 6 LSOAs were fragmented from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "X") |>
+  distinct(lsoa11_code)
 
-# Remove the LSOAs that appear in lsoas_many_to_many from the one_to_many
-# and many_to_one lists
-lsoas_one_to_many <- lsoas_one_to_many |>
-  filter(!(lsoa11_code %in% lsoas_many_to_many$lsoa11_code))
+# Aggregation stategy going from 2021 codes to 2011 codes:
+# - change_code == "U": No action required
+# - change_code == "S": group by lsoa11_code and sum the count to undo the
+#   original split.
+# - change_code == "M": divide the count by two to undo the original merge. Two
+#   is the maximum number of 2011 LSOAs that were merged together, so an
+#   assumption is made that the population is split equally between the two
+#   2011 areas. The maximum number of merged areas can be checked with:
+#   `lsoa_lsoa |> filter(change_code == "M") |> count(lsoa21_code) |> count(n)`
+# - change_code == "X": count the number of times the lsoa21_code appears, when
+#   the lsoa21_code appears only once, assign the original count, when it
+#   appears twice, assign half the count. Then, group by the lsoa11_code and
+#   sum the counts.
+aggregate_census_lsoas <- function(data, count, group = NULL) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, {{ group }}, number = {{ count }})
 
-lsoas_many_to_one <- lsoas_many_to_one |>
-  filter(!(lsoa21_code %in% lsoas_many_to_many$lsoa21_code))
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code, {{ group }}) |>
+    summarise(number = sum({{ count }})) |>
+    ungroup()
 
-# LSOA aggregation stategy going from 2021 codes to 2011 codes:
-# - When the lsoa11_code is in lsoas_one_to_many, group by lsoa11_code and
-#   sum the 'number' (i.e., count) to get the total count. Think: to get the
-#   one, you must group and sum the many. Note: all other LSOAs not found in
-#   the step below can also be grouped/summed too without effecting their
-#   counts.
-# - When the lsoa21_code is in lsoas_many_to_one, the value needs dividing in
-#   two to apportion the value to the matching 2011 LSOAs (two is the maximum
-#   number of 2011 LSOAs that were merged together, so an assumption is made
-#   that the population is split equally between the two 2011 areas). Think: to
-#   get the many, you must divide the (bigger) one.
-# - The three edge cases where LSOAs map many to many get handled manually.
-# - All other LSOAs remain unchanged and map one to one
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    mutate(number = {{ count }} / 2) |>
+    select(lsoa11_code, {{ group }}, number)
+
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "X") |>
+    group_by({{ group }}) |>
+    add_count(lsoa21_code) |>
+    mutate(
+      new_count = case_when(
+        n == 1 ~ {{ count }},
+        TRUE ~ {{ count }} * 0.5
+      )
+    ) |>
+    group_by(lsoa11_code, {{ group }}) |>
+    summarise(number = sum(new_count)) |>
+    ungroup()
+
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+
+  data_aggregated
+}
 
 # ---- Population ----
 # Source: https://www.nomisweb.co.uk/sources/census_2021_ts
@@ -136,60 +156,22 @@ population_refactored <- population_groupings |>
     )
   )
 
-# Resolve the one (2011) to many (2021) changes:
-population_one_to_many_resolved <- population_refactored |>
-  left_join(lsoa_lsoa) |>
-  relocate(lsoa11_code) |>
-  semi_join(lsoas_one_to_many) |>
-  group_by(lsoa11_code, age) |>
-  summarise(population = sum(population)) |>
-  ungroup()
-
-# Resolve the many (2011) to one (2021) changes:
-population_many_to_one_resolved <- population_refactored |>
-  left_join(lsoa_lsoa) |>
-  relocate(lsoa11_code) |>
-  semi_join(lsoas_many_to_one) |>
-  mutate(population = population / 2) |>
-  select(-lsoa21_code) |>
-  relocate(lsoa11_code)
-
-# Resolve the many to many changes:
-# population_many_to_many_resolved <-
-population_refactored |>
-  left_join(lsoa_lsoa) |>
-  relocate(lsoa11_code) |>
-  filter(
-    lsoa11_code %in% lsoas_many_to_many$lsoa11_code |
-      lsoa21_code %in% lsoas_many_to_many$lsoa21_code
-  ) |> 
-  group_by(age) |> 
-  # See note book with method to calculate aggregations. Need to find a way
-  # to transpose this into code
-
-
-
-
-
-
-
-
-population_unchanged <- population_refactored |>
-  left_join(lsoa_lsoa) |>
-  relocate(lsoa11_code) |>
-  select(-lsoa21_code) |>
-  anti_join(population_one_to_many_resolved) |>
-  anti_join(population_many_to_one_resolved) |>
-  anti_join(population_many_to_many_resolved)
-
-population_2011_lsoas <- bind_rows(
-  population_one_to_many_resolved,
-  population_many_to_one_resolved,
-  population_many_to_many_resolved,
-  population_unchanged
-)
-
-# NOTE: some of the recombined 2011 LSOAs (e.g., "E01033583") have large
+# Aggregate census LSOAs for use in ICB lookup
+# Note: some of the recombined 2011 LSOAs (e.g., "E01033583") have large
 # populations that create a skewed distribution with a long right-tail. This
 # matches the figures and distribtuion of the latest mid-year population
 # estimates that use the same 2011 LSOA areas.
+population_aggregated <- population_refactored |> 
+  aggregate_census_lsoas(count = population, group = age)
+
+# Aggregate to ICB's
+population_icb <- population_aggregated |> 
+  left_join(lsoa_icb) |> 
+  left_join(icb) |> 
+  group_by(icb22_name, age) |> 
+  summarise(number = sum(number)) |> 
+  mutate(icb_population = sum(number)) |> 
+  ungroup() |> 
+  mutate(percent = number/icb_population) |> 
+  select(-icb_population) |> 
+  rename(variable = age)
