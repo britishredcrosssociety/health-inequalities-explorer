@@ -140,29 +140,29 @@ jitter_plot_null <- function(data) {
           "<br>",
           "<br>", "Health Index rank: ", round(number)
         ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of available beds: ", round(number),
-        #   "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of beds not meeting criteria to reside: ", round(number),
-        #   "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of discharged beds: ", round(number),
-        #   "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
-        # ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of available beds: ", round(number),
+          "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of beds not meeting criteria to reside: ", round(number),
+          "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of discharged beds: ", round(number),
+          "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+        ),
         geography_type == "ICB" & data_type == "Demographics" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
@@ -301,29 +301,29 @@ jitter_plot_selected <- function(data, selected_areas) {
           "<br>",
           "<br>", "Health Index rank: ", round(number)
         ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of available beds: ", round(number),
-        #   "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of beds not meeting criteria to reside: ", round(number),
-        #   "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "No. of discharged beds: ", round(number),
-        #   "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
-        # ),
-        # geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)" ~ paste0(
-        #   "<b>", area_name, "</b>",
-        #   "<br>",
-        #   "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
-        # ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of available beds: ", round(number),
+          "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of beds not meeting criteria to reside: ", round(number),
+          "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "No. of discharged beds: ", round(number),
+          "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+        ),
+        geography_type == "ICB" & data_type == "Secondary care" & variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)" ~ paste0(
+          "<b>", area_name, "</b>",
+          "<br>",
+          "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+        ),
         geography_type == "ICB" & data_type == "Demographics" ~ paste0(
           "<b>", area_name, "</b>",
           "<br>",
