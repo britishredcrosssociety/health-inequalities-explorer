@@ -175,7 +175,7 @@ iapt_ltla <- england_iapt |>
   group_by(ltla21_code) |>
   summarise(iapt = sum(proportion_iapt, na.rm = TRUE)) |>
   mutate(
-    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Dec 22 - Feb 23 average)",
+    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)",
     number = NA
   ) |>
   select(ltla21_code, variable, number, percent = iapt)
