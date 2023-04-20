@@ -39,7 +39,7 @@ available_beds <-
 # Divide criteria to reside by bed availability, matching by month
 # These figures are daily, not monthly figures:
 criteria_to_reside_trust <-
-  england_criteria_to_reside |>
+  england_trust_criteria_to_reside |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -77,13 +77,13 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)",
+    variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
     .after = ltla21_code
   )
 
 # ---- Dishcarged patients ----
 discharged_patients_trust <-
-  england_discharged_patients |>
+  england_trust_discharged_patients |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -119,7 +119,7 @@ discharged_patients_ltla <-
     percent = sum(proportion_mean_percentage_discharged)
   ) |>
   mutate(
-    variable = "Discharged beds \n(Dec 22 - Feb 23 average)",
+    variable = "Discharged beds \n(Jan 23 - Mar 23 average)",
     .after = ltla21_code
   )
 
@@ -156,17 +156,17 @@ bed_occupancy_ltla <-
     percent = sum(percent)
   ) |>
   mutate(
-    variable = "Bed availability \n(Dec 22 - Feb 23 average)",
+    variable = "Bed availability \n(Jan 23 - Mar 23 average)",
     .after = ltla21_code
   )
 
 # ---- IAPT ----
-iapt_ltla <- england_iapt |>
+iapt_ltla <- england_trust_iapt |>
   filter(name == "Percentage_AccessingServices18WeeksFinishedCourseTreatment") |>
+  mutate(value = as.numeric(value)) |>
   mutate(date = my(date)) |>
   filter(date >= max(date) %m-% months(2)) |> # Last quarter
   select(nhs_trust22_code, iapt = value) |>
-  drop_na() |>
   group_by(nhs_trust22_code) |>
   summarise(iapt = mean(iapt)) |>
   mutate(iapt = iapt / 100) |> # Convert percentage to decimal
@@ -212,7 +212,7 @@ ltla_secondary_care_england_scaled <-
 ltla_secondary_care_england <- ltla_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
+      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
