@@ -15,6 +15,12 @@ jitterPlotServer <- function(id, selected, type) {
         ltla_summary_metrics_england
       } else if (selected$geography == "ltla_shp_england" & type == "secondary_care") {
         ltla_secondary_care_england
+      } else if (selected$geography == "icb_shp_england" & type == "demographics") {
+        icb_demographics_england
+      } else if (selected$geography == "icb_shp_england" & type == "summary_metrics") {
+        icb_summary_metrics_england
+      } else if (selected$geography == "icb_shp_england" & type == "secondary_care") {
+        icb_secondary_care_england
       }
     })
 
