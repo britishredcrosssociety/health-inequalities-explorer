@@ -14,9 +14,10 @@ jitter_plot_prep <- function(data, selected_areas) {
 }
 
 # ---- ggplotly fun ----
-ggplotly_default <- function(plot, annotation_y) {
+ggplotly_default <- function(plot, indicator_count) {
   ggplotly(
     plot,
+    height = indicator_count * 130,
     tooltip = c("text")
   ) |>
     config(
@@ -62,7 +63,7 @@ ggplotly_default <- function(plot, annotation_y) {
     ) |>
     add_annotations(
       x = 0,
-      y = annotation_y,
+      y = indicator_count + 0.6,
       text = "Mean",
       showarrow = F
     )
@@ -70,7 +71,7 @@ ggplotly_default <- function(plot, annotation_y) {
 
 # ---- Plot while waiting for selection ----
 jitter_plot_null <- function(data) {
-  annotation_y <- length(unique(data$variable)) + 0.6
+  indicator_count <- length(unique(data$variable))
 
   plot <- ggplot(
     data,
@@ -185,7 +186,7 @@ jitter_plot_null <- function(data) {
       x = 0,
       xend = 0,
       y = 0.5,
-      yend = annotation_y - 0.1,
+      yend = indicator_count + 0.5,
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
@@ -198,30 +199,30 @@ jitter_plot_null <- function(data) {
   # Set plot annotations to higher/lower if the data is demographics, else set
   # to better/worse
   if (unique(data$data_type) == "Demographics") {
-    ggplotly_default(plot, annotation_y) |>
+    ggplotly_default(plot, indicator_count) |>
       add_annotations(
         x = -0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "◄ Lower than mean",
         showarrow = F
       ) |>
       add_annotations(
         x = 0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "Higher than mean ►",
         showarrow = F
       )
   } else {
-    ggplotly_default(plot, annotation_y) |>
+    ggplotly_default(plot, indicator_count) |>
       add_annotations(
         x = -0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "◄ Worse than mean",
         showarrow = F
       ) |>
       add_annotations(
         x = 0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "Better than mean ►",
         showarrow = F
       )
@@ -230,7 +231,7 @@ jitter_plot_null <- function(data) {
 
 # ---- Plot selected areas ----
 jitter_plot_selected <- function(data, selected_areas) {
-  annotation_y <- length(unique(data$variable)) + 0.6
+  indicator_count <- length(unique(data$variable))
 
   plot <- ggplot(
     data,
@@ -345,7 +346,7 @@ jitter_plot_selected <- function(data, selected_areas) {
       x = 0,
       xend = 0,
       y = 0.5,
-      yend = annotation_y - 0.1,
+      yend = indicator_count + 0.5,
       colour = "#262626",
       linetype = "dashed",
       alpha = .5,
@@ -364,30 +365,30 @@ jitter_plot_selected <- function(data, selected_areas) {
   # Set plot annotations to higher/lower if the data is demographics, else set
   # to better/worse
   if (unique(data$data_type) == "Demographics") {
-    ggplotly_default(plot, annotation_y) |>
+    ggplotly_default(plot, indicator_count) |>
       add_annotations(
         x = -0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "◄ Lower than mean",
         showarrow = F
       ) |>
       add_annotations(
         x = 0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "Higher than mean ►",
         showarrow = F
       )
   } else {
-    ggplotly_default(plot, annotation_y) |>
+    ggplotly_default(plot, indicator_count) |>
       add_annotations(
         x = -0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "◄ worse than mean",
         showarrow = F
       ) |>
       add_annotations(
         x = 0.75,
-        y = annotation_y,
+        y = indicator_count + 0.6,
         text = "Better than mean ►",
         showarrow = F
       )
