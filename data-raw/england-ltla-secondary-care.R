@@ -209,7 +209,7 @@ ltla_secondary_care_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip criteria to reside, as currently higher = worse health
-ltla_secondary_care_england <- ltla_secondary_care_england_scaled |>
+england_ltla_secondary_care <- ltla_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
@@ -218,7 +218,7 @@ ltla_secondary_care_england <- ltla_secondary_care_england_scaled |>
   )
 
 # Check distributions
-ltla_secondary_care_england |>
+england_ltla_secondary_care |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
@@ -226,4 +226,4 @@ ltla_secondary_care_england |>
   coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
   theme_ridges()
 
-usethis::use_data(ltla_secondary_care_england, overwrite = TRUE)
+usethis::use_data(england_ltla_secondary_care, overwrite = TRUE)

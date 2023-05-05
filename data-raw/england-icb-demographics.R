@@ -234,11 +234,11 @@ scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-icb_demographics_england <-
+england_icb_demographics <-
   joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
 
 # ---- Export data ----
-usethis::use_data(icb_demographics_england, overwrite = TRUE)
+usethis::use_data(england_icb_demographics, overwrite = TRUE)

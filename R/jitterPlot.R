@@ -9,18 +9,18 @@ jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      if (selected$geography == "ltla_shp_england" & type == "demographics") {
-        ltla_demographics_england
-      } else if (selected$geography == "ltla_shp_england" & type == "summary_metrics") {
-        ltla_summary_metrics_england
-      } else if (selected$geography == "ltla_shp_england" & type == "secondary_care") {
-        ltla_secondary_care_england
-      } else if (selected$geography == "icb_shp_england" & type == "demographics") {
-        icb_demographics_england
-      } else if (selected$geography == "icb_shp_england" & type == "summary_metrics") {
-        icb_summary_metrics_england
-      } else if (selected$geography == "icb_shp_england" & type == "secondary_care") {
-        icb_secondary_care_england
+      if (selected$geography == "england_ltla_shp" & type == "demographics") {
+        england_ltla_demographics
+      } else if (selected$geography == "england_ltla_shp" & type == "summary_metrics") {
+        england_ltla_summary_metrics
+      } else if (selected$geography == "england_ltla_shp" & type == "secondary_care") {
+        england_ltla_secondary_care
+      } else if (selected$geography == "england_icb_shp" & type == "demographics") {
+        england_icb_demographics
+      } else if (selected$geography == "england_icb_shp" & type == "summary_metrics") {
+        england_icb_summary_metrics
+      } else if (selected$geography == "england_icb_shp" & type == "secondary_care") {
+        england_icb_secondary_care
       }
     })
 
@@ -44,7 +44,7 @@ jitterPlotTest <- function() {
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "ltla_shp_england"
+      areas = vector(), geography = "england_ltla_shp"
     )
     jitterPlotServer("test", selected, type = "demographics_age")
   }
