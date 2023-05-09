@@ -89,11 +89,11 @@ ltla_summary_metrics_scotland_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, and health index, as currently higher = worse health
-ltla_summary_metrics_scotland <- ltla_summary_metrics_scotland_scaled |>
+scotland_ltla_summary_metrics <- ltla_summary_metrics_scotland_scaled |>
   mutate(scaled_1_1 = scaled_1_1 * -1)
 
 # Check distributions
-ltla_summary_metrics_scotland |>
+scotland_ltla_summary_metrics |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
@@ -101,4 +101,4 @@ ltla_summary_metrics_scotland |>
   coord_cartesian(clip = "off") +
   theme_ridges()
 
-usethis::use_data(ltla_summary_metrics_scotland, overwrite = TRUE)
+usethis::use_data(scotland_ltla_summary_metrics, overwrite = TRUE)
