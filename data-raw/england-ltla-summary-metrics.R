@@ -115,7 +115,7 @@ ltla_summary_metrics_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD and LBA, as currently higher = worse health
-ltla_summary_metrics_england <- ltla_summary_metrics_england_scaled |>
+england_ltla_summary_metrics <- ltla_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
@@ -125,7 +125,7 @@ ltla_summary_metrics_england <- ltla_summary_metrics_england_scaled |>
   )
 
 # Check distributions
-ltla_summary_metrics_england |>
+england_ltla_summary_metrics |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
@@ -133,4 +133,4 @@ ltla_summary_metrics_england |>
   coord_cartesian(clip = "off") +
   theme_ridges()
 
-usethis::use_data(ltla_summary_metrics_england, overwrite = TRUE)
+usethis::use_data(england_ltla_summary_metrics, overwrite = TRUE)

@@ -7,13 +7,39 @@ mapUI <- function(id) {
 
 mapServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
-
     # - Map -
+    # Track which nation has been selected and set the map lat/long accordingly
+    latitude <- reactive({
+      if (grepl("^england_", selected$geography)) {
+        52.75
+      } else if (grepl("^scotland_", selected$geography)) {
+        57
+      }
+      # else if (grepl("^wales_", selected$geography)) {
+      #   52.13
+      # } else if (grepl("^ni_", selected$geography)) {
+      #   54.78
+      # }
+    })
+
+    longitude <- reactive({
+      if (grepl("^england_", selected$geography)) {
+        -2.0
+      } else if (grepl("^scotland_", selected$geography)) {
+        -4.5
+      }
+      # else if (grepl("^wales_", selected$geography)) {
+      #   -3.78
+      # } else if (grepl("^ni_", selected$geography)) {
+      #   -6.5
+      # }
+    })
+
     output$map <-
       renderLeaflet({
         # Create base map
         base_map <- leaflet() |>
-          setView(lat = 52.75, lng = -2.0, zoom = 6) |>
+          setView(lat = latitude(), lng = longitude(), zoom = 6) |>
           addProviderTiles(
             providers$CartoDB.Positron,
             options = providerTileOptions(minZoom = 6)
@@ -112,7 +138,7 @@ mapTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "ltla_shp_england"
+      areas = vector(), geography = "england_ltla_shp"
     )
     mapServer("test", selected)
   }
@@ -121,3 +147,11 @@ mapTest <- function() {
 
 # Examples
 # mapTest()
+
+
+leaflet() |>
+  setView(lat = 54.78, lng = -6.5, zoom = 6) |>
+  addProviderTiles(
+    providers$CartoDB.Positron,
+    options = providerTileOptions(minZoom = 6)
+  )
