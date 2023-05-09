@@ -14,7 +14,7 @@ ui <- function(request) {
     # ---- Layout specified in R/gridConfig.R ----
     layout = grid_config,
 
-    # ---- Header & Intro ----
+    # ---- Header, Intro & User Guide ----
     grid_card(
       area = "header",
       has_border = FALSE,
@@ -34,6 +34,15 @@ ui <- function(request) {
           "Use this interactive tool to explore health statistics and
            demographics in your local area."
         )
+      )
+    ),
+    grid_card(
+      area = "user_guide",
+      has_border = FALSE,
+      tags$a(
+        href = "https://medium.com/insight-and-improvement-at-british-red-cross/health-inequalities-explorer-f77025a2f1a3",
+        target = "_blank",
+        tags$button(class = "guide-banner", "SEE QUICK USER GUIDE")
       )
     ),
 
@@ -90,6 +99,7 @@ ui <- function(request) {
     grid_card(
       area = "summary_descriptions",
       has_border = FALSE,
+      class = "indicator-details",
       collapsible = TRUE,
       title = title_collapsible("Show indicator details"),
       tags$p(
@@ -169,6 +179,7 @@ ui <- function(request) {
     grid_card(
       area = "secondary_descriptions",
       has_border = FALSE,
+      class = "indicator-details",
       collapsible = TRUE,
       title = title_collapsible("Show indicator details"),
       tags$p(
@@ -189,7 +200,7 @@ ui <- function(request) {
         talking therapies for mental health problems. To address both access to
         mental health services and the success rate of their interventions, the
         percentage of referrals that were able to access a service within 18
-        weeks and also finished the first course of treatment are presented. 
+        weeks and also finished the first course of treatment are presented.
         More detailed statistics can be accessed ",
         tags$a(
           href = "https://digital.nhs.uk/data-and-information/data-collections-and-data-sets/data-sets/improving-access-to-psychological-therapies-data-set/improving-access-to-psychological-therapies-data-set-reports",
@@ -259,6 +270,7 @@ ui <- function(request) {
     grid_card(
       area = "demographics_descriptions",
       has_border = FALSE,
+      class = "indicator-details",
       collapsible = TRUE,
       title = title_collapsible("Show indicator details"),
       tags$p(
