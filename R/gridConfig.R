@@ -10,6 +10,7 @@ grid_config <- new_gridlayout(
     "1rem    1fr     10px            175px            300px                     300px                     175px           10px                     1fr   ",
     "auto    blank1  blank11         blank3           header                    header                    blank4          blank15                  blank2",
     "auto    blank1  blank11         blank3           intro                     intro                     blank4          blank15                  blank2",
+    "auto    blank1  blank11         blank3           user_guide                user_guide                blank4          blank15                  blank2",
     "220px   blank1  blank11         blank3           select_geography          map                       blank4          blank15                  blank2",
     "230px   blank1  blank11         blank3           select_areas              map                       blank4          blank15                  blank2",
     "auto    blank1  blank11         blank3           summary_title             summary_title             blank4          blank15                  blank2",
