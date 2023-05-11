@@ -11,24 +11,25 @@ pop_raw <- read_csv(
 )
 
 pop_scotland <- pop_raw |>
-  filter(Year == 2021) |> 
-  filter(Sex == "All") |> 
-  filter(CA != "S92000003") |> 
-  select(ltla21_code = CA, population = AllAges) |> print(n=Inf)
+  filter(Year == 2021) |>
+  filter(Sex == "All") |>
+  filter(CA != "S92000003") |>
+  select(ltla21_code = CA, population = AllAges) |>
+  print(n = Inf)
 
 # ---- Delayed discharge ----
 delayed_discharge_monthly <- scotland_delayed_discharge_ltla |>
-  drop_na() |> 
-  filter(ltla_code != "S92000003") |> 
+  drop_na() |>
+  filter(ltla_code != "S92000003") |>
   filter(date >= max(date) %m-% months(2)) |> # Last quarter
   filter(age_group == "18-74" | age_group == "75plus") |>
   filter(delay_reason == "All Delay Reasons") |>
-  rename(ltla21_code = ltla_code) |> 
+  rename(ltla21_code = ltla_code) |>
   group_by(ltla21_code, date) |>
   summarise(
     num_delayed_bed_days = sum(num_delayed_bed_days),
     average_daily_delayed_beds = sum(average_daily_delayed_beds)
-  ) |> 
+  ) |>
   ungroup()
 
 delayed_discharge_summary <- delayed_discharge_monthly |>
@@ -36,10 +37,22 @@ delayed_discharge_summary <- delayed_discharge_monthly |>
   summarise(
     num_delayed_bed_days = mean(num_delayed_bed_days),
     average_daily_delayed_beds = mean(average_daily_delayed_beds)
-  ) |> 
+  ) |>
   select(-num_delayed_bed_days)
 
-delayed_discharge_summary |> 
+delayed_discharges <- delayed_discharge_summary |>
   left_join(pop_scotland) |>
-  mutate(beds_per_10000 = average_daily_delayed_beds / population * 10000)
+  mutate(beds_per_10000 = average_daily_delayed_beds / population * 10000) |>
+  select(
+    ltla21_code,
+    number = average_daily_delayed_beds,
+    percent = beds_per_10000
+  ) |> 
+  mutate(
+    variable = "Delayed discharges",
+    .after = ltla21_code
+  )
+
+# ---- IAPT ----
+
 
