@@ -42,7 +42,7 @@ ui <- function(request) {
       tags$a(
         href = "https://medium.com/insight-and-improvement-at-british-red-cross/health-inequalities-explorer-f77025a2f1a3",
         target = "_blank",
-        tags$button(class = "guide-banner", "SEE QUICK USER GUIDE")
+        tags$button(class = "guide-button", "SEE QUICK USER GUIDE")
       )
     ),
 
