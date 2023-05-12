@@ -1,4 +1,4 @@
-ui <- function(request) {
+ui <- function() {
   grid_page(
 
     # `grid_card()` notes:
