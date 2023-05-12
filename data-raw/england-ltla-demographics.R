@@ -174,21 +174,29 @@ joined <-
   bind_rows(
     age_england,
     ethnicity_england
-  ) |>
-  mutate(geography_type = "LTLA") |>
-  mutate(data_type = "Demographics") |>
-  relocate(geography_type, data_type, .after = area_name)
+  )
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-england_ltla_demographics <-
+england_ltla_demographics_scaled <-
   joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
+
+# --- Add plot labels ----
+england_ltla_demographics <- england_ltla_demographics_scaled |>
+  mutate(
+    label = paste0(
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Count: ", round(number),
+      "<br>", "Percent ", round(percent * 100, 1), "%"
+    )
+  )
 
 # ---- Export data ----
 usethis::use_data(england_ltla_demographics, overwrite = TRUE)
