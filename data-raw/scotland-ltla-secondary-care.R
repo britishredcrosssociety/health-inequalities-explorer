@@ -3,6 +3,12 @@ library(lubridate)
 library(healthyr)
 library(geographr)
 library(sf)
+library(ggridges)
+
+ltla <-
+  boundaries_ltla21 |>
+  st_drop_geometry() |>
+  filter(str_detect(ltla21_code, "^S"))
 
 # Popuation counts
 # Source: https://www.opendata.nhs.scot/dataset/population-estimates
@@ -47,12 +53,51 @@ delayed_discharges <- delayed_discharge_summary |>
     ltla21_code,
     number = average_daily_delayed_beds,
     percent = beds_per_10000
-  ) |> 
+  ) |>
   mutate(
-    variable = "Delayed discharges",
+    variable = "Delayed discharges \n(Jan 23 - Mar 23 average)",
     .after = ltla21_code
   )
 
-# ---- IAPT ----
+# ---- Combine ----
+metrics_joined <- delayed_discharges |>
+  left_join(ltla) |>
+  select(-ltla21_code) |>
+  rename(area_name = ltla21_name) |>
+  relocate(area_name) |>
+  mutate(geography_type = "LTLA") |>
+  mutate(data_type = "Secondary care") |>
+  relocate(geography_type, data_type, .after = area_name)
 
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
 
+scotland_ltla_secondary_care_scaled <-
+  metrics_joined |>
+  group_by(variable) |>
+  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  ungroup()
+
+# ---- Align indicator polarity ----
+# Align so higher value = better health
+# Flip delayed discharges, as currently higher = worse health
+scotland_ltla_secondary_care <- scotland_ltla_secondary_care_scaled |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Delayed discharges \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
+      TRUE ~ scaled_1_1
+    )
+  )
+
+# Check distributions
+scotland_ltla_secondary_care |>
+  ggplot(aes(x = scaled_1_1, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
+  scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
+  coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
+  theme_ridges()
+
+usethis::use_data(scotland_ltla_secondary_care, overwrite = TRUE)
