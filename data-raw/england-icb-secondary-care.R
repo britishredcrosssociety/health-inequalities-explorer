@@ -157,10 +157,7 @@ joined <-
   left_join(icb) |>
   select(-icb22_code) |>
   rename(area_name = icb22_name) |>
-  relocate(area_name) |>
-  mutate(geography_type = "ICB") |>
-  mutate(data_type = "Secondary care") |>
-  relocate(geography_type, data_type, .after = area_name)
+  relocate(area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -176,7 +173,7 @@ icb_secondary_care_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip criteria to reside, as currently higher = worse health
-england_icb_secondary_care <- icb_secondary_care_england_scaled |>
+england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
@@ -185,12 +182,42 @@ england_icb_secondary_care <- icb_secondary_care_england_scaled |>
   )
 
 # Check distributions
-england_icb_secondary_care |>
+england_icb_secondary_care_polarised |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
   scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
   coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
   theme_ridges()
+
+# ---- Add plot labels ----
+england_icb_secondary_care <- england_icb_secondary_care_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of available beds: ", round(number),
+        "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of beds not meeting criteria to reside: ", round(number),
+        "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of discharged beds: ", round(number),
+        "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+      )
+    )
+  )
 
 usethis::use_data(england_icb_secondary_care, overwrite = TRUE)

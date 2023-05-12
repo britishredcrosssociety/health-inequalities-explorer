@@ -90,10 +90,7 @@ metrics_joined <- bind_rows(
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name) |>
-  mutate(geography_type = "LTLA") |>
-  mutate(data_type = "Summary metrics") |>
-  relocate(geography_type, data_type, .after = area_name)
+  relocate(area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -115,7 +112,7 @@ ltla_summary_metrics_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD and LBA, as currently higher = worse health
-england_ltla_summary_metrics <- ltla_summary_metrics_england_scaled |>
+england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
@@ -125,12 +122,35 @@ england_ltla_summary_metrics <- ltla_summary_metrics_england_scaled |>
   )
 
 # Check distributions
-england_ltla_summary_metrics |>
+england_ltla_summary_metrics_polarised |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   theme_ridges()
+
+# ---- Add plot labels ----
+england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "IMD rank: ", round(number)
+      ),
+      variable == "Left-behind areas" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of left-behind wards in the area: ", round(number),
+        "<br>", "Percentage of all wards that are left-behind: ", round(percent * 100, 1), "%"
+      ),
+      variable == "ONS Health \nIndex rank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Health Index rank: ", round(number)
+      )
+    )
+  )
 
 usethis::use_data(england_ltla_summary_metrics, overwrite = TRUE)

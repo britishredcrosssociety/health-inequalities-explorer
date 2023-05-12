@@ -64,10 +64,7 @@ metrics_joined <- delayed_discharges |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name) |>
-  mutate(geography_type = "LTLA") |>
-  mutate(data_type = "Secondary care") |>
-  relocate(geography_type, data_type, .after = area_name)
+  relocate(area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -83,7 +80,7 @@ scotland_ltla_secondary_care_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip delayed discharges, as currently higher = worse health
-scotland_ltla_secondary_care <- scotland_ltla_secondary_care_scaled |>
+scotland_ltla_secondary_care_polarised <- scotland_ltla_secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Delayed discharges \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
@@ -92,12 +89,25 @@ scotland_ltla_secondary_care <- scotland_ltla_secondary_care_scaled |>
   )
 
 # Check distributions
-scotland_ltla_secondary_care |>
+scotland_ltla_secondary_care_polarised |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
   scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
   coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
   theme_ridges()
+
+# ---- Add plot labels ----
+scotland_ltla_secondary_care <- scotland_ltla_secondary_care_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Delayed discharges \n(Jan 23 - Mar 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Average daily no. of delayed beds: ", round(number),
+        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent * 100, 1), "%"
+      )
+    )
+  )
 
 usethis::use_data(scotland_ltla_secondary_care, overwrite = TRUE)

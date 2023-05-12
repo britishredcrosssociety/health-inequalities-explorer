@@ -224,21 +224,29 @@ ethnicity_icb <- ethnicity_aggregated |>
 # ---- Join ----
 joined <- bind_rows(
   population_icb, ethnicity_icb
-) |>
-  mutate(geography_type = "ICB") |>
-  mutate(data_type = "Demographics") |>
-  relocate(geography_type, data_type, .after = area_name)
+)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-england_icb_demographics <-
+england_icb_demographics_scaled <-
   joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
+
+# ---- Add plot labels ----
+england_icb_demographics <- england_icb_demographics_scaled |>
+  mutate(
+    label = paste0(
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Count: ", round(number),
+      "<br>", "Percent ", round(percent * 100, 1), "%"
+    )
+  )
 
 # ---- Export data ----
 usethis::use_data(england_icb_demographics, overwrite = TRUE)

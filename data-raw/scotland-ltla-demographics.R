@@ -61,31 +61,37 @@ population_scotland <- population_relative |>
   )
 
 # ---- Join ----
-joined <-
-  population_scotland |>
-  mutate(geography_type = "LTLA") |>
-  mutate(data_type = "Demographics") |>
-  relocate(geography_type, data_type, .after = area_name)
+joined <- population_scotland
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-scotland_ltla_demographics <-
-  joined |>
+scotland_ltla_demographics_scaled <- joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
 
 # Check distributions
-scotland_ltla_demographics |>
+scotland_ltla_demographics_scaled |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
   scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
   coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
   theme_ridges()
+
+# ---- Add plot labels ----
+scotland_ltla_demographics <- scotland_ltla_demographics_scaled |>
+  mutate(
+    label = paste0(
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Count: ", round(number),
+      "<br>", "Percent ", round(percent * 100, 1), "%"
+    )
+  )
 
 # ---- Export data ----
 usethis::use_data(scotland_ltla_demographics, overwrite = TRUE)

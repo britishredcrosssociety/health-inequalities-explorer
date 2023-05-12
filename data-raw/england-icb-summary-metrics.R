@@ -101,10 +101,7 @@ metrics_joined <- bind_rows(
   left_join(icb) |>
   select(-icb22_code) |>
   rename(area_name = icb22_name) |>
-  relocate(area_name) |>
-  mutate(geography_type = "ICB") |>
-  mutate(data_type = "Summary metrics") |>
-  relocate(geography_type, data_type, .after = area_name)
+  relocate(area_name)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -126,7 +123,7 @@ icb_summary_metrics_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD and LBA, as currently higher = worse health
-england_icb_summary_metrics <- icb_summary_metrics_england_scaled |>
+england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
@@ -136,12 +133,36 @@ england_icb_summary_metrics <- icb_summary_metrics_england_scaled |>
   )
 
 # Check distributions
-england_icb_summary_metrics |>
+england_icb_summary_metrics_polarised |>
   ggplot(aes(x = scaled_1_1, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   theme_ridges()
+
+# ---- Add plot labels ----
+england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Deprivation" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "The no. of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(number),
+        "<br>", "Percentage of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Left-behind areas" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
+        "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
+      ),
+      variable == "ONS Health \nIndex rank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Health Index rank: ", round(number)
+      )
+    )
+  )
 
 usethis::use_data(england_icb_summary_metrics, overwrite = TRUE)
