@@ -86,7 +86,7 @@ a:hover {
   font-weight: 700;
   font-size: 2.45rem;
   letter-spacing: 1px;
-  background-color: #E3EDEF;
+  background-color: #f8f9fa;
   border: 1px solid #E0E0E0;
   margin-top: -15px;
   padding-top: 9px;
@@ -97,7 +97,7 @@ a:hover {
 }
 
 .guide-button:hover {
-  background-color: #DBE4E6;
+  background-color: #f8f9fa;
   border-color: #717171;
   box-shadow: rgba(0, 0, 0, .1) 0 2px 1px;
 }
