@@ -4,6 +4,7 @@ library(demographr)
 library(compositr)
 library(geographr)
 library(sf)
+library(ggridges)
 
 ltla <-
   boundaries_ltla21 |>
@@ -58,3 +59,33 @@ population_scotland <- population_relative |>
     number = population,
     percent = population_relative
   )
+
+# ---- Join ----
+joined <-
+  population_scotland |>
+  mutate(geography_type = "LTLA") |>
+  mutate(data_type = "Demographics") |>
+  relocate(geography_type, data_type, .after = area_name)
+
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
+
+scotland_ltla_demographics <-
+  joined |>
+  group_by(variable) |>
+  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  ungroup()
+
+# Check distributions
+scotland_ltla_demographics |>
+  ggplot(aes(x = scaled_1_1, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
+  scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
+  coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
+  theme_ridges()
+
+# ---- Export data ----
+usethis::use_data(scotland_ltla_demographics, overwrite = TRUE)
