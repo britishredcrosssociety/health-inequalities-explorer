@@ -1,0 +1,60 @@
+library(tidyverse)
+library(readxl)
+library(demographr)
+library(compositr)
+library(geographr)
+library(sf)
+
+ltla <-
+  boundaries_ltla21 |>
+  st_drop_geometry() |>
+  filter(str_detect(ltla21_code, "^S"))
+
+# ---- Population ----
+# Source: https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021
+url <- "https://www.nrscotland.gov.uk/files//statistics/population-estimates/mid-21/mid-year-pop-est-21-data.xlsx"
+
+population_file <- download_file(url, ".xlsx")
+
+population_raw <- read_excel(
+  population_file,
+  sheet = "Table 1",
+  range = "B4:CR103"
+)
+
+population_groupings <- population_raw |>
+  slice(-1:-3) |>
+  filter(Sex != "Persons") |>
+  rowwise() |>
+  mutate(
+    age_18_less = sum(c_across(`0`:`17`)),
+    age_18_65 = sum(c_across(`18`:`65`)),
+    age_65_plus = sum(c_across(`66`:`90+`))
+  ) |>
+  ungroup() |>
+  select(matches("^[a-z]"))
+
+population_age_sex_joined <- population_groupings |>
+  pivot_longer(cols = starts_with("age"), values_to = "population") |>
+  mutate(
+    age = case_when(
+      Sex == "Females" & name == "age_18_less" ~ "Younger \nfemales (< 18)",
+      Sex == "Males" & name == "age_18_less" ~ "Younger \nmales (< 18)",
+      Sex == "Females" & name == "age_18_65" ~ "Working age \nfemales (18-65)",
+      Sex == "Males" & name == "age_18_65" ~ "Working age \nmales (18-65)",
+      Sex == "Females" & name == "age_65_plus" ~ "Older \nfemales (65+)",
+      Sex == "Males" & name == "age_65_plus" ~ "Older \nmales (65+)"
+    )
+  )
+
+population_relative <- population_age_sex_joined |>
+  mutate(population_relative = population / `All ages`)
+
+population_scotland <- population_relative |>
+  left_join(ltla, by = c("Area code" = "ltla21_code")) |>
+  select(
+    area_name = ltla21_name,
+    variable = age,
+    number = population,
+    percent = population_relative
+  )
