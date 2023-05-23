@@ -110,8 +110,8 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
       variable == "Left-behind areas" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of left-behind Intermediate Zones in the area: ", round(number),
-        "<br>", "Percentage of all Intermediate Zones that are left-behind: ", round(percent * 100, 1), "%"
+        "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
       ),
       variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",

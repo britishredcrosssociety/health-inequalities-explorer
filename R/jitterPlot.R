@@ -27,7 +27,13 @@ jitterPlotServer <- function(id, selected, type) {
         scotland_ltla_secondary_care
       } else if (selected$geography == "scotland_ltla_shp" & type == "demographics") {
         scotland_ltla_demographics
-      }
+      } else if (selected$geography == "scotland_hb_shp" & type == "summary_metrics") {
+        scotland_hb_summary_metrics
+      } else if (selected$geography == "scotland_hb_shp" & type == "secondary_care") {
+        scotland_hb_secondary_care
+      } else if (selected$geography == "scotland_hb_shp" & type == "demographics") {
+        scotland_hb_demographics
+      } 
     })
 
     output$plot <- renderPlotly({

@@ -20,8 +20,7 @@ pop_scotland <- pop_raw |>
   filter(Year == 2021) |>
   filter(Sex == "All") |>
   filter(CA != "S92000003") |>
-  select(ltla21_code = CA, population = AllAges) |>
-  print(n = Inf)
+  select(ltla21_code = CA, population = AllAges)
 
 # ---- Delayed discharge ----
 delayed_discharge_monthly <- scotland_delayed_discharge_ltla |>
