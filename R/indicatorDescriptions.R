@@ -2,10 +2,34 @@ indicatorDescriptionsUI <- function(id) {
   uiOutput(NS(id, "indicatorDescriptions"))
 }
 
-indicatorDescriptionsServer <- function(id) {
+indicatorDescriptionsServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
     output$indicatorDescriptions <- renderUI({
-      "Placeholder text"
+      if (selected$geography == "england_ltla_shp" & type == "summary_metrics") {
+        "Insert text here..."
+      } else if (selected$geography == "england_ltla_shp" & type == "secondary_care") {
+        "Insert text here..."
+      } else if (selected$geography == "england_ltla_shp" & type == "demographics") {
+        "Insert text here..."
+      } else if (selected$geography == "england_icb_shp" & type == "summary_metrics") {
+        "Insert text here..."
+      } else if (selected$geography == "england_icb_shp" & type == "secondary_care") {
+        "Insert text here..."
+      } else if (selected$geography == "england_icb_shp" & type == "demographics") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_ltla_shp" & type == "summary_metrics") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_ltla_shp" & type == "secondary_care") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_ltla_shp" & type == "demographics") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_hb_shp" & type == "summary_metrics") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_hb_shp" & type == "secondary_care") {
+        "Insert text here..."
+      } else if (selected$geography == "scotland_hb_shp" & type == "demographics") {
+        "Insert text here..."
+      } 
     })
   })
 }

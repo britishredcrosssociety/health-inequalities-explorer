@@ -14,9 +14,9 @@ server <- function(input, output, session) {
   jitterPlotServer("demographicsPlot", selected, "demographics")
 
   # Indicator descriptions
-  indicatorDescriptionsServer("summaryDescriptions")
-  indicatorDescriptionsServer("secondaryCareDescriptions")
-  indicatorDescriptionsServer("demographicsDescriptions")
+  indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")
+  indicatorDescriptionsServer("secondaryCareDescriptions", selected, "secondary_care")
+  indicatorDescriptionsServer("demographicsDescriptions", selected, "demographics")
 
   # Help buttons
   helpButtonServer("help_summary")
