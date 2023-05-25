@@ -29,4 +29,5 @@
     across datasets and must match
   - **area_code `<chr>`**: geographical area codes. These are used as layer ID's
     in the maps
-  - **geometry `<MULTIPOLYGON [°]>`**: geographical boundaries
+  - **geometry `<MULTIPOLYGON [°]>`**: geographical boundaries. These should be
+    as simplified as possible to reduce load times. Use `rmapshaper::ms_simplify()`
