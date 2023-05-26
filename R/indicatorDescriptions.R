@@ -261,27 +261,204 @@ indicatorDescriptionsServer <- function(id, selected, type) {
 
         # ---- scotland_ltla_summary_metrics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "summary_metrics") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "These indicators summarise a selection of health metrics into a single
+        score. They can be useful for comparing the overall health of different
+        areas and are a good place to start. But, they should not be used in
+        isolation to make judgements about all aspects of an area's health. For
+        example, an area may score poorly in a summary metric, yet still excel
+        in certain aspects of health."
+          ),
+          tags$p(
+            "The ",
+            tags$a(
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              target = "_blank",
+              "ONS Health Index"
+            ),
+            " is England specific and provides an indication of health outcomes,
+            risk factors, and the wider determinants of health. As part of the
+            British Red Cross Resilience Index, an equivalent Scottish version
+            was created. More details of this index can
+            be viewed ",
+            tags$a(
+              href = "https://github.com/britishredcrosssociety/resilience-index",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "Left-behind areas are places high in deprivation and socio-economic
+        challenges, and low in social infrastructure and investment to meet those
+        challenges. Research has shown they are associated with high health
+        inequalities. More information on these areas can be found ",
+            tags$a(
+              href = "https://ocsi.uk/left-behind-neighbourhoods/",
+              target = "_blank",
+              "here."
+            ),
+            " An interactice map to visualise these areas can be found",
+            tags$a(
+              href = "https://britishredcross.shinyapps.io/left-behind-areas/",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "The Scottish Indices of Multiple Deprivation (IMD) include a measure
+            of health that measures the risk of premature death and the impairment
+            of quality of life through poor mental health and drug and alcohol
+            misuse. More
+            information can be viewed ",
+            tags$a(
+              href = "https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/",
+              target = "_blank",
+              "here."
+            )
+          )
+        )
 
         # ---- scotland_ltla_secondary_care ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "secondary_care") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "Delayed discharges indicate the average number of hospital bed days
+            occupied by patients who were clinically ready for discharge. More
+            information can be viewed ",
+            tags$a(
+              href = "https://www.opendata.nhs.scot/dataset/delayed-discharges-in-nhsscotland",
+              target = "_blank",
+              "here."
+            )
+          )
+        )
 
-        # ---- england_icb_demographics ----
+        # ---- scotland_ltla_demographics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "demographics") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "These indicators can be used alongside other indicators to understand
+        the population breakdowns of the areas being assesed. All data come from
+        the latest ",
+            tags$a(
+              href = "https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021",
+              target = "_blank",
+              "mid-2021 population estimates."
+            )
+          )
+        )
 
         # ---- scotland_hb_summary_metrics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "summary_metrics") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "These indicators summarise a selection of health metrics into a single
+        score. They can be useful for comparing the overall health of different
+        areas and are a good place to start. But, they should not be used in
+        isolation to make judgements about all aspects of an area's health. For
+        example, an area may score poorly in a summary metric, yet still excel
+        in certain aspects of health."
+          ),
+          tags$p(
+            "The ",
+            tags$a(
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              target = "_blank",
+              "ONS Health Index"
+            ),
+            " is England specific and provides an indication of health outcomes,
+            risk factors, and the wider determinants of health. As part of the
+            British Red Cross Resilience Index, an equivalent Scottish version
+            was created. More details of this index can
+            be viewed ",
+            tags$a(
+              href = "https://github.com/britishredcrosssociety/resilience-index",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "Left-behind areas are places high in deprivation and socio-economic
+        challenges, and low in social infrastructure and investment to meet those
+        challenges. Research has shown they are associated with high health
+        inequalities. More information on these areas can be found ",
+            tags$a(
+              href = "https://ocsi.uk/left-behind-neighbourhoods/",
+              target = "_blank",
+              "here."
+            ),
+            " An interactice map to visualise these areas can be found",
+            tags$a(
+              href = "https://britishredcross.shinyapps.io/left-behind-areas/",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "The Scottish Indices of Multiple Deprivation (IMD) include a measure
+            of health that measures the risk of premature death and the impairment
+            of quality of life through poor mental health and drug and alcohol
+            misuse. More
+            information can be viewed ",
+            tags$a(
+              href = "https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/",
+              target = "_blank",
+              "here."
+            )
+          )
+        )
 
         # ---- scotland_hb_secondary_care ----
       } else if (selected$geography == "scotland_hb_shp" & type == "secondary_care") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "Referral to treatment waiting times show the number of people waiting
+            over 18 weeks from their intial referral to the start of their
+            treatment. The Scottish Government determined that at least
+            90% of patients should be seen within at least 18 weeks. More
+            information can be viewed ",
+            tags$a(
+              href = "https://www.opendata.nhs.scot/dataset/18-weeks-referral-to-treatment",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "Delayed discharges indicate the average number of hospital bed days
+            occupied by patients who were clinically ready for discharge. More
+            information can be viewed ",
+            tags$a(
+              href = "https://www.opendata.nhs.scot/dataset/delayed-discharges-in-nhsscotland",
+              target = "_blank",
+              "here."
+            )
+          ),
+          tags$p(
+            "Bed availability shows the number of available staffed beds across
+            all specialties. More information can be viewed ",
+            tags$a(
+              href = "https://www.opendata.nhs.scot/dataset/hospital-beds-information",
+              target = "_blank",
+              "here."
+            )
+          )
+        )
 
         # ---- scotland_hb_demographics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "demographics") {
-        "Indicator details coming soon..."
+        tagList(
+          tags$p(
+            "These indicators can be used alongside other indicators to understand
+        the population breakdowns of the areas being assesed. All data come from
+        the latest ",
+            tags$a(
+              href = "https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021",
+              target = "_blank",
+              "mid-2021 population estimates."
+            )
+          )
+        )
       }
     })
   })
@@ -292,7 +469,10 @@ indicatorDescriptionsTest <- function() {
     indicatorDescriptionsUI("test")
   )
   server <- function(input, output, session) {
-    indicatorDescriptionsServer("test")
+    selected <- reactiveValues(
+      areas = vector(), geography = "england_ltla_shp"
+    )
+    indicatorDescriptionsServer("test", selected, type = "demographics")
   }
   shinyApp(ui, server)
 }
