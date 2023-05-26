@@ -58,7 +58,7 @@ jitterPlotTest <- function() {
     selected <- reactiveValues(
       areas = vector(), geography = "england_ltla_shp"
     )
-    jitterPlotServer("test", selected, type = "demographics_age")
+    jitterPlotServer("test", selected, type = "demographics")
   }
 
   shinyApp(ui, server)

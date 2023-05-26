@@ -3,14 +3,24 @@ server <- function(input, output, session) {
   selected <- reactiveValues(areas = vector(), geography = vector())
 
   # Call module server functions
+  # Selections
   selectGeographyServer("geography", selected)
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
+
+  # Plots
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
-  helpButtonServer("help_summary")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
-  helpButtonServer("help_secondary")
   jitterPlotServer("demographicsPlot", selected, "demographics")
+
+  # Indicator descriptions
+  indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")
+  indicatorDescriptionsServer("secondaryCareDescriptions", selected, "secondary_care")
+  indicatorDescriptionsServer("demographicsDescriptions", selected, "demographics")
+
+  # Help buttons
+  helpButtonServer("help_summary")
+  helpButtonServer("help_secondary")
   helpButtonServer("help_demographics")
 
   # Debug
