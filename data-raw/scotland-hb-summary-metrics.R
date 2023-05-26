@@ -94,7 +94,7 @@ hb_summary_metrics_scotland_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Health Index \nrank" ~ scale_1_1(number)
     )

@@ -113,7 +113,7 @@ icb_summary_metrics_england_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "ONS Health \nIndex rank" ~ scale_1_1(number)
     )
