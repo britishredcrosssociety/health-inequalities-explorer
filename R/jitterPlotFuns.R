@@ -1,9 +1,10 @@
 # ---- Prepare selected data ----
 jitter_plot_prep <- function(data, selected_areas) {
   data |>
+    mutate(area_name = string_wrap(area_name)) |>
     mutate(
       selected = if_else(
-        area_name %in% selected_areas,
+        area_name %in% string_wrap(selected_areas),
         area_name,
         "not selected"
       )
@@ -173,7 +174,7 @@ jitter_plot_selected <- function(data, selected_areas) {
       # https://waldyrious.net/viridis-palette-generator/
       # No. of colours = maximum number of area selections + 1
       values = c("#0d0887", "#f89540", "#cc4778", "#f0f921", "#7e03a8", "#000004"),
-      breaks = selected_areas
+      breaks = string_wrap(selected_areas)
     ) +
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))

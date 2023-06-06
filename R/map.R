@@ -147,11 +147,3 @@ mapTest <- function() {
 
 # Examples
 # mapTest()
-
-
-leaflet() |>
-  setView(lat = 54.78, lng = -6.5, zoom = 6) |>
-  addProviderTiles(
-    providers$CartoDB.Positron,
-    options = providerTileOptions(minZoom = 6)
-  )
