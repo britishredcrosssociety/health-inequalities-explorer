@@ -161,31 +161,13 @@ bed_occupancy_ltla <-
   )
 
 # ---- IAPT ----
-iapt_ltla <- england_trust_iapt |>
-  filter(name == "Percentage_AccessingServices18WeeksFinishedCourseTreatment") |>
-  mutate(value = as.numeric(value)) |>
-  mutate(date = my(date)) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
-  select(nhs_trust22_code, iapt = value) |>
-  group_by(nhs_trust22_code) |>
-  summarise(iapt = mean(iapt)) |>
-  mutate(iapt = iapt / 100) |> # Convert percentage to decimal
-  right_join(lookup_nhs_trusts22_ltla21) |>
-  mutate(proportion_iapt = iapt * proportion_trust_came_from_ltla) |>
-  group_by(ltla21_code) |>
-  summarise(iapt = sum(proportion_iapt, na.rm = TRUE)) |>
-  mutate(
-    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)",
-    number = NA
-  ) |>
-  select(ltla21_code, variable, number, percent = iapt)
-
+iapt_ltla <- 
+  
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   criteria_to_reside_ltla,
   discharged_patients_ltla,
-  bed_occupancy_ltla,
-  iapt_ltla
+  bed_occupancy_ltla
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -244,11 +226,6 @@ england_ltla_secondary_care <- england_ltla_secondary_care_polarised |>
         "<br>",
         "<br>", "No. of discharged beds: ", round(number),
         "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
       )
     )
   )
