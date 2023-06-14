@@ -159,9 +159,6 @@ bed_occupancy_ltla <-
     variable = "Bed availability \n(Jan 23 - Mar 23 average)",
     .after = ltla21_code
   )
-
-# ---- IAPT ----
-iapt_ltla <- 
   
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
