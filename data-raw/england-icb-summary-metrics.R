@@ -13,6 +13,7 @@ icb <- boundaries_icb22 |>
 
 # ---- IMD score ----
 # Decile 1 = most deprived
+# Higher percentage / number = worse health
 imd <- imd_england_lsoa |>
   rename(lsoa11_code = lsoa_code) |>
   left_join(lookup_lsoa11_sicbl22_icb22_ltla22) |>
@@ -27,8 +28,8 @@ imd <- imd_england_lsoa |>
   mutate(freq = n / sum(n)) |>
   mutate(total_number_lsoas = sum(n)) |>
   ungroup() |>
-  filter(top_10 == "no") |>
-  mutate(number = total_number_lsoas - n) |> # Not all ICBs have top 10% most vulnerable LSOAs
+  filter(top_10 == "no") |> # Not all ICBs have top 10% most vulnerable LSOAs
+  mutate(number = total_number_lsoas - n) |>
   mutate(percent = 1 - freq) |>
   mutate(variable = "Deprivation", .after = icb22_code) |>
   select(-top_10, -n, -freq, -total_number_lsoas)
@@ -126,7 +127,7 @@ icb_summary_metrics_england_scaled <-
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
+      variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
