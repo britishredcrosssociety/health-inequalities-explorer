@@ -48,7 +48,7 @@ raw <- download_file(
 health_index_raw <- read_excel(raw, sheet = "Table_2_Index_scores", skip = 2)
 
 health_index <- health_index_raw |>
-  select(icb22_code = `Area Code`, number = `2020`) |>
+  select(icb22_code = `Area Code`, number = `2021`) |>
   mutate(number = rank(number)) |>
   mutate(percent = NA) |>
   mutate(variable = "ONS Health \nIndex rank") |>
