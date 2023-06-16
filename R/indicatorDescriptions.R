@@ -21,7 +21,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         factors, and the wider determinants of health. A detailed breakdown
         of the index can be viewed ",
             tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
               target = "_blank",
               "here."
             )
@@ -148,7 +148,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         factors, and the wider determinants of health. A detailed breakdown
         of the index can be viewed ",
             tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
               target = "_blank",
               "here."
             )
@@ -273,7 +273,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           tags$p(
             "The ",
             tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
               target = "_blank",
               "ONS Health Index"
             ),
@@ -363,7 +363,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           tags$p(
             "The ",
             tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2020",
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
               target = "_blank",
               "ONS Health Index"
             ),
