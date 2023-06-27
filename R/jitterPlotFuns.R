@@ -73,7 +73,7 @@ ggplotly_default <- function(plot, indicator_count) {
 # ---- Plot while waiting for selection ----
 jitter_plot_null <- function(data) {
   indicator_count <- length(unique(data$variable))
-
+  
   plot <- ggplot(
     data,
     aes(
@@ -105,6 +105,77 @@ jitter_plot_null <- function(data) {
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
 
+  # Rearrange order of y-axis variables if data is demographics
+  switch(deparse(substitute(data)),
+         "england_icb_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "White",
+                 "Other ethnic \ngroup",
+                 "Mixed or Multiple \nethnic groups",
+                 "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+                 "Asian, Asian \nBritish or \nAsian Welsh",
+                 "Older \npeople (65+)",
+                 "Working \nage (18-65)",
+                 "Younger \npeople (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 8.4, label = "Age", colour = "#717171") +
+             geom_hline(yintercept = 5.5, size = 0.1, linetype = "dotted") +
+             annotate(geom = "text", x = 0.99, y = 5.4, label = "Ethnicity", colour = "#717171")
+         },
+         "england_ltla_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "White",
+                 "Other ethnic \ngroup",
+                 "Mixed or Multiple \nethnic groups",
+                 "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+                 "Asian, Asian \nBritish or \nAsian Welsh",
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 11.4, label = "Age & Gender", colour = "#717171") +
+             geom_hline(yintercept = 5.5, size = 0.1, linetype = "dotted") +
+             annotate(geom = "text", x = 0.99, y = 5.4, label = "Ethnicity", colour = "#717171")
+         },
+         "scotland_ltla_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 6.4, label = "Age & Gender", colour = "#717171")
+         },
+         "scotland_hb_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 6.4, label = "Age & Gender", colour = "#717171")
+         }
+  )
+  
   # Set plot annotations to higher/lower if the data is demographics, else set
   # to better/worse
   if (any(grepl("Younger", unique(data$variable), fixed = TRUE))) {
@@ -178,6 +249,77 @@ jitter_plot_selected <- function(data, selected_areas) {
     ) +
     labs(x = NULL, y = NULL) +
     theme(text = element_text(size = 12))
+  
+  # Rearrange order of y-axis variables if data is demographics
+  switch(deparse(substitute(data)),
+         "england_icb_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "White",
+                 "Other ethnic \ngroup",
+                 "Mixed or Multiple \nethnic groups",
+                 "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+                 "Asian, Asian \nBritish or \nAsian Welsh",
+                 "Older \npeople (65+)",
+                 "Working \nage (18-65)",
+                 "Younger \npeople (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 8.4, label = "Age", colour = "#717171") +
+             geom_hline(yintercept = 5.5, size = 0.1, linetype = "dotted") +
+             annotate(geom = "text", x = 0.99, y = 5.4, label = "Ethnicity", colour = "#717171")
+         },
+         "england_ltla_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "White",
+                 "Other ethnic \ngroup",
+                 "Mixed or Multiple \nethnic groups",
+                 "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+                 "Asian, Asian \nBritish or \nAsian Welsh",
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 11.4, label = "Age & Gender", colour = "#717171") +
+             geom_hline(yintercept = 5.5, size = 0.1, linetype = "dotted") +
+             annotate(geom = "text", x = 0.99, y = 5.4, label = "Ethnicity", colour = "#717171")
+         },
+         "scotland_ltla_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 6.4, label = "Age & Gender", colour = "#717171")
+         },
+         "scotland_hb_demographics" = {
+           plot <- plot +
+             scale_y_discrete(
+               limits = c(
+                 "Older \nmales (65+)",
+                 "Working age \nmales (18-65)",
+                 "Younger \nmales (< 18)",
+                 "Older \nfemales (65+)",
+                 "Working age \nfemales (18-65)",
+                 "Younger \nfemales (< 18)"
+               )
+             ) +
+             annotate(geom = "text", x = 0.94, y = 6.4, label = "Age & Gender", colour = "#717171")
+         }
+  )
 
   # Set plot annotations to higher/lower if the data is demographics, else set
   # to better/worse
