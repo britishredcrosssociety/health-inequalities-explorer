@@ -99,9 +99,9 @@ mapServer <- function(id, selected) {
 
     # Track click events and then update both the module and global reactive
     # values and add/remove polygons from the map. Limit the addition of
-    # overlapping polygons to five to match the select box.
+    # overlapping polygons to eight to match the select box.
     observeEvent(input$map_shape_click, {
-      if (input$map_shape_click$group == "base" & length(clicked$areas) < 5) {
+      if (input$map_shape_click$group == "base" & length(clicked$areas) < 8) {
         selected$areas <- c(selected$areas, input$map_shape_click$id)
         clicked$areas <- c(clicked$areas, input$map_shape_click$id)
         leafletProxy("map") |> showGroup(input$map_shape_click$id)

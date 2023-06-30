@@ -173,7 +173,7 @@ jitter_plot_selected <- function(data, selected_areas) {
     scale_fill_manual(
       # https://waldyrious.net/viridis-palette-generator/
       # No. of colours = maximum number of area selections + 1
-      values = c("#0d0887", "#f89540", "#cc4778", "#f0f921", "#7e03a8", "#000004"),
+      values = c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004"),
       breaks = string_wrap(selected_areas)
     ) +
     labs(x = NULL, y = NULL) +
