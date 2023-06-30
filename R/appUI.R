@@ -60,7 +60,7 @@ ui <- function() {
       has_border = TRUE,
       scrollable = FALSE,
       class = "select-box",
-      tags$h4("Select up to five areas"),
+      tags$h4("Select up to eight areas"),
       selectAreasUI("areas")
     ),
     grid_card(
