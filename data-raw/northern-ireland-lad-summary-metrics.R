@@ -13,25 +13,27 @@ lookup_northern_ireland_ltla <-
   lookup_ltla_ltla |>
   filter(str_detect(ltla21_code, "^N"))
 
+
 # ---- IMD score ----
 imd <- imd_northern_ireland_lad
 
 
 
-
 # ---- ONS Health Index ----
 
-# An official Health Index for Northern Ireland does not exists. Use the BRC Resilience
-# Index version
+# An official Health Index for Northern Ireland does not exists. Use the BRC Resilience Index version
 
 # Higher score = worse health
 # Higher rank (calculated here) = worse health
 health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/northern-ireland/index-unweighted.csv"
+  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/northern-ireland/index-unweighted-all-indicators.csv"
 )
 
-
-
+health_index <- health_index_raw |>
+  select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Health Index \nrank") |>
+  relocate(variable, .after = ltla21_code)
 
 
 # ---- % Left-behind areas ----
