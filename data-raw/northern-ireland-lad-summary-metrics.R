@@ -29,7 +29,8 @@ health_index_raw <- read_csv(
   "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/northern-ireland/index-unweighted-all-indicators.csv"
 )
 
-health_index <- health_index_raw |>
+health_index <- 
+  health_index_raw |>
   select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
   mutate(percent = NA) |>
   mutate(variable = "Health Index \nrank") |>
@@ -38,18 +39,23 @@ health_index <- health_index_raw |>
 
 # ---- % Left-behind areas ----
 
-#The left-behind areas come from the community needs index
-#The latest data of which can be loaded into the HIE directly from the IMD R package
-
+#The left-behind areas come from the community needs index (loaded from the IMD package)
 # Higher number/percent = more left-behind
 
-cni <- cni_northern_ireland_soa11
-
-#use proportions (& add absolute number)
-
-
-
-
+lba <- 
+  cni_northern_ireland_soa11 |>
+  left_join(lookup_northern_ireland_ltla, by = c("lgd14_code" = "ltla19_code")) |>
+  select(soa11_code, ltla21_code, lba = `Left Behind Area?`) |>
+  group_by(ltla21_code) |>
+  count(lba) |>
+  mutate(percent = n / sum(n)) |>
+  ungroup() |>
+  filter(lba == TRUE) |>
+  right_join(ltla) |>
+  mutate(percent = replace_na(percent, 0)) |>
+  mutate(n = replace_na(n, 0)) |>
+  select(ltla21_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- Combine & reanme (pretty printing) ----
 
