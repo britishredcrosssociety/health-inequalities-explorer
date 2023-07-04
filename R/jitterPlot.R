@@ -71,4 +71,4 @@ jitterPlotTest <- function() {
 }
 
 # Examples
-jitterPlotTest()
+#jitterPlotTest()
