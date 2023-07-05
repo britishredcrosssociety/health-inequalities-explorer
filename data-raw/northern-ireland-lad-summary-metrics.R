@@ -1,8 +1,9 @@
 library(tidyverse)
+library(IMD)
 library(geographr)
 library(compositr)
 library(sf)
-library(IMD)
+library(ggridges)
 
 ltla <-
   boundaries_ltla21 |>
@@ -13,11 +14,16 @@ lookup_northern_ireland_ltla <-
   lookup_ltla_ltla |>
   filter(str_detect(ltla21_code, "^N"))
 
-
 # ---- IMD score ----
-imd <- imd_northern_ireland_lad
-
-
+# Higher extent = more deprived /
+# Higher rank (calculated here) = more deprived
+imd <- 
+  imd_northern_ireland_lad |>
+  select(ltla21_code = lad_code, imd_score = Extent) |>
+  mutate(number = rank(imd_score)) |>
+  select(-imd_score) |>
+  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+  mutate(percent = NA, .after = number)
 
 # ---- ONS Health Index ----
 
@@ -36,12 +42,10 @@ health_index <-
   mutate(variable = "Health Index \nrank") |>
   relocate(variable, .after = ltla21_code)
 
-
 # ---- % Left-behind areas ----
 
 #The left-behind areas come from the community needs index (loaded from the IMD package)
 # Higher number/percent = more left-behind
-
 lba <- 
   cni_northern_ireland_soa11 |>
   left_join(lookup_northern_ireland_ltla, by = c("lgd14_code" = "ltla19_code")) |>
@@ -57,21 +61,72 @@ lba <-
   select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- Combine & reanme (pretty printing) ----
-
-
-
+# ---- Combine & rename (pretty printing) ----
+metrics_joined <- bind_rows(
+  imd,
+  lba,
+  health_index
+) |>
+  left_join(ltla) |>
+  select(-ltla21_code) |>
+  rename(area_name = ltla21_name) |>
+  relocate(area_name)
 
 # ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
 
+ltla_summary_metrics_northern_ireland_scaled <-
+  metrics_joined |>
+  group_by(variable) |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Left-behind areas" ~ scale_1_1(percent),
+      variable == "Health Index \nrank" ~ scale_1_1(number)
+    )
+  ) |>
+  ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD and LBA, as currently higher = worse health
+# Flip IMD, LBA, and health index, as currently higher = worse health
+northern_ireland_ltla_summary_metrics_polarised <- 
+  ltla_summary_metrics_northern_ireland_scaled |>
+  mutate(scaled_1_1 = scaled_1_1 * -1)
 
-
+# Check distributions
+northern_ireland_ltla_summary_metrics_polarised |>
+  ggplot(aes(x = scaled_1_1, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
+  theme_ridges()
 
 # ---- Add plot labels ----
 
+northern_ireland_ltla_summary_metrics <- northern_ireland_ltla_summary_metrics_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "IMD rank: ", round(number)
+      ),
+      variable == "Left-behind areas" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Health Index \nrank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Health Index rank: ", round(number)
+      )
+    )
+  )
 
 usethis::use_data(england_icb_summary_metrics, overwrite = TRUE)
