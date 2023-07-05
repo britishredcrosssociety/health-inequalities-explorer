@@ -21,6 +21,7 @@ mapServer <- function(id, selected) {
       #   54.78
       # }
     })
+    
 
     longitude <- reactive({
       if (grepl("^england_", selected$geography)) {
@@ -34,7 +35,7 @@ mapServer <- function(id, selected) {
       #   -6.5
       # }
     })
-
+    
     output$map <-
       renderLeaflet({
         # Create base map
@@ -146,4 +147,4 @@ mapTest <- function() {
 }
 
 # Examples
-# mapTest()
+mapTest()
