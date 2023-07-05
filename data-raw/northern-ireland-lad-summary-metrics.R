@@ -129,4 +129,4 @@ northern_ireland_ltla_summary_metrics <- northern_ireland_ltla_summary_metrics_p
     )
   )
 
-usethis::use_data(england_icb_summary_metrics, overwrite = TRUE)
+usethis::use_data(northern_ireland_lad_summary_metrics, overwrite = TRUE)
