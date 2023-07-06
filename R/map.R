@@ -147,4 +147,4 @@ mapTest <- function() {
 }
 
 # Examples
-mapTest()
+#mapTest()
