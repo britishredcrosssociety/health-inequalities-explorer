@@ -11,33 +11,31 @@ jitterPlotServer <- function(id, selected, type) {
     dataset <- reactive({
       if (selected$geography == "england_ltla_shp") {
         switch(type,
-               "summary_metrics" = england_ltla_summary_metrics,
-               "secondary_care" = england_ltla_secondary_care,
-               "demographics" = england_ltla_demographics,
-               stop("No data selected", call. = FALSE)
+          "summary_metrics" = england_ltla_summary_metrics,
+          "secondary_care" = england_ltla_secondary_care,
+          "demographics" = england_ltla_demographics,
+          stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "england_icb_shp") {
         switch(type,
-               "summary_metrics" = england_icb_summary_metrics,
-               "secondary_care" = england_icb_secondary_care,
-               "demographics" = england_icb_demographics,
-               stop("No data selected", call. = FALSE)
-               
+          "summary_metrics" = england_icb_summary_metrics,
+          "secondary_care" = england_icb_secondary_care,
+          "demographics" = england_icb_demographics,
+          stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "scotland_ltla_shp") {
         switch(type,
-               "summary_metrics" = scotland_ltla_summary_metrics,
-               "secondary_care" = scotland_ltla_secondary_care,
-               "demographics" = scotland_ltla_demographics,
-               stop("No data selected", call. = FALSE)
-               
+          "summary_metrics" = scotland_ltla_summary_metrics,
+          "secondary_care" = scotland_ltla_secondary_care,
+          "demographics" = scotland_ltla_demographics,
+          stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "scotland_hb_shp") {
         switch(type,
-               "summary_metrics" = scotland_hb_summary_metrics,
-               "secondary_care" = scotland_hb_secondary_care,
-               "demographics" = scotland_hb_demographics,
-               stop("No data selected", call. = FALSE)
+          "summary_metrics" = scotland_hb_summary_metrics,
+          "secondary_care" = scotland_hb_secondary_care,
+          "demographics" = scotland_hb_demographics,
+          stop("No data selected", call. = FALSE)
         )
       }
     })
@@ -71,4 +69,4 @@ jitterPlotTest <- function() {
 }
 
 # Examples
-#jitterPlotTest()
+# jitterPlotTest()
