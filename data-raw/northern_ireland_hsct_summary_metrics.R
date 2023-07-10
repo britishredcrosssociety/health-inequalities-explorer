@@ -18,9 +18,18 @@ imd_health_hsct <-
   northern_ireland_ltla_summary_metrics |> 
   select(lad_name = area_name, variable, number, percent) |> 
   filter(variable %in% c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |> 
-  left_join(lookup_northern_ireland_ltla_hsct)
+  left_join(lookup_northern_ireland_ltla_hsct) |> 
+  group_by(trust_name, variable) |> 
+  summarise(number = mean(number))
 
-
+# Left-behind areas: aggregate by adding all left-behind areas of LGDs
+lba_hsct <-
+  northern_ireland_ltla_summary_metrics |> 
+  select(lad_name = area_name, variable, number, percent) |> 
+  filter(variable == "Left-behind areas") |> 
+  left_join(lookup_northern_ireland_ltla_hsct) |> 
+  group_by(trust_name, variable) |> 
+  summarise(number = sum(number))
 
 
 
