@@ -115,8 +115,8 @@ northern_ireland_ltla_summary_metrics <-
       variable == "Left-behind areas" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
-        "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
+        "<br>", "No. of left-behind smaller areas (SOA) in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind smaller areas (SOA) in the Local Authority: ", round(percent * 100, 1), "%"
       ),
       variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",
