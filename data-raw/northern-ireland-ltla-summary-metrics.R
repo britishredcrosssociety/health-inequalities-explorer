@@ -10,10 +10,6 @@ ltla <-
   st_drop_geometry() |>
   filter(str_detect(ltla21_code, "^N"))
 
-lookup_northern_ireland_ltla <-
-  lookup_ltla_ltla |>
-  filter(str_detect(ltla21_code, "^N"))
-
 # ---- IMD score ----
 # Higher extent = more deprived /
 # Higher rank (calculated here) = more deprived
@@ -22,11 +18,15 @@ imd <-
   select(ltla21_code = lad_code, imd_score = Extent) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
-  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+  mutate(
+    variable = "Index of Multiple \nDeprivation rank",
+    .after = ltla21_code
+  ) |>
   mutate(percent = NA, .after = number)
 
 # ---- ONS Health Index ----
-# An official Health Index for Northern Ireland does not exists. Use the BRC Resilience Index version
+# An official Health Index for Northern Ireland does not exists.
+# Use the BRC Resilience Index version
 # Higher score = worse health
 # Higher rank (calculated here) = worse health
 health_index_raw <- read_csv(
@@ -41,12 +41,11 @@ health_index <-
   relocate(variable, .after = ltla21_code)
 
 # ---- % Left-behind areas ----
-# The left-behind areas come from the community needs index (loaded from the IMD package)
+# Come from the community needs index (loaded from the IMD package)
 # Higher number/percent = more left-behind
 lba <-
   cni_northern_ireland_soa11 |>
-  left_join(lookup_northern_ireland_ltla, by = c("lgd14_code" = "ltla19_code")) |>
-  select(soa11_code, ltla21_code, lba = `Left Behind Area?`) |>
+  select(soa11_code, ltla21_code = lgd14_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
@@ -103,7 +102,7 @@ northern_ireland_ltla_summary_metrics_polarised |>
   theme_ridges()
 
 # ---- Add plot labels ----
-northern_ireland_ltla_summary_metrics <- 
+northern_ireland_ltla_summary_metrics <-
   northern_ireland_ltla_summary_metrics_polarised |>
   mutate(
     label = case_when(
@@ -115,8 +114,8 @@ northern_ireland_ltla_summary_metrics <-
       variable == "Left-behind areas" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of left-behind smaller areas (SOA) in the Local Authority: ", round(number),
-        "<br>", "Percentage of all left-behind smaller areas (SOA) in the Local Authority: ", round(percent * 100, 1), "%"
+        "<br>", "No. of left-behind smaller areas (SOA's) in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Local Authority: ", round(percent * 100, 1), "%"
       ),
       variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",
