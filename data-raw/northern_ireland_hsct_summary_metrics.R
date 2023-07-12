@@ -56,6 +56,25 @@ metrics_joined <- bind_rows(
   rename(area_name = trust_name) |>
   relocate(area_name)
 
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
+
+ltla_summary_metrics_northern_ireland_scaled <-
+  metrics_joined |>
+  group_by(variable) |>
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Left-behind areas" ~ scale_1_1(percent),
+      variable == "Health Index \nrank" ~ scale_1_1(number)
+    )
+  ) |>
+  ungroup()
+
+
+
 
 
 northern_ireland_hsct_summary_metrics
