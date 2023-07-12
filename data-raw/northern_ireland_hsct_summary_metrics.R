@@ -8,41 +8,44 @@ library(ggridges)
 pkgload::load_all(".")
 
 lookup_northern_ireland_ltla_hsct <-
-  lookup_ltla21_hsct18 |> 
+  lookup_ltla21_hsct18 |>
   select(lad_name = ltla21_name, trust_name = trust18_name)
 
-list_northern_ireland_hsct <- 
-  lookup_northern_ireland_ltla_hsct |> 
+list_northern_ireland_hsct <-
+  lookup_northern_ireland_ltla_hsct |>
   distinct(trust_name)
 
 # ---- Aggregate Local Authorities measures ----
-# Metrics where rank is used: aggregate with maximum rank
+# Metrics where rank is used: get maximum LGD rank for each trust
+# Higher rank (calculated here) = worse health
 imd_health <-
-  northern_ireland_ltla_summary_metrics |> 
-  select(lad_name = area_name, variable, number) |> 
-  filter(variable %in% 
-           c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |> 
-  left_join(lookup_northern_ireland_ltla_hsct) |> 
-  group_by(trust_name, variable) |> 
-  summarise(max_rank = max(number)) |> 
-  ungroup() |> 
-  group_by(variable) |> 
-  mutate(number = rank(max_rank),
-         percent = NA) |> 
-  select(-max_rank) |> 
+  northern_ireland_ltla_summary_metrics |>
+  select(lad_name = area_name, variable, number) |>
+  filter(variable %in%
+    c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |>
+  left_join(lookup_northern_ireland_ltla_hsct) |>
+  group_by(trust_name, variable) |>
+  summarise(max_rank = max(number)) |>
+  ungroup() |>
+  group_by(variable) |>
+  mutate(
+    number = rank(max_rank),
+    percent = NA
+  ) |>
+  select(-max_rank) |>
   ungroup()
 
-# Left-behind areas: aggregate by adding all left-behind areas of LGDs
+# Left-behind areas: adding all left-behind areas of the LGDs of each trust
 lba <-
   cni_northern_ireland_soa11 |>
-  select(soa11_code, lad_name = lgd14_name, lba = `Left Behind Area?`) |> 
-  left_join(lookup_northern_ireland_ltla_hsct) |> 
+  select(soa11_code, lad_name = lgd14_name, lba = `Left Behind Area?`) |>
+  left_join(lookup_northern_ireland_ltla_hsct) |>
   group_by(trust_name) |>
   count(lba) |>
-  mutate(percent = n / sum(n)) |> 
+  mutate(percent = n / sum(n)) |>
   ungroup() |>
   filter(lba == TRUE) |>
-  right_join(list_northern_ireland_hsct) |> 
+  right_join(list_northern_ireland_hsct) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
   select(trust_name, number = n, percent) |>
@@ -61,7 +64,7 @@ scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-ltla_summary_metrics_northern_ireland_scaled <-
+hsct_summary_metrics_northern_ireland_scaled <-
   metrics_joined |>
   group_by(variable) |>
   mutate(
@@ -73,12 +76,44 @@ ltla_summary_metrics_northern_ireland_scaled <-
   ) |>
   ungroup()
 
+# ---- Align indicator polarity ----
+# Align so higher value = better health
+# Flip IMD, LBA, and health index, as currently higher = worse health
+northern_ireland_hsct_summary_metrics_polarised <-
+  hsct_summary_metrics_northern_ireland_scaled |>
+  mutate(scaled_1_1 = scaled_1_1 * -1)
 
+# Check distributions
+northern_ireland_hsct_summary_metrics_polarised |>
+  ggplot(aes(x = scaled_1_1, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
+  theme_ridges()
 
-
-
-northern_ireland_hsct_summary_metrics
-
-
+# ---- Add plot labels ----
+northern_ireland_hsct_summary_metrics <-
+  northern_ireland_hsct_summary_metrics_polarised |>
+  mutate(
+    label = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "IMD rank: ", round(number)
+      ),
+      variable == "Left-behind areas" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of left-behind smaller areas (SOA's) in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Local Authority: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Health Index \nrank" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Health Index rank: ", round(number)
+      )
+    )
+  )
 
 usethis::use_data(northern_ireland_hsct_summary_metrics, overwrite = TRUE)
