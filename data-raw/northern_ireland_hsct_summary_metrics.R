@@ -13,14 +13,21 @@ lookup_northern_ireland_ltla_hsct <-
 
 # ---- Aggregate Local Authorities measures ----
 
-# Metrics where rank is used: aggregate with mean rank
+# Metrics where rank is used: aggregate with maximum rank
 imd_health_hsct <-
   northern_ireland_ltla_summary_metrics |> 
-  select(lad_name = area_name, variable, number, percent) |> 
-  filter(variable %in% c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |> 
+  select(lad_name = area_name, variable, number) |> 
+  filter(variable %in% 
+           c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |> 
   left_join(lookup_northern_ireland_ltla_hsct) |> 
   group_by(trust_name, variable) |> 
-  summarise(number = mean(number))
+  summarise(max_rank = max(number)) |> 
+  ungroup() |> 
+  group_by(variable) |> 
+  mutate(number = rank(max_rank),
+         percent = NA) |> 
+  select(-max_rank) |> 
+  ungroup()
 
 # Left-behind areas: aggregate by adding all left-behind areas of LGDs
 lba_hsct <-
