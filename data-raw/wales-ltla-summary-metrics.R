@@ -3,53 +3,60 @@ library(IMD)
 library(geographr)
 library(sf)
 library(ggridges)
+library(stringr)
+
+ltla <- boundaries_ltla21 %>%
+  st_drop_geometry() %>%
+  filter(str_detect(ltla21_code, "^W")) %>%
+  select(ltla21_code,ltla21_name)
 
 
-ltla <- boundaries_ltla21 |>
-  st_drop_geometry() |>
-  filter(str_detect(ltla21_code, "^W"))
-View (ltla)
+lookup_ms <- lookup_msoa11_ltla21 %>%
+  select(msoa11_code, ltla21_code) %>%
+  filter(str_starts(ltla21_code, "W") | str_starts(msoa11_code, "W"))
+
 # ---- IMD score ----
 # Higher extent = more deprived
 # Higher rank  = more deprived
-
-imd <-
-  imd_wales_lad |>
-  select(ltla21_code = lad_code, imd_score = Extent) |>
-  mutate(number = rank(imd_score)) |>
-  select(-imd_score) |>
-  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+imd <- imd_wales_lad %>%
+  select(ltla21_code = lad_code, imd_score = Extent) %>%
+  mutate(number = rank(imd_score)) %>%
+  select(-imd_score) %>%
+  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) %>%
   mutate(percent = NA, .after = number)
+
 #### ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
-
-lba <-
-  cni_wales_msoa11 |>
-  rename(ltla21_code=msoa11_code) |>######### I rename because I don't have ltla21_code on the dataset
-  select(ltla21_code, lad21_name, lba = `Left Behind Area?`) |>
-  group_by(lad21_name) |>
-  count(lba) |>
-  mutate(percent = n / sum(n)) |>
-  ungroup() |>
-  filter(lba == TRUE) |>
-  cross_join(ltla) |>
-  mutate(percent = replace_na(percent, 0)) |>
-  mutate(n = replace_na(n, 0)) |>
-  select(ltla21_code, number = n, percent) |>
+lba <- cni_wales_msoa11 %>%
+  right_join(lookup_ms, by = "msoa11_code") %>%
+  select(ltla21_code, lba = `Left Behind Area?`) %>%
+  group_by(ltla21_code) %>%
+  count(lba) %>%
+  mutate(percent = n / sum(n)) %>%
+  filter(lba == TRUE) %>%
+  right_join(ltla, by = "ltla21_code") %>%
+  mutate(percent = replace_na(percent, 0)) %>%
+  mutate(number = replace_na(n, 0)) %>%
+  select(ltla21_code, number, percent) %>%
   mutate(variable = "Left-behind areas", .after = ltla21_code)
+
+
+
+
+
 # ---- Health Index Score ----
 #  Use the BRC Resilience on git hub
-# Index version
 # Higher score = worse health
 # Higher rank  = worse health
 url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
 health_index_raw <- read_csv(url)
 health_index <- health_index_raw |>
-  rename(ltla21_code=lad_code) |>
+  cross_join(lookup_ms) |>
   select(ltla21_code, number =healthy_people_domain_rank) |>
   mutate(percent = NA) |>
   mutate(variable = "Health Index \nrank") |>
   relocate(variable, .after = ltla21_code)
+
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
@@ -60,10 +67,10 @@ metrics_joined <- bind_rows(
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   relocate(area_name)
-View(metrics_joined)
-# ---- Normalise/scale ----
+
+# ---- Normalise/scale ---- quotient transformation (x/sum)
 scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
+  (x/sum(x)) 
 }
 
 ltla_summary_metrics_wales_scaled <-
@@ -115,4 +122,5 @@ wales_ltla_summary_metrics <- wales_ltla_summary_metrics_polarised |>
       )
     )
   )
+
 usethis::use_data(wales_ltla_summary_metrics, overwrite = TRUE)
