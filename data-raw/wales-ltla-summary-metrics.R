@@ -10,7 +10,6 @@ ltla <- boundaries_ltla21 %>%
   filter(str_detect(ltla21_code, "^W")) %>%
   select(ltla21_code,ltla21_name)
 
-
 lookup_ms <- lookup_msoa11_ltla21 %>%
   select(msoa11_code, ltla21_code) %>%
   filter(str_starts(ltla21_code, "W") | str_starts(msoa11_code, "W"))
@@ -39,10 +38,6 @@ lba <- cni_wales_msoa11 %>%
   mutate(number = replace_na(n, 0)) %>%
   select(ltla21_code, number, percent) %>%
   mutate(variable = "Left-behind areas", .after = ltla21_code)
-
-
-
-
 
 # ---- Health Index Score ----
 #  Use the BRC Resilience on git hub
