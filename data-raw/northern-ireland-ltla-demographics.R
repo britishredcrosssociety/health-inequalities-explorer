@@ -2,7 +2,6 @@ library(tidyverse)
 library(demographr)
 library(readxl)
 
-
 # ---- Age & Sex ----
 # Note: term 'sex' is used to correspond to the 2021 Census from which the data
 # has been collected 
@@ -25,7 +24,18 @@ age_sex_ltla <-
          number__older_males = older_males) |> 
   pivot_longer(!area_name,
                names_to = c(".value", "variable"), 
-               names_sep = "__")
+               names_sep = "__") |> 
+  mutate(
+    variable = case_when(
+      variable == "older_females" ~ "Older \nfemales (65+)",
+      variable == "working_age_females" ~ "Working age \nfemales (20-64)",
+      variable == "younger_females" ~ "Younger \nfemales (< 20)",
+      variable == "older_males" ~ "Older \nmales (65+)",
+      variable == "working_age_males" ~ "Working age \nmales (20-64)",
+      variable == "younger_males" ~ "Younger \nmales (< 20)"
+    )
+  )
+  
   
 
 
