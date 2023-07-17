@@ -28,11 +28,11 @@ age_sex_hsct <-
   mutate(
     variable = case_when(
       variable == "older_females" ~ "Older \nfemales (65+)",
-      variable == "working_age_females" ~ "Working age \nfemales (20-64)",
-      variable == "younger_females" ~ "Younger \nfemales (< 20)",
+      variable == "working_age_females" ~ "Working age \nfemales (16-64)",
+      variable == "younger_females" ~ "Younger \nfemales (< 16)",
       variable == "older_males" ~ "Older \nmales (65+)",
-      variable == "working_age_males" ~ "Working age \nmales (20-64)",
-      variable == "younger_males" ~ "Younger \nmales (< 20)"
+      variable == "working_age_males" ~ "Working age \nmales (16-64)",
+      variable == "younger_males" ~ "Younger \nmales (< 16)"
     )
   ) |>
   mutate(percent = percent / 100)
