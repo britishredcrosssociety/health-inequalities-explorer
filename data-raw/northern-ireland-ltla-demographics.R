@@ -1,6 +1,5 @@
 library(tidyverse)
 library(demographr)
-library(readxl)
 
 # ---- Age & Sex ----
 # Note: term 'sex' is used to correspond to the 2021 Census from which the data
