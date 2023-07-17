@@ -1,5 +1,7 @@
 library(tidyverse)
 library(demographr)
+library(readxl)
+library(httr2)
 
 # ---- Age & Sex ----
 age_sex_hsct <-
@@ -38,8 +40,46 @@ age_sex_hsct <-
   mutate(percent = percent / 100)
 
 # ---- Ethnicity ----
-ethnicity_ni <-
-  ethnicity21_ltla21_ni
+# Source: https://www.nisra.gov.uk/publications/census-2021-main-statistics-ethnicity-tables
+download <- tempfile(fileext = ".xlsx")
+
+request(
+  "https://www.nisra.gov.uk/system/files/statistics/census-2021-ms-b01.xlsx"
+  ) |>
+  req_perform(download)
+
+raw_count <- read_excel(
+  download,
+  sheet = "MS-B01",
+  range = "A9:P21"
+)
+
+ethnicity_hsct <- 
+  raw_count |>
+  filter(Geography != "Northern Ireland") |>
+  mutate(
+    across(White:`Other ethnicities`,
+           ~ (. / `All usual residents`) * 100,
+           .names = "percent__{.col}"
+    )
+  ) |> 
+  select(-`All usual residents`, -`Geography code`) |> 
+  rename(
+    area_name = Geography,
+    number__White = White,
+    number_White_Irish_Traveller = `Irish Traveller`,
+    number_White_Roma = Roma,
+    number_Asian_Indian = Indian,
+    number_Asian_Chinese = Chinese,
+    number_Asian_Filipino = Filipino,
+    number_Asian_Pakistani = Pakistani,
+    number_Arab = Arab,
+    number_Other_Asian = `Other Asian`,
+    number_Black_African = `Black African`,
+    number_Other_Black = `Black Other`,
+    number_Mixed_ethnic_groups = Mixed,
+    number_Other_ethnicities = `Other ethnicities`
+  )
 
 # NISRA 2021 Census does not include high-level groupings
 # Create group summaries as close as possible to ONS groupings:

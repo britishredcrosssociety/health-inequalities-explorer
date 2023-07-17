@@ -100,7 +100,8 @@ northern_ireland_ltla_demographics_scaled <-
   ungroup()
 
 # --- Add plot labels ----
-northern_ireland_ltla_demographics <- northern_ireland_ltla_demographics_scaled |>
+northern_ireland_ltla_demographics <- 
+  northern_ireland_ltla_demographics_scaled |>
   mutate(
     label = paste0(
       "<b>", area_name, "</b>",
