@@ -3,7 +3,6 @@
 
 # ---- Load libs & helpers ----
 library(tidyverse)
-library(lubridate)
 library(sf)
 library(healthyr)
 library(compositr)
@@ -36,7 +35,6 @@ pop_ni_hsct <- read_ods(
 # ---- RTT ----
 # Higher = worse performance
 rtt <- ni_rtt_hsct |>
-  ungroup() |> # was grouped in ni_rtt_hsct
   select(
     trust18_name = "hsct22_name",
     date,
@@ -60,8 +58,9 @@ rtt <- ni_rtt_hsct |>
 # Higher = better performance
 available_beds <- ni_beds |>
   left_join(hsct, by = "trust18_code") |>
-  mutate(percent_available = ((total_available_beds - total_occupied_beds) /
-                                total_available_beds)) |>
+  mutate(percent_available = total_available_beds / 
+           (total_available_beds + total_occupied_beds)
+         ) |>
   filter(date >= max(date) %m-% months(2)) |> # Last quarter
   group_by(trust18_name) |>
   summarise(
