@@ -38,7 +38,8 @@ age_sex_ltla <-
       variable == "working_age_males" ~ "Working age \nmales (20-64)",
       variable == "younger_males" ~ "Younger \nmales (< 20)"
     )
-  )
+  ) |>
+  mutate(percent = percent / 100)
 
 # ---- Ethnicity ----
 ethnicity_ni <-
@@ -83,5 +84,33 @@ ethnicity_ltla <- ethnicity_separate_cols |>
     percent
   )
 
+joined <-
+  bind_rows(
+    age_sex_ltla,
+    ethnicity_ltla
+  )
 
+# ---- Normalise/scale ----
+scale_1_1 <- function(x) {
+  (x - mean(x)) / max(abs(x - mean(x)))
+}
 
+northern_ireland_ltla_demographics_scaled <-
+  joined |>
+  group_by(variable) |>
+  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  ungroup()
+
+# --- Add plot labels ----
+northern_ireland_ltla_demographics <- northern_ireland_ltla_demographics_scaled |>
+  mutate(
+    label = paste0(
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Count: ", round(number),
+      "<br>", "Percent ", round(percent * 100, 1), "%"
+    )
+  )
+
+# ---- Export data ----
+usethis::use_data(northern_ireland_ltla_demographics, overwrite = TRUE)
