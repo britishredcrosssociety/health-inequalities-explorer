@@ -2,15 +2,16 @@ library(tidyverse)
 library(demographr)
 library(readxl)
 library(httr2)
+library(geographr)
 
 # ---- Age & Sex ----
 age_sex_hsct <-
-  age_gender_hsct20_ni|>
+  age_gender_hsct20_ni |>
   select(-hsct20_code, -total_female_population, -total_male_population) |>
   mutate(
     across(younger_females:older_males,
-           ~ (. / total_population) * 100,
-           .names = "percent__{.col}"
+      ~ (. / total_population) * 100,
+      .names = "percent__{.col}"
     )
   ) |>
   select(-total_population) |>
@@ -24,8 +25,8 @@ age_sex_hsct <-
     number__older_males = older_males
   ) |>
   pivot_longer(!area_name,
-               names_to = c(".value", "variable"),
-               names_sep = "__"
+    names_to = c(".value", "variable"),
+    names_sep = "__"
   ) |>
   mutate(
     variable = case_when(
@@ -40,12 +41,16 @@ age_sex_hsct <-
   mutate(percent = percent / 100)
 
 # ---- Ethnicity ----
+lookup_northern_ireland_ltla_hsct <-
+  lookup_ltla21_hsct18 |>
+  select(lad_name = ltla21_name, trust_name = trust18_name)
+
 # Source: https://www.nisra.gov.uk/publications/census-2021-main-statistics-ethnicity-tables
 download <- tempfile(fileext = ".xlsx")
 
 request(
   "https://www.nisra.gov.uk/system/files/statistics/census-2021-ms-b01.xlsx"
-  ) |>
+) |>
   req_perform(download)
 
 raw_count <- read_excel(
@@ -54,77 +59,60 @@ raw_count <- read_excel(
   range = "A9:P21"
 )
 
-ethnicity_hsct <- 
+ethnicity_hsct <-
   raw_count |>
   filter(Geography != "Northern Ireland") |>
+  rename(lad_name = Geography) |> 
+  left_join(lookup_northern_ireland_ltla_hsct)
+  
   mutate(
     across(White:`Other ethnicities`,
-           ~ (. / `All usual residents`) * 100,
-           .names = "percent__{.col}"
+      ~ (. / `All usual residents`) * 100,
+      .names = "percent_{.col}"
     )
-  ) |> 
-  select(-`All usual residents`, -`Geography code`) |> 
+  ) |>
+  select(-`All usual residents`, -`Geography code`) |>
   rename(
     area_name = Geography,
-    number__White = White,
-    number_White_Irish_Traveller = `Irish Traveller`,
-    number_White_Roma = Roma,
-    number_Asian_Indian = Indian,
-    number_Asian_Chinese = Chinese,
-    number_Asian_Filipino = Filipino,
-    number_Asian_Pakistani = Pakistani,
+    number_White = White,
+    `number_Irish Traveller` = `Irish Traveller`,
+    number_Roma = Roma,
+    number_Indian = Indian,
+    number_Chinese = Chinese,
+    number_Filipino = Filipino,
+    number_Pakistani = Pakistani,
     number_Arab = Arab,
-    number_Other_Asian = `Other Asian`,
-    number_Black_African = `Black African`,
-    number_Other_Black = `Black Other`,
-    number_Mixed_ethnic_groups = Mixed,
-    number_Other_ethnicities = `Other ethnicities`
+    `number_Other Asian` = `Other Asian`,
+    `number_Black African` = `Black African`,
+    `number_Black Other` = `Black Other`,
+    number_Mixed = Mixed,
+    `number_Other ethnicities` = `Other ethnicities`
+  ) |>
+  pivot_longer(!area_name,
+    names_to = c(".value", "variable"),
+    names_sep = "_"
   )
 
 # NISRA 2021 Census does not include high-level groupings
 # Create group summaries as close as possible to ONS groupings:
 # https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/ethnicity/bulletins/ethnicgroupenglandandwales/census2021
-ethnicity_higher_level_groupings <- ethnicity_ni |>
+ethnicity_higher_level_groupings <- ethnicity_hsct |>
   mutate(
-    high_level_category =
+    variable =
       case_when(
-        str_detect(ethnic_group, "Asian.*\\(number\\)$") ~ "Asian: number",
-        str_detect(ethnic_group, "Asian.*\\(percent\\)$") ~ "Asian: percent",
-        str_detect(ethnic_group, "Black.*\\(number\\)$") ~ "Black: number",
-        str_detect(ethnic_group, "Black.*\\(percent\\)$") ~ "Black: percent",
-        str_detect(ethnic_group, "Mixed.*\\(number\\)$") ~ "Mixed or Multiple \nethnic groups: number",
-        str_detect(ethnic_group, "Mixed.*\\(percent\\)$") ~ "Mixed or Multiple \nethnic groups: percent",
-        str_detect(ethnic_group, "White.*\\(number\\)$") ~ "White: number",
-        str_detect(ethnic_group, "White.*\\(percent\\)$") ~ "White: percent",
-        str_detect(ethnic_group, "^Other.*\\(number\\)$") ~ "Other ethnic \ngroup: number",
-        str_detect(ethnic_group, "^Other.*\\(percent\\)$") ~ "Other ethnic \ngroup: percent",
-        str_detect(ethnic_group, "Arab.*\\(number\\)$") ~ "Other ethnic \ngroup: number",
-        str_detect(ethnic_group, "Arab.*\\(percent\\)$") ~ "Other ethnic \ngroup: percent",
+        str_detect(variable, "Chinese|Indian|Filipino|Pakistani|Other Asian") ~ "Asian",
+        str_detect(variable, "Black African|Black Other") ~ "Black",
+        str_detect(variable, "Mixed") ~ "Mixed or Multiple \nethnic groups",
+        str_detect(variable, "White|Irish Traveller|Roma") ~ "White",
+        str_detect(variable, "Arab|Other ethnicities") ~ "Other ethnic \ngroup",
       )
   ) |>
-  group_by(ltla21_name, high_level_category) |>
-  summarise(value = sum(value)) |>
+  group_by(area_name, variable) |>
+  summarise(number = sum(number),
+            percent = sum(percent)) |>
   ungroup()
 
-# Separate into number/percent cols
-ethnicity_separate_cols <- ethnicity_higher_level_groupings |>
-  separate(high_level_category, into = c("indicator", "value_type"), ": ") |>
-  pivot_wider(names_from = "value_type", values_from = "value")
 
-# Select cols
-ethnicity_ltla <- ethnicity_separate_cols |>
-  select(
-    area_name = ltla21_name,
-    variable = indicator,
-    number,
-    percent
-  )
-
-joined <-
-  bind_rows(
-    age_sex_ltla,
-    ethnicity_ltla
-  )
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
