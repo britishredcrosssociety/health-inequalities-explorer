@@ -42,11 +42,13 @@ rtt <- ni_rtt_hsct |>
   ) |>
   filter(date >= max(date) %m-% months(3)) |> # Last 3 months
   left_join(pop_ni_hsct) |>
+  group_by(trust18_code, date) |>
+  mutate(waits_over_18_weeks = sum(waits_over_18_weeks)) |>
   mutate(percent = waits_over_18_weeks / population) |>
   group_by(trust18_name) |>
   summarise(
     number = sum(waits_over_18_weeks),
-    percent = sum(percent, na.rm = FALSE)
+    percent = mean(percent, na.rm = FALSE)
   ) |>
   mutate(
     variable = "Referral to treatment \nwaiting times (Mar 22 - Jun 22)",
@@ -65,7 +67,7 @@ available_beds <- ni_beds |>
   group_by(trust18_name) |>
   summarise(
     number = sum(total_available_beds),
-    percent = sum(percent_available, na.rm = TRUE)
+    percent = mean(percent_available, na.rm = TRUE)
   ) |>
   mutate(
     variable = "Bed availability \n(Q1 2022)",
