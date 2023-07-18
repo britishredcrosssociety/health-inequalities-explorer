@@ -61,19 +61,22 @@ raw_count <- read_excel(
 
 ethnicity_hsct <-
   raw_count |>
+  select(-`Geography code`) |>
   filter(Geography != "Northern Ireland") |>
-  rename(lad_name = Geography) |> 
-  left_join(lookup_northern_ireland_ltla_hsct)
-  
+  rename(lad_name = Geography) |>
+  left_join(lookup_northern_ireland_ltla_hsct) |>
+  group_by(trust_name) |>
+  summarise(across(-lad_name, sum)) |>
   mutate(
     across(White:`Other ethnicities`,
       ~ (. / `All usual residents`) * 100,
       .names = "percent_{.col}"
     )
   ) |>
-  select(-`All usual residents`, -`Geography code`) |>
+  ungroup() |>
+  select(-`All usual residents`) |>
   rename(
-    area_name = Geography,
+    area_name = trust_name,
     number_White = White,
     `number_Irish Traveller` = `Irish Traveller`,
     number_Roma = Roma,
@@ -91,7 +94,8 @@ ethnicity_hsct <-
   pivot_longer(!area_name,
     names_to = c(".value", "variable"),
     names_sep = "_"
-  )
+  ) |>
+  mutate(percent = percent / 100)
 
 # NISRA 2021 Census does not include high-level groupings
 # Create group summaries as close as possible to ONS groupings:
@@ -108,25 +112,31 @@ ethnicity_higher_level_groupings <- ethnicity_hsct |>
       )
   ) |>
   group_by(area_name, variable) |>
-  summarise(number = sum(number),
-            percent = sum(percent)) |>
+  summarise(
+    number = sum(number),
+    percent = sum(percent)
+  ) |>
   ungroup()
 
-
+joined <-
+  bind_rows(
+    age_sex_hsct,
+    ethnicity_higher_level_groupings
+  )
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-northern_ireland_ltla_demographics_scaled <-
+northern_ireland_hsct_demographics_scaled <-
   joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
 
 # --- Add plot labels ----
-northern_ireland_ltla_demographics <- northern_ireland_ltla_demographics_scaled |>
+northern_ireland_hsct_demographics <- northern_ireland_hsct_demographics_scaled |>
   mutate(
     label = paste0(
       "<b>", area_name, "</b>",
@@ -137,4 +147,4 @@ northern_ireland_ltla_demographics <- northern_ireland_ltla_demographics_scaled 
   )
 
 # ---- Export data ----
-usethis::use_data(northern_ireland_ltla_demographics, overwrite = TRUE)
+usethis::use_data(northern_ireland_hsct_demographics, overwrite = TRUE)
