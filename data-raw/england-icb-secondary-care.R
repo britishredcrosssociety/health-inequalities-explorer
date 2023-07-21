@@ -95,7 +95,7 @@ criteria_to_reside_icb <-
   group_by(icb22_code) |>
   summarise(
     number = mean(do_not_meet_criteria_to_reside),
-    percent = mean(perc_not_meet_criteria)
+    percent = mean(perc_not_meet_criteria, na.rm = TRUE)
   ) |>
   mutate(
     variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
@@ -118,7 +118,7 @@ discharged_patients_icb <-
   group_by(icb22_code) |>
   summarise(
     number = mean(discharged_total),
-    percent = mean(percent_discharged)
+    percent = mean(percent_discharged, na.rm = TRUE)
   ) |>
   mutate(
     variable = "Discharged beds \n(Jan 23 - Mar 23 average)",
@@ -146,13 +146,28 @@ iapt_icb <- iapt_icb_aggregated |>
   ) |>
   relocate(percent, .after = number)
 
+# ---- A&E attendances over 4 hours ----
+attendances_4_hours <- england_icb_accidents_emergency |>
+  mutate(date = parse_date_time(date, orders = "B Y")) |>
+  filter(date >= max(date) %m-% months(2)) |>
+  select(icb22_code, attendances_over_4hours, pct_attendance_over_4hours) |>
+  rename(number = attendances_over_4hours, percent = pct_attendance_over_4hours) |>
+  group_by(icb22_code) |>
+  summarise(number = mean(number, na.rm = TRUE), 
+            percent = mean(percent, na.rm = TRUE)) |>
+  mutate(
+    variable = "Attendances over 4 hours \n(Feb 23 - Apr 23 average)", 
+    .after = icb22_code
+    ) 
+  
 # ---- Combine ----
 joined <-
   bind_rows(
     bed_occupancy_icb,
     criteria_to_reside_icb,
     discharged_patients_icb,
-    iapt_icb
+    iapt_icb,
+    attendances_4_hours
   ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -172,11 +187,14 @@ icb_secondary_care_england_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip criteria to reside, as currently higher = worse health
+# Flip criteria to reside and attendances over 4 hours, as currently higher = worse health
 england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
+      variable %in% c(
+        "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)", 
+        "Attendances over 4 hours \n(Feb 23 - Apr 23 average)"
+        ) ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -216,6 +234,12 @@ england_icb_secondary_care <- england_icb_secondary_care_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Attendances over 4 hours \n(Feb 23 - Apr 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
+        "<br>", "Percentage of all A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(percent * 100, 1), "%"
       )
     )
   )

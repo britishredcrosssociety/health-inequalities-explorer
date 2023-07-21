@@ -18,17 +18,19 @@ trust_names <-
 attendances_4hours_trust <- england_trust_accidents_emergency |>
   mutate(date = parse_date_time(date, orders = "B Y")) |>
   filter(date >= ymd("2022-05-01"), date <= ymd("2023-04-01")) |>
-  subset(select = c(nhs_trust22_code, attendances_over_4hours, pct_attendance_over_4hours)) |>
-  mutate(pct_attendance_over_4hours = case_when(
-    attendances_over_4hours == 0 ~ 0,
-    TRUE ~ pct_attendance_over_4hours
-  ))|> # Replace NA in pct column with 0 when its value is actually 0
+  select(nhs_trust22_code, attendances_over_4hours, pct_attendance_over_4hours) |>
+  mutate(
+    attendances_over_4hours = replace(attendances_over_4hours, is.nan(attendances_over_4hours), NA),
+    pct_attendance_over_4hours = replace(pct_attendance_over_4hours, is.nan(pct_attendance_over_4hours), 0)
+    ) |>
   group_by(nhs_trust22_code) |>
   summarize(number_sum = sum(attendances_over_4hours), percent_mean = mean(pct_attendance_over_4hours)) |>
   mutate(variable = "Attendances over 4 hours \n(May 22 - April 23 average)", .after = nhs_trust22_code) |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
   distinct()
+
+View(attendances_4hours_trust)
 
 attendances_4_hours_ltla <-
   attendances_4hours_trust |>
@@ -37,6 +39,8 @@ attendances_4_hours_ltla <-
     proportion_number = proportion_trust_came_from_ltla * number_sum,
     proportion_percentage = proportion_trust_came_from_ltla * percent_mean
   ) 
+
+View(attendances_4_hours_ltla)
 
 # ---- Check NAs ----
 # Check no new NAs have appeared at NHS trust level in the joins
@@ -66,4 +70,5 @@ attendances_4_hours_grouped <- attendances_4_hours_ltla |>
 
 print(nrow(attendances_4_hours_grouped)/sum(is.na(attendances_4_hours_grouped)))
 
+View(attendances_4_hours_grouped)
 
