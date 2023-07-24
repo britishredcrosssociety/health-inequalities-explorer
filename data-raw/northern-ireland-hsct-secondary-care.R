@@ -60,9 +60,10 @@ rtt <- ni_rtt_hsct |>
 # Higher = better performance
 available_beds <- ni_beds |>
   left_join(hsct, by = "trust18_code") |>
-  mutate(percent_available = total_available_beds / 
-           (total_available_beds + total_occupied_beds)
-         ) |>
+  mutate(
+    percent_available = total_available_beds /
+      (total_available_beds + total_occupied_beds)
+  ) |>
   filter(date >= max(date) %m-% months(2)) |> # Last quarter
   group_by(trust18_name) |>
   summarise(
@@ -97,13 +98,11 @@ secondary_care_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip RTT and bed availability
+# Flip RTT
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Mar 22 - Jun 22)" ~
-        scaled_1_1 * -1,
-      variable == "Bed availability \n(Q1 2022)" ~ scaled_1_1 * -1,
+      variable == "Referral to treatment \nwaiting times (Mar 22 - Jun 22)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -143,4 +142,3 @@ northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
   )
 
 usethis::use_data(northern_ireland_hsct_secondary_care, overwrite = TRUE)
-
