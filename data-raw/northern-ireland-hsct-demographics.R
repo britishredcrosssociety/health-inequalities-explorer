@@ -10,7 +10,7 @@ age_sex_hsct <-
   select(-hsct20_code, -total_female_population, -total_male_population) |>
   mutate(
     across(younger_females:older_males,
-      ~ (. / total_population) * 100,
+      ~ (. / total_population),
       .names = "percent__{.col}"
     )
   ) |>
@@ -37,8 +37,7 @@ age_sex_hsct <-
       variable == "working_age_males" ~ "Working age \nmales (16-64)",
       variable == "younger_males" ~ "Younger \nmales (< 16)"
     )
-  ) |>
-  mutate(percent = percent / 100)
+  )
 
 # ---- Ethnicity ----
 lookup_northern_ireland_ltla_hsct <-
