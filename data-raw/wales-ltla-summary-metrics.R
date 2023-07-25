@@ -10,12 +10,15 @@ ltla <- boundaries_ltla21 |>
   filter(str_detect(ltla21_code, "^W")) |>
   select(ltla21_code, ltla21_name)
 
-lookup_ms <- lookup_msoa11_ltla21 |>
+lookup_msoa_ltla <- lookup_msoa11_ltla21 |>
   select(msoa11_code, ltla21_code) |>
-  filter(str_starts(ltla21_code, "W") | str_starts(msoa11_code, "W"))
+  filter(str_starts(ltla21_code, "W"))
 
 # ---- IMD score ----
-imd <- imd_wales_lad |>
+# Higher extent = more deprived /
+# Higher rank (calculated here) = more deprived
+imd <-
+  imd_wales_lad |>
   select(ltla21_code = lad_code, imd_score = Extent) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
@@ -25,26 +28,31 @@ imd <- imd_wales_lad |>
   ) |>
   mutate(percent = NA, .after = number)
 
-#### ---- % Left-behind areas ----
-lba <- cni_wales_msoa11 |>
-  left_join(lookup_ms) |>
+# ---- % Left-behind areas ----
+# Higher number/percent = more left-behind
+lba <-
+  cni_wales_msoa11 |>
+  left_join(lookup_msoa_ltla) |>
   select(ltla21_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
+  ungroup() |>
   filter(lba == TRUE) |>
-  left_join(ltla, by = "ltla21_code") |>
+  right_join(ltla) |>
   mutate(percent = replace_na(percent, 0)) |>
-  mutate(number = replace_na(n, 0)) |>
-  select(ltla21_code, number, percent) |>
+  mutate(n = replace_na(n, 0)) |>
+  select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- Health Index Score ----
+# Higher score = worse health
+# Higher rank (calculated here) = worse health
 url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
+
 health_index_raw <- read_csv(url)
 
 health_index <- health_index_raw |>
-  left_join(lookup_ms, by = c("lad_code" = "ltla21_code")) |>
   select(ltla21_code = lad_code, number = healthy_people_domain_rank) |>
   mutate(percent = NA) |>
   mutate(variable = "Health Index \nrank") |>
@@ -78,7 +86,10 @@ ltla_summary_metrics_wales_scaled <- metrics_joined |>
   ungroup()
 
 # ---- Align indicator polarity ----
-wales_ltla_summary_metrics_polarised <- ltla_summary_metrics_wales_scaled |>
+# Align so higher value = better health
+# Flip IMD, LBA, and health index, as currently higher = worse health
+wales_ltla_summary_metrics_polarised <-
+  ltla_summary_metrics_wales_scaled |>
   mutate(scaled_1_1 = scaled_1_1 * -1)
 
 # Check distributions
@@ -102,8 +113,8 @@ wales_ltla_summary_metrics <- wales_ltla_summary_metrics_polarised |>
       variable == "Left-behind areas" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
-        "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
+        "<br>", "No. of left-behind smaller areas (MSOA's) in the Local Authority: ", round(number),
+        "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Local Authority: ", round(percent * 100, 1), "%"
       ),
       variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",
