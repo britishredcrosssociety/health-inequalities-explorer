@@ -41,17 +41,17 @@ imd <-
 lba <-
   cni2023_england_lsoa21 |>
   left_join(lookup_england_lsoa_ltla) |>
-  select(ward17_code, ltla21_code, lba = `Left Behind Area?`) |>
-  group_by(ltla21_code) |>
+  select(lsoa21_code, ltla22_code, lba = `Left Behind Area?`) |>
+  group_by(ltla22_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
   ungroup() |>
   filter(lba == TRUE) |>
-  right_join(ltla) |>
+  right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  select(ltla21_code, number = n, percent) |>
-  mutate(variable = "Left-behind areas", .after = ltla21_code)
+  select(ltla22_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = ltla22_code)
 
 # ---- ONS Health Index score ----
 # Higher score = better health
