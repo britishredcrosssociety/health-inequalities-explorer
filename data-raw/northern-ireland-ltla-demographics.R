@@ -9,7 +9,7 @@ age_sex_ltla <-
   select(-ltla21_code, -total_female_population, -total_male_population) |>
   mutate(
     across(younger_females:older_males,
-      ~ (. / total_population) * 100,
+      ~ (. / total_population),
       .names = "percent__{.col}"
     )
   ) |>
@@ -36,8 +36,7 @@ age_sex_ltla <-
       variable == "working_age_males" ~ "Working age \nmales (20-64)",
       variable == "younger_males" ~ "Younger \nmales (< 20)"
     )
-  ) |>
-  mutate(percent = percent / 100)
+  )
 
 # ---- Ethnicity ----
 ethnicity_ni <-
@@ -100,7 +99,7 @@ northern_ireland_ltla_demographics_scaled <-
   ungroup()
 
 # --- Add plot labels ----
-northern_ireland_ltla_demographics <- 
+northern_ireland_ltla_demographics <-
   northern_ireland_ltla_demographics_scaled |>
   mutate(
     label = paste0(
