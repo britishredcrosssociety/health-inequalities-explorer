@@ -11,13 +11,13 @@ ltla <-
   filter(str_detect(ltla21_code, "^W"))
 
 # ---- Population ----
-population_file <- compositr::download_file(
+population_file <- download_file(
   "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationandhouseholdestimatesenglandandwalescensus2021/census2021/census2021firstresultsenglandwales1.xlsx",
   ".xlsx"
 )
 
 population_raw <-
-  readxl::read_excel(
+  read_excel(
     population_file,
     sheet = "P03",
     range = "A8:AO383"
@@ -129,6 +129,8 @@ ethnicity_wales_ltlas <-
   ethnicity21_ltla21 |>
   filter(ltla21_code %in% ltla$ltla21_code)
 
+# Create group summaries inline with ONS groupings:
+# https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/ethnicity/bulletins/ethni
 ethnicity_higher_level_groupings <- ethnicity_wales_ltlas |>
   mutate(
     high_level_category =
@@ -153,7 +155,7 @@ ethnicity_separate_cols <- ethnicity_higher_level_groupings |>
   separate(high_level_category, into = c("indicator", "value_type"), ": ") |>
   pivot_wider(names_from = "value_type", values_from = "value")
 
-ethnicity_wales<- ethnicity_separate_cols |>
+ethnicity_wales <- ethnicity_separate_cols |>
   mutate(percent = percent / 100) |>
   left_join(ltla) |>
   select(
