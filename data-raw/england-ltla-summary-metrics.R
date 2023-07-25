@@ -16,6 +16,11 @@ lookup_england_ltla <-
   lookup_ltla_ltla |>
   filter(str_detect(ltla21_code, "^E"))
 
+lookup_england_lsoa_ltla <-
+  lookup_lsoa11_lsoa21_ltla22 |>
+  distinct(lsoa21_code, ltla22_code) |>
+  filter(str_detect(ltla22_code, "^E"))
+
 # ---- IMD score ----
 # Higher score = more deprived
 # Higher rank (calculated here) = more deprived
@@ -34,8 +39,8 @@ imd <-
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 lba <-
-  cni_england_ward17 |>
-  left_join(lookup_england_ltla, by = c("lad19_code" = "ltla19_code")) |>
+  cni2023_england_lsoa21 |>
+  left_join(lookup_england_lsoa_ltla) |>
   select(ward17_code, ltla21_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
   count(lba) |>
