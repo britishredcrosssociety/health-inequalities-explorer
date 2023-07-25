@@ -39,13 +39,11 @@ age_sex_ltla <-
   )
 
 # ---- Ethnicity ----
-ethnicity_ni <-
-  ethnicity21_ltla21_ni
-
 # NISRA 2021 Census does not include high-level groupings
 # Create group summaries as close as possible to ONS groupings:
 # https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/ethnicity/bulletins/ethnicgroupenglandandwales/census2021
-ethnicity_higher_level_groupings <- ethnicity_ni |>
+ethnicity_higher_level_groupings <-
+  ethnicity21_ltla21_ni |>
   mutate(
     high_level_category =
       case_when(
