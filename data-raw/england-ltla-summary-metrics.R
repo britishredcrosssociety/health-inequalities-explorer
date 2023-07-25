@@ -33,7 +33,10 @@ imd <-
   summarise(imd_score = mean(imd_score)) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
-  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+  mutate(
+    variable = "Index of Multiple \nDeprivation rank",
+    .after = ltla21_code
+  ) |>
   mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
@@ -50,8 +53,8 @@ lba <-
   right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  select(ltla22_code, number = n, percent) |>
-  mutate(variable = "Left-behind areas", .after = ltla22_code)
+  select(ltla21_code = ltla22_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- ONS Health Index score ----
 # Higher score = better health
