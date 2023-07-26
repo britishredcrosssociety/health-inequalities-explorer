@@ -544,7 +544,6 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         # ---- northern_ireland_hsct_summary_metrics ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "summary_metrics") {
         tagList(
-          tagList(
           tags$p(
             "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -600,7 +599,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-
+        
         # ---- northern_ireland_hsct_secondary_care ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "secondary_care") {
         tagList(
@@ -614,7 +613,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             all specialties"
           )
         )
-
+        
         # ---- northern_ireland_hsct_demographics ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "demographics") {
         tagList(
@@ -642,7 +641,7 @@ indicatorDescriptionsTest <- function() {
     selected <- reactiveValues(
       areas = vector(), geography = "northern_ireland_ltla_shp"
     )
-    indicatorDescriptionsServer("test", selected, type = "demographics")
+    indicatorDescriptionsServer("test", selected, type = "secondary_care")
   }
   shinyApp(ui, server)
 }
