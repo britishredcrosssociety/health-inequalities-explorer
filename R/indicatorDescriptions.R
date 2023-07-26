@@ -534,7 +534,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         the population breakdowns of the areas being assesed. All data come from
         the latest ",
             tags$a(
-              href = "https://www.ons.gov.uk/census",
+              href = "https://www.nisra.gov.uk/statistics/census/2021-census",
               target = "_blank",
               "2021 census."
             )
@@ -623,7 +623,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         the population breakdowns of the areas being assesed. All data come from
         the latest ",
             tags$a(
-              href = "https://www.ons.gov.uk/census",
+              href = "https://www.nisra.gov.uk/statistics/census/2021-census",
               target = "_blank",
               "2021 census."
             )
