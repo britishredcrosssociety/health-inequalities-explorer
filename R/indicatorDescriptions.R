@@ -36,7 +36,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -163,7 +163,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -298,7 +298,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -388,7 +388,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -479,7 +479,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             ),
             " is England specific and provides an indication of health outcomes,
             risk factors, and the wider determinants of health. As part of the
-            British Red Cross Resilience Index, an equivalent version for 
+            British Red Cross Resilience Index, an equivalent version for
             Northern Ireland was created. More details of this index can be viewed ",
             tags$a(
               href = "https://github.com/britishredcrosssociety/resilience-index",
@@ -497,7 +497,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -521,10 +521,10 @@ indicatorDescriptionsServer <- function(id, selected, type) {
       } else if (selected$geography == "northern_ireland_ltla_shp" & type == "secondary_care") {
         tagList(
           tags$p(
-            "Provision of unpaid care covers looking after, giving help or support 
-            to anyone because they have long-term physical or mental health 
-            conditions or illnesses, or problems related to old age. It excludes 
-            any activities carried out in paid employment. More information can 
+            "Provision of unpaid care covers looking after, giving help or support
+            to anyone because they have long-term physical or mental health
+            conditions or illnesses, or problems related to old age. It excludes
+            any activities carried out in paid employment. More information can
             be viewed ",
             tags$a(
               href = "https://www.nisra.gov.uk/publications/census-2021-main-statistics-health-disability-and-unpaid-care-tables",
@@ -588,7 +588,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
               target = "_blank",
               "here."
             ),
-            " An interactice map to visualise these areas can be found",
+            " An interactive map to visualise these areas can be found",
             tags$a(
               href = "https://britishredcross.shinyapps.io/left-behind-areas/",
               target = "_blank",
@@ -607,7 +607,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_hsct_secondary_care ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "secondary_care") {
         tagList(
@@ -638,7 +638,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_hsct_demographics ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "demographics") {
         tagList(
