@@ -55,7 +55,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- england_ltla_secondary_care ----
       } else if (selected$geography == "england_ltla_shp" & type == "secondary_care") {
         tagList(
@@ -116,7 +116,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- england_ltla_demographics ----
       } else if (selected$geography == "england_ltla_shp" & type == "demographics") {
         tagList(
@@ -131,7 +131,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- england_icb_summary_metrics ----
       } else if (selected$geography == "england_icb_shp" & type == "summary_metrics") {
         tagList(
@@ -182,7 +182,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- england_icb_secondary_care ----
       } else if (selected$geography == "england_icb_shp" & type == "secondary_care") {
         tagList(
@@ -243,7 +243,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- england_icb_demographics ----
       } else if (selected$geography == "england_icb_shp" & type == "demographics") {
         tagList(
@@ -258,7 +258,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_ltla_summary_metrics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "summary_metrics") {
         tagList(
@@ -318,7 +318,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_ltla_secondary_care ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "secondary_care") {
         tagList(
@@ -333,7 +333,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_ltla_demographics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "demographics") {
         tagList(
@@ -348,7 +348,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_hb_summary_metrics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "summary_metrics") {
         tagList(
@@ -408,7 +408,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_hb_secondary_care ----
       } else if (selected$geography == "scotland_hb_shp" & type == "secondary_care") {
         tagList(
@@ -444,7 +444,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- scotland_hb_demographics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "demographics") {
         tagList(
@@ -471,11 +471,19 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         in certain aspects of health."
           ),
           tags$p(
-            "The ONS Health Index provides an indication of health outcomes, risk
-        factors, and the wider determinants of health. A detailed breakdown
-        of the index can be viewed ",
+            "The ",
             tags$a(
               href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
+              target = "_blank",
+              "ONS Health Index"
+            ),
+            " is England specific and provides an indication of health outcomes,
+            risk factors, and the wider determinants of health. As part of the
+            British Red Cross Resilience Index, an equivalent version for Northern Ireland
+            was created. More details of this index can
+            be viewed ",
+            tags$a(
+              href = "https://github.com/britishredcrosssociety/resilience-index",
               target = "_blank",
               "here."
             )
@@ -509,7 +517,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_ltla_secondary_care ----
       } else if (selected$geography == "northern_ireland_ltla_shp" & type == "secondary_care") {
         tagList(
@@ -570,7 +578,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_ltla_demographics ----
       } else if (selected$geography == "northern_ireland_ltla_shp" & type == "demographics") {
         tagList(
@@ -585,10 +593,11 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_hsct_summary_metrics ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "summary_metrics") {
         tagList(
+          tagList(
           tags$p(
             "These indicators summarise a selection of health metrics into a single
         score. They can be useful for comparing the overall health of different
@@ -598,11 +607,19 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         in certain aspects of health."
           ),
           tags$p(
-            "The ONS Health Index provides an indication of health outcomes, risk
-        factors, and the wider determinants of health. A detailed breakdown
-        of the index can be viewed ",
+            "The ",
             tags$a(
               href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
+              target = "_blank",
+              "ONS Health Index"
+            ),
+            " is England specific and provides an indication of health outcomes,
+            risk factors, and the wider determinants of health. As part of the
+            British Red Cross Resilience Index, an equivalent version for Northern Ireland
+            was created. More details of this index can
+            be viewed ",
+            tags$a(
+              href = "https://github.com/britishredcrosssociety/resilience-index",
               target = "_blank",
               "here."
             )
@@ -636,7 +653,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_hsct_secondary_care ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "secondary_care") {
         tagList(
@@ -697,7 +714,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-        
+
         # ---- northern_ireland_hsct_demographics ----
       } else if (selected$geography == "northern_ireland_hsct_shp" & type == "demographics") {
         tagList(
@@ -712,7 +729,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             )
           )
         )
-      } 
+      }
     })
   })
 }
