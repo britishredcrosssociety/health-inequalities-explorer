@@ -414,7 +414,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         tagList(
           tags$p(
             "Referral to treatment waiting times show the number of people waiting
-            over 18 weeks from their intial referral to the start of their
+            over 18 weeks from their initial referral to the start of their
             treatment. The Scottish Government determined that at least
             90% of patients should be seen within at least 18 weeks. More
             information can be viewed ",
@@ -527,7 +527,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
             any activities carried out in paid employment. More information can 
             be viewed ",
             tags$a(
-              href = "https://www.nisra.gov.uk/publications/census-2021-main-statistics-health-disability-and-unpaid-care-tables"
+              href = "https://www.nisra.gov.uk/publications/census-2021-main-statistics-health-disability-and-unpaid-care-tables",
               target = "_blank",
               "here."
             )
@@ -613,12 +613,29 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         tagList(
           tags$p(
             "Referral to treatment waiting times show the number of people waiting
-            over 18 weeks from their intial referral to the start of their
-            treatment."
+            over 18 weeks from their initial referral to the start of their
+            treatment. More information can be viewed ",
+            tags$a(
+              href = "https://www.health-ni.gov.uk/publications/northern-ireland-waiting-time-statistics-inpatient-and-day-case-waiting-times-december-2022",
+              target = "_blank",
+              "here"
+            ),
+            " for inpatient and day case waiting times, and ",
+            tags$a(
+              href = "https://www.health-ni.gov.uk/publications/northern-ireland-waiting-time-statistics-outpatient-waiting-times-december-2022",
+              target = "_blank",
+              "here"
+            ),
+            " for outpatient waiting times."
           ),
           tags$p(
             "Bed availability shows the number of available staffed beds across
-            all specialties"
+            all specialties. More information can be viewed ",
+            tags$a(
+              href = "https://www.health-ni.gov.uk/publications/hospital-statistics-inpatient-and-day-case-activity-202122",
+              target = "_blank",
+              "here."
+            )
           )
         )
         
@@ -647,7 +664,7 @@ indicatorDescriptionsTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "northern_ireland_ltla_shp"
+      areas = vector(), geography = "northern_ireland_hsct_shp"
     )
     indicatorDescriptionsServer("test", selected, type = "secondary_care")
   }
