@@ -510,7 +510,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         of life through poor physical or mental health. More information can be
         viewed ",
             tags$a(
-              href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
+              href = "https://www.nisra.gov.uk/statistics/deprivation/northern-ireland-multiple-deprivation-measure-2017-nimdm2017",
               target = "_blank",
               "here."
             )
@@ -601,7 +601,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         of life through poor physical or mental health. More information can be
         viewed ",
             tags$a(
-              href = "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019",
+              href = "https://www.nisra.gov.uk/statistics/deprivation/northern-ireland-multiple-deprivation-measure-2017-nimdm2017",
               target = "_blank",
               "here."
             )
@@ -664,9 +664,9 @@ indicatorDescriptionsTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "northern_ireland_hsct_shp"
+      areas = vector(), geography = "northern_ireland_ltla_shp"
     )
-    indicatorDescriptionsServer("test", selected, type = "secondary_care")
+    indicatorDescriptionsServer("test", selected, type = "summary_metrics")
   }
   shinyApp(ui, server)
 }
