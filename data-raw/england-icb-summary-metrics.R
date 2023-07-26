@@ -11,6 +11,11 @@ icb <- boundaries_icb22 |>
   mutate(icb22_name = str_remove_all(icb22_name, "^NHS ")) |>
   mutate(icb22_name = str_remove_all(icb22_name, " Integrated Care Board$"))
 
+lookup_lsoa11_lsoa21_icb22 <- 
+  lookup_lsoa11_sicbl22_icb22_ltla22 |>
+  select(lsoa11_code, lsoa11_name, icb22_code, icb22_name) |> 
+  left_join(lookup_lsoa11_lsoa21_ltla22)
+
 # ---- IMD score ----
 # Decile 1 = most deprived
 # Higher percentage / number = worse health
@@ -57,6 +62,29 @@ health_index <- health_index_raw |>
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 
+lba <-
+  cni2023_england_lsoa21|>
+  select(lsoa21_code, lsoa21_name, `Left Behind Area?`) |> 
+  left_join(lookup_lsoa11_lsoa21_icb22) |> 
+  select(
+    icb22_code,
+    lba = `Left Behind Area?`
+  ) |> 
+  group_by(icb22_code) |>
+  count(lba) |>
+  mutate(percent = n / sum(n)) |>
+  ungroup() |>
+  filter(lba == TRUE)
+  
+
+  right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
+  mutate(percent = replace_na(percent, 0)) |>
+  mutate(n = replace_na(n, 0)) |>
+  select(ltla21_code = ltla22_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = ltla21_code)
+
+
+
 # Wards / ICBs are not coterminous. Solution (to work backwards):
 #   1. Do a ward to LSOA lookup to assign LSOA's as left-behind or not.
 #   2. Lookup LSOAs to ICBS (note: LSOAs are coterminous with ICBs).
@@ -93,7 +121,7 @@ lba <- lba_icbs |>
   mutate(variable = "Left-behind areas", .after = icb22_code) |>
   select(-left_behind, -n, -freq, -total_number_lsoas)
 
-# ---- Combine & reanme (pretty printing) ----
+# ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
