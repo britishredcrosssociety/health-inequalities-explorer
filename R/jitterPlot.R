@@ -44,7 +44,7 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = northern_ireland_ltla_demographics,
           stop("No data selected", call. = FALSE)
         )
-      }else if (selected$geography == "northern_ireland_hsct_shp") {
+      } else if (selected$geography == "northern_ireland_hsct_shp") {
         switch(type,
           "summary_metrics" = northern_ireland_hsct_summary_metrics,
           "secondary_care" = northern_ireland_hsct_secondary_care,
