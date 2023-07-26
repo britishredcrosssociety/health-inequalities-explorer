@@ -640,7 +640,7 @@ indicatorDescriptionsTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = vector(), geography = "northern_ireland_ltla_shp"
     )
     indicatorDescriptionsServer("test", selected, type = "demographics")
   }
