@@ -62,65 +62,22 @@ health_index <- health_index_raw |>
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
+# Lookup LSOAs to ICBS (note: LSOAs are coterminous with ICBs).
 
 lba <-
   cni2023_england_lsoa21 |>
-  select(lsoa21_code, lsoa21_name, `Left Behind Area?`) |>
+  select(lsoa21_code, lba = `Left Behind Area?`) |>
   left_join(lookup_lsoa11_lsoa21_icb22) |>
-  select(
-    icb22_code,
-    lba = `Left Behind Area?`
-  ) |>
   group_by(icb22_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
   ungroup() |>
-  filter(lba == TRUE)
-
-
-right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
+  filter(lba == TRUE) |>
+  right_join(icb) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  select(ltla21_code = ltla22_code, number = n, percent) |>
-  mutate(variable = "Left-behind areas", .after = ltla21_code)
-
-
-
-# Wards / ICBs are not coterminous. Solution (to work backwards):
-#   1. Do a ward to LSOA lookup to assign LSOA's as left-behind or not.
-#   2. Lookup LSOAs to ICBS (note: LSOAs are coterminous with ICBs).
-#   3. Count the percentage of left-behind LSOAs per ICB.
-# Limitation: it assumes all smaller areas share the property of the larger area
-# which is likely not to be the case. This means that areas can be wrongly
-# assigned as left-behind when this is not actually the case. Given wards are
-# already small areas, the effects of this should be low.
-
-# Step 1.
-lba_lsoas <- lookup_lsoa11_ward17 |>
-  filter(str_detect(lsoa11_code, "^E")) |> # Step 1
-  left_join(cni_england_ward17) |>
-  select(lsoa11_code, ward17_code, left_behind = `Left Behind Area?`) |>
-  # Note that 7 LSOAs are assigned NA. These LSOAs are in City of London of
-  # Isles of Scilly which are not left-behind areas.
-  mutate(left_behind = if_else(is.na(left_behind), FALSE, left_behind))
-
-# Step 2.
-lba_icbs <- lba_lsoas |>
-  left_join(lookup_lsoa11_sicbl22_icb22_ltla22) |>
-  select(icb22_code, left_behind)
-
-# Step 3.
-lba <- lba_icbs |>
-  group_by(icb22_code, left_behind) |>
-  summarise(n = n()) |>
-  mutate(freq = n / sum(n)) |>
-  mutate(total_number_lsoas = sum(n)) |>
-  ungroup() |>
-  filter(left_behind == FALSE) |> # Not all ICBs have left-behind LSOAs
-  mutate(number = total_number_lsoas - n) |>
-  mutate(percent = 1 - freq) |>
-  mutate(variable = "Left-behind areas", .after = icb22_code) |>
-  select(-left_behind, -n, -freq, -total_number_lsoas)
+  select(icb22_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = icb22_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
