@@ -153,7 +153,7 @@ jitter_plot_null <- function(data) {
         geom_hline(yintercept = 5.5, size = 0.1, linetype = "dotted") +
         annotate(geom = "text", x = 0.99, y = 5.4, label = "Ethnicity", colour = "#717171")
     } else if (
-      any(grepl("Younger  females (< 16)", unique(data$variable), fixed = TRUE)) # Northern Ireland HSCT demographics
+      any(grepl("Younger \nfemales (< 16)", unique(data$variable), fixed = TRUE)) # Northern Ireland HSCT demographics
     ) {
       plot <- plot +
         scale_y_discrete(
