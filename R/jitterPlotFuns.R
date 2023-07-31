@@ -11,12 +11,12 @@ jitter_plot_prep <- function(data, selected_areas) {
     ) |>
     mutate(alpha = if_else(selected != "not selected", 1, 0.1)) |>
     mutate(selected = factor(selected))
-  
-  if("not selected" %in% levels(prepared_data$selected)){
-    prepared_data <- prepared_data |> 
+
+  if ("not selected" %in% levels(prepared_data$selected)) {
+    prepared_data <- prepared_data |>
       mutate(selected = relevel(selected, ref = "not selected"))
   }
-  
+
   return(prepared_data)
 }
 
