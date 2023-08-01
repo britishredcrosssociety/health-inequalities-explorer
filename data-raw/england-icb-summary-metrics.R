@@ -15,70 +15,6 @@ icb <- boundaries_icb22 |>
 lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |>
   distinct(lsoa11_code, icb22_code)
 
-# ---- 2021 left-behind LSOA's to 2011 LSOA's ----
-lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
-  filter(str_detect(lsoa21_code, "^E")) |>
-  distinct(lsoa11_code, lsoa21_code, change_code) |>
-  relocate(change_code, .after = lsoa21_code)
-
-# Change codes:
-# - U = Unchanged - 31,810 LSOAs remained unchanged from 2011 to 2021
-# - S = Split - 834 LSOAs were split from 2011 to 2021
-# - M = Merged - 194 LSOAs were merged from 2011 to 2021
-# - X = Fragmented - 6 LSOAs were fragmented from 2011 to 2021
-
-# Aggregation stategy going from 2021 codes to 2011 codes:
-# - change_code == "U": no action required
-# - change_code == "S": if ANY of the 2021 LSOAs resulting from the split is 
-#   left behind, 2011 LSOA is considered left-behind
-# - change_code == "M": 2011 LSOA's inherit the left-behind characteristics of 
-#   the 2021 LSOA that resulted from the merge: if the 2021 LSOA is left behind, 
-#   all corresponding 2011 LSOA's are considered left-behind, and vice versa
-# - change_code == "X": 2011 LSOA's inherit the left behind characteristics of 
-#   their corresponding 2021 LSOA. Then group by 2011 LSOA, if any is 
-#   left-behind, consider the LSOA left-behind
-aggregate_census_lsoas <- function(data, count, group = NULL) {
-  data_u <- data |>
-    left_join(lsoa_lsoa) |>
-    filter(change_code == "U") |>
-    select(lsoa11_code, {{ group }}, number = {{ count }})
-  
-  data_s <- data |>
-    left_join(lsoa_lsoa) |>
-    relocate(lsoa11_code) |>
-    filter(change_code == "S") |>
-    group_by(lsoa11_code, {{ group }}) |>
-    summarise(number = sum({{ count }})) |>
-    ungroup()
-  
-  data_m <- data |>
-    left_join(lsoa_lsoa) |>
-    relocate(lsoa11_code) |>
-    filter(change_code == "M") |>
-    mutate(number = {{ count }} / 2) |>
-    select(lsoa11_code, {{ group }}, number)
-  
-  data_x <- data |>
-    left_join(lsoa_lsoa) |>
-    relocate(lsoa11_code) |>
-    filter(change_code == "X") |>
-    group_by({{ group }}) |>
-    add_count(lsoa21_code) |>
-    mutate(
-      new_count = case_when(
-        n == 1 ~ {{ count }},
-        TRUE ~ {{ count }} * 0.5
-      )
-    ) |>
-    group_by(lsoa11_code, {{ group }}) |>
-    summarise(number = sum(new_count)) |>
-    ungroup()
-  
-  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
-  
-  data_aggregated
-}
-
 # ---- IMD score ----
 # Decile 1 = most deprived
 # Higher percentage / number = worse health
@@ -124,10 +60,64 @@ health_index <- health_index_raw |>
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
-# Lookup LSOAs to ICBS (note: LSOAs are coterminous with ICBs).
+
+# ---- 2021 left-behind LSOA's to 2011 LSOA's ----
+lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
+  filter(str_detect(lsoa21_code, "^E")) |>
+  distinct(lsoa11_code, lsoa21_code, change_code) |>
+  relocate(change_code, .after = lsoa21_code)
+
+# Change codes:
+# - U = Unchanged - 31,810 LSOAs remained unchanged from 2011 to 2021
+# - S = Split - 834 LSOAs were split from 2011 to 2021
+# - M = Merged - 194 LSOAs were merged from 2011 to 2021
+# - X = Fragmented - 6 LSOAs were fragmented from 2011 to 2021
+
+# Aggregation stategy going from 2021 codes to 2011 codes:
+# - change_code == "U": no action required
+# - change_code == "S": if ANY of the 2021 LSOAs resulting from the split is
+#   left behind, 2011 LSOA is considered left-behind
+# - change_code == "M": 2011 LSOA's inherit the left-behind characteristics of
+#   the 2021 LSOA that resulted from the merge: if the 2021 LSOA is left behind,
+#   all corresponding 2011 LSOA's are considered left-behind, and vice versa
+# - change_code == "X": 2011 LSOA's inherit the left behind characteristics of
+#   their corresponding 2021 LSOA. Then group by 2011 LSOA, if any is
+#   left-behind, consider the LSOA left-behind
+aggregate_lba_lsoas <- function(data) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, lba = `Left Behind Area?`)
+
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code) |>
+    summarize(lba = any(`Left Behind Area?` == TRUE)) |>
+    ungroup()
+
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    select(lsoa11_code, lba = `Left Behind Area?`)
+
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "X") |>
+    group_by(lsoa11_code) |>
+    summarize(lba = any(`Left Behind Area?` == TRUE)) |>
+    ungroup()
+
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+
+  data_aggregated
+}
 
 lba <-
-  cni2023_england_lsoa21 |>
+  aggregate_lba_lsoas(cni2023_england_lsoa21) |>
   select(lsoa21_code, lba = `Left Behind Area?`) |>
   left_join(lookup_lsoa11_lsoa21_icb22) |>
   group_by(icb22_code) |>
