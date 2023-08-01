@@ -118,8 +118,7 @@ aggregate_lba_lsoas <- function(data) {
 
 lba <-
   aggregate_lba_lsoas(cni2023_england_lsoa21) |>
-  select(lsoa21_code, lba = `Left Behind Area?`) |>
-  left_join(lookup_lsoa11_lsoa21_icb22) |>
+  left_join(lsoa_icb) |>
   group_by(icb22_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
