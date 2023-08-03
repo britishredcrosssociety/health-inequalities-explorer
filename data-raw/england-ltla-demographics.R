@@ -3,6 +3,7 @@ library(tidyverse)
 library(sf)
 library(demographr)
 library(geographr)
+library(compositr)
 
 # ---- Create England ltla lookup ----
 ltla <-
@@ -177,14 +178,10 @@ joined <-
   )
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 england_ltla_demographics_scaled <-
   joined |>
   group_by(variable) |>
-  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  mutate(scaled = positional_normalisation(percent)) |>
   ungroup()
 
 # --- Add plot labels ----

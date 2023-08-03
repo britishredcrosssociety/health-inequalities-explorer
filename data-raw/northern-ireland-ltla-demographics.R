@@ -1,5 +1,6 @@
 library(tidyverse)
 library(demographr)
+library(compositr)
 
 # ---- Age & Sex ----
 # Note: term 'sex' is used to correspond to the 2021 Census from which the data
@@ -86,14 +87,10 @@ joined <-
   )
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 northern_ireland_ltla_demographics_scaled <-
   joined |>
   group_by(variable) |>
-  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  mutate(scaled = positional_normalisation(percent)) |>
   ungroup()
 
 # --- Add plot labels ----

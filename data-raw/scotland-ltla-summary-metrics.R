@@ -3,6 +3,7 @@ library(IMD)
 library(geographr)
 library(sf)
 library(ggridges)
+library(compositr)
 
 ltla <- boundaries_ltla21 |>
   st_drop_geometry() |>
@@ -67,18 +68,14 @@ metrics_joined <- bind_rows(
   relocate(area_name)
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 ltla_summary_metrics_scotland_scaled <-
   metrics_joined |>
   group_by(variable) |>
   mutate(
-    scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
-      variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number)
+    scaled = case_when(
+      variable == "Index of Multiple \nDeprivation rank" ~ positional_normalisation(number),
+      variable == "Left-behind areas" ~ positional_normalisation(percent),
+      variable == "Health Index \nrank" ~ positional_normalisation(number)
     )
   ) |>
   ungroup()
@@ -87,11 +84,11 @@ ltla_summary_metrics_scotland_scaled <-
 # Align so higher value = better health
 # Flip IMD, LBA, and health index, as currently higher = worse health
 scotland_ltla_summary_metrics_polarised <- ltla_summary_metrics_scotland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(scaled = scaled * -1)
 
 # Check distributions
 scotland_ltla_summary_metrics_polarised |>
-  ggplot(aes(x = scaled_1_1, y = variable)) +
+  ggplot(aes(x = scaled, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +

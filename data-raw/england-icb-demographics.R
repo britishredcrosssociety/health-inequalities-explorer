@@ -3,6 +3,8 @@ library(tidyverse)
 library(sf)
 library(demographr)
 library(geographr)
+library(compositr)
+library(ggridges)
 
 # Note: ICBs and LTLAs are not coterminous, so ltla demographic data can't be
 #       repurposed for ICBs
@@ -227,15 +229,20 @@ joined <- bind_rows(
 )
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 england_icb_demographics_scaled <-
   joined |>
   group_by(variable) |>
-  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  mutate(scaled = positional_normalisation(percent)) |>
   ungroup()
+
+# Check distributions
+england_icb_demographics_scaled |>
+  ggplot(aes(x = scaled, y = variable)) +
+  geom_density_ridges(scale = 4) +
+  scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
+  scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding
+  coord_cartesian(clip = "off") + # to avoid clipping of the very top of the top ridgeline
+  theme_ridges()
 
 # ---- Add plot labels ----
 england_icb_demographics <- england_icb_demographics_scaled |>

@@ -84,7 +84,7 @@ jitter_plot_null <- function(data) {
   plot <- ggplot(
     data,
     aes(
-      x = scaled_1_1,
+      x = scaled,
       y = variable,
       text = label
     )
@@ -260,7 +260,7 @@ jitter_plot_selected <- function(data, selected_areas) {
   plot <- ggplot(
     data,
     aes(
-      x = scaled_1_1,
+      x = scaled,
       y = variable,
       fill = selected,
       text = label

@@ -5,6 +5,7 @@ library(healthyr)
 library(geographr)
 library(sf)
 library(ggridges)
+library(compositr)
 
 # ---- Create lookups ----
 icb <- boundaries_icb22 |>
@@ -160,14 +161,10 @@ joined <-
   relocate(area_name)
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 icb_secondary_care_england_scaled <-
   joined |>
   group_by(variable) |>
-  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  mutate(scaled = positional_normalisation(percent)) |>
   ungroup()
 
 # ---- Align indicator polarity ----
@@ -175,15 +172,15 @@ icb_secondary_care_england_scaled <-
 # Flip criteria to reside, as currently higher = worse health
 england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
-    scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
-      TRUE ~ scaled_1_1
+    scaled = case_when(
+      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled * -1,
+      TRUE ~ scaled
     )
   )
 
 # Check distributions
 england_icb_secondary_care_polarised |>
-  ggplot(aes(x = scaled_1_1, y = variable)) +
+  ggplot(aes(x = scaled, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
   scale_x_continuous(expand = c(0, 0)) + # for both axes to remove unneeded padding

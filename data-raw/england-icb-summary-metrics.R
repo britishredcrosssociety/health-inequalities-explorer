@@ -105,18 +105,14 @@ metrics_joined <- bind_rows(
   relocate(area_name)
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 icb_summary_metrics_england_scaled <-
   metrics_joined |>
   group_by(variable) |>
   mutate(
-    scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scale_1_1(percent),
-      variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "ONS Health \nIndex rank" ~ scale_1_1(number)
+    scaled = case_when(
+      variable == "Deprivation" ~ positional_normalisation(percent),
+      variable == "Left-behind areas" ~ positional_normalisation(percent),
+      variable == "ONS Health \nIndex rank" ~ positional_normalisation(number)
     )
   ) |>
   ungroup()
@@ -126,16 +122,16 @@ icb_summary_metrics_england_scaled <-
 # Flip IMD and LBA, as currently higher = worse health
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
-    scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scaled_1_1 * -1,
-      variable == "Left-behind areas" ~ scaled_1_1 * -1,
-      TRUE ~ scaled_1_1
+    scaled = case_when(
+      variable == "Deprivation" ~ scaled * -1,
+      variable == "Left-behind areas" ~ scaled * -1,
+      TRUE ~ scaled
     )
   )
 
 # Check distributions
 england_icb_summary_metrics_polarised |>
-  ggplot(aes(x = scaled_1_1, y = variable)) +
+  ggplot(aes(x = scaled, y = variable)) +
   geom_density_ridges(scale = 4) +
   scale_y_discrete(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +

@@ -3,6 +3,7 @@ library(demographr)
 library(readxl)
 library(httr2)
 library(geographr)
+library(compositr)
 
 # ---- Age & Sex ----
 age_sex_hsct <-
@@ -124,14 +125,10 @@ joined <-
   )
 
 # ---- Normalise/scale ----
-scale_1_1 <- function(x) {
-  (x - mean(x)) / max(abs(x - mean(x)))
-}
-
 northern_ireland_hsct_demographics_scaled <-
   joined |>
   group_by(variable) |>
-  mutate(scaled_1_1 = scale_1_1(percent)) |>
+  mutate(scaled = positional_normalisation(percent)) |>
   ungroup()
 
 # --- Add plot labels ----
