@@ -16,6 +16,11 @@ lookup_england_ltla <-
   lookup_ltla_ltla |>
   filter(str_detect(ltla21_code, "^E"))
 
+lookup_england_lsoa_ltla <-
+  lookup_lsoa11_lsoa21_ltla22 |>
+  distinct(lsoa21_code, ltla22_code) |>
+  filter(str_detect(ltla22_code, "^E"))
+
 # ---- IMD score ----
 # Higher score = more deprived
 # Higher rank (calculated here) = more deprived
@@ -28,24 +33,27 @@ imd <-
   summarise(imd_score = mean(imd_score)) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
-  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+  mutate(
+    variable = "Index of Multiple \nDeprivation rank",
+    .after = ltla21_code
+  ) |>
   mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 lba <-
-  cni_england_ward17 |>
-  left_join(lookup_england_ltla, by = c("lad19_code" = "ltla19_code")) |>
-  select(ward17_code, ltla21_code, lba = `Left Behind Area?`) |>
-  group_by(ltla21_code) |>
+  cni2023_england_lsoa21 |>
+  left_join(lookup_england_lsoa_ltla) |>
+  select(lsoa21_code, ltla22_code, lba = `Left Behind Area?`) |>
+  group_by(ltla22_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
   ungroup() |>
   filter(lba == TRUE) |>
-  right_join(ltla) |>
+  right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  select(ltla21_code, number = n, percent) |>
+  select(ltla21_code = ltla22_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
 # ---- ONS Health Index score ----

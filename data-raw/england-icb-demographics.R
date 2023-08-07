@@ -27,7 +27,7 @@ lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
 # - U = Unchanged
 # - S = Split
 # - M = Merged
-# - X = Fragmented (irregular lookups that can't be easilt mapped)
+# - X = Fragmented (irregular lookups that can't be easily mapped)
 
 # U: 31,810 LSOAs remained unchanged from 2011 to 2021
 lsoa_lsoa |>
