@@ -149,8 +149,8 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
       variable == "Left-behind areas" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of left-behind wards in the area: ", round(number),
-        "<br>", "Percentage of all wards that are left-behind: ", round(percent * 100, 1), "%"
+        "<br>", "No. of left-behind LSOA's in the area: ", round(number),
+        "<br>", "Percentage of all LSOA's that are left-behind: ", round(percent * 100, 1), "%"
       ),
       variable == "ONS Health \nIndex rank" ~ paste0(
         "<b>", area_name, "</b>",
