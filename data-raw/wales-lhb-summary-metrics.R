@@ -7,15 +7,17 @@ library(ggridges)
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
 
-lookup_lsoa11_ltla21_lhb22<-lookup_lsoa11_ltla21|>
-                 filter(str_detect(ltla21_code, "^W"))|>
-                         left_join(lookup_ltla21_lhb22)|>
-                          distinct(lsoa11_code,lhb22_code,lhb22_name,ltla21_code)|>
-                          select(lsoa_code=lsoa11_code,lhb20_code=lhb22_code,lhb20_name=lhb22_name,ltla21_code)
+lookup_lsoa11_ltla21_lhb22 <- lookup_lsoa11_ltla21 |>
+  filter(str_detect(ltla21_code, "^W")) |>
+  left_join(lookup_ltla21_lhb22) |>
+  distinct(lsoa11_code, lhb22_code, lhb22_name, ltla21_code) |>
+  select(lsoa_code = lsoa11_code, lhb20_code = lhb22_code, ltla21_code)
 
 # ---- IMD score ----
-imd<-
-  imd_wales_lsoa|>
+# Decile 1 = most deprived
+# Higher percentage / number = worse health
+imd <-
+  imd_wales_lsoa |>
   left_join(lookup_lsoa11_ltla21_lhb22) |>
   select(lsoa_code, lhb20_code, IMD_decile) |>
   mutate(top_10 = if_else(IMD_decile == 1, "yes", "no")) |>
@@ -24,45 +26,50 @@ imd<-
   mutate(freq = n / sum(n)) |>
   mutate(total_number_lsoas = sum(n)) |>
   ungroup() |>
-  filter(top_10 == "no") |> 
+  filter(top_10 == "no") |>
   mutate(number = total_number_lsoas - n) |>
   mutate(percent = 1 - freq) |>
   mutate(variable = "Deprivation", .after = lhb20_code) |>
   select(-top_10, -n, -freq, -total_number_lsoas)
 
 # ---- health ----
+# An official Health Index for Scotland does not exists. Use the BRC Resilience
+# Index version
+# Source: https://github.com/britishredcrosssociety/resilience-index
+
+# Higher score = worse health
+# Higher rank (calculated here) = worse health
 url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
+
 resilience_index_raw <- read_csv(url)
+
 health_index <- resilience_index_raw |>
   rename(ltla21_code = lad_code) |>
   left_join(lookup_ltla21_lhb22) |>
-  select(lhb22_code, number = healthy_people_domain_rank) |>
+  select(lhb22_code, score = healthy_people_domain_score) |>
   group_by(lhb22_code) |>
-  count(number) |>
+  summarise(score = sum(score)) |>
+  mutate(number = rank(score)) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Health Index \nrank") |>
+  select(lhb20_code = lhb22_code, variable, number, percent)
+
+# ---- % Left-behind areas ----
+lba <-
+  cni_wales_msoa11 |>
+  select(ltla21_name = lad21_name, lba = `Left Behind Area?`) |>
+  left_join(lookup_ltla21_lhb22) |>
+  group_by(lhb22_code) |>
+  count(lba) |>
   mutate(percent = n / sum(n)) |>
   ungroup() |>
   rename(lhb20_code = lhb22_code) |>
-  distinct(lhb20_code, .keep_all = TRUE) |>
-  mutate(number = rank(number)) |>
-  mutate(percent = NA) |>
-  mutate(variable = "ONS Health \nIndex rank") |>
-  relocate(variable, .after = lhb20_code)
-
-# ---- % Left-behind areas ----
-lba <- cni_wales_msoa11 |>
-  select(ltla21_name=lad21_name, lba=`Left Behind Area?`)|>
-  left_join(lookup_ltla21_lhb22)|>
-  group_by(lhb22_code) |>
-  count(lba)|>
-  mutate(percent = n / sum(n)) |>
-  ungroup() |>
-  rename(lhb20_code=lhb22_code) |>
-  filter(lba == TRUE) |> 
-  right_join(lhb)|>
+  filter(lba == TRUE) |>
+  right_join(lhb) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  mutate(variable = "Left-behind areas", .after = lhb20_code) |>
-  select(-lba, -lhb20_name)
+  select(lhb20_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = lhb20_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
@@ -87,20 +94,16 @@ lhb_summary_metrics_wales_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "ONS Health \nIndex rank" ~ scale_1_1(number)
+      variable == "Health Index \nrank" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
+# Align so higher value = better health
+# Flip IMD, LBA, and health index, as currently higher = worse health
 wales_lhb_summary_metrics_polarised <- lhb_summary_metrics_wales_scaled |>
-  mutate(
-    scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scaled_1_1 * -1,
-      variable == "Left-behind areas" ~ scaled_1_1 * -1,
-      TRUE ~ scaled_1_1
-    )
-  )
+  mutate(scaled_1_1 = scaled_1_1 * -1)
 
 # Check distributions
 wales_lhb_summary_metrics_polarised |>
@@ -127,7 +130,7 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
         "<br>", "No. of left-behind LSOAs in the LHB: ", round(number),
         "<br>", "Percentage of LSOAs in the LHB that are left-behind: ", round(percent * 100, 1), "%"
       ),
-      variable == "ONS Health \nIndex rank" ~ paste0(
+      variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Health Index rank: ", round(number)
@@ -136,4 +139,3 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
   )
 
 usethis::use_data(wales_lhb_summary_metrics, overwrite = TRUE)
-
