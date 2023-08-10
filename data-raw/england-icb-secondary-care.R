@@ -48,7 +48,7 @@ bed_occupancy_icb <-
     percent = sum(percent)
   ) |>
   mutate(
-    variable = "Bed availability \n(Jan 23 - Mar 23 average)",
+    variable = "Bed availability \n(May 23 - Jul 23 average)",
     .after = icb22_code
   )
 
@@ -98,7 +98,7 @@ criteria_to_reside_icb <-
     percent = mean(perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
+    variable = "Beds not meeting \ncriteria to reside \n(Mar 23 - May 23 average)",
     .after = icb22_code
   )
 
@@ -121,7 +121,7 @@ discharged_patients_icb <-
     percent = mean(percent_discharged)
   ) |>
   mutate(
-    variable = "Discharged beds \n(Jan 23 - Mar 23 average)",
+    variable = "Discharged beds \n(Mar 23 - May 23 average)",
     .after = icb22_code
   )
 
@@ -176,7 +176,7 @@ icb_secondary_care_england_scaled <-
 england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
+      variable == "Beds not meeting \ncriteria to reside \n(Mar 23 - May 23 average)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -194,19 +194,19 @@ england_icb_secondary_care_polarised |>
 england_icb_secondary_care <- england_icb_secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == "Bed availability \n(May 23 - Jul 23 average)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),
         "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
       ),
-      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == "Beds not meeting \ncriteria to reside \n(Mar 23 - May 23 average)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of beds not meeting criteria to reside: ", round(number),
         "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
       ),
-      variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == "Discharged beds \n(Mar 23 - May 23 average)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of discharged beds: ", round(number),
