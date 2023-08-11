@@ -1,24 +1,21 @@
 # ---- Prepare selected data ----
 jitter_plot_prep <- function(data, selected_areas) {
-  prepared_data <- data |>
-    mutate(area_name = string_wrap(area_name)) |>
-    mutate(
-      selected = if_else(
-        area_name %in% string_wrap(selected_areas),
-        area_name,
-        "not selected"
-      )
-    ) |>
-    mutate(alpha = if_else(selected != "not selected", 1, 0.1)) |>
-    mutate(alpha = I(alpha)) |>
-    mutate(selected = factor(selected))
+  data$area_name <- string_wrap(data$area_name)
 
-  if ("not selected" %in% levels(prepared_data$selected)) {
-    prepared_data <- prepared_data |>
-      mutate(selected = relevel(selected, ref = "not selected"))
+  data$selected <- ifelse(data$area_name %in% string_wrap(selected_areas), data$area_name, "not selected")
+
+  data$alpha <- ifelse(data$selected != "not selected", 1, 0.1)
+
+  # Make 'alpha' a one-level factor
+  data$alpha <- I(data$alpha)
+
+  data$selected <- factor(data$selected)
+
+  if ("not selected" %in% levels(data$selected)) {
+    data$selected <- relevel(data$selected, ref = "not selected")
   }
 
-  return(prepared_data)
+  return(data)
 }
 
 # ---- ggplotly fun ----
