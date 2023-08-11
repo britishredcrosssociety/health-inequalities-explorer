@@ -8,191 +8,231 @@ library(compositr)
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
 
+lsoa_lhb <- lookup_lsoa11_ltla21 |>
+  filter(str_detect(ltla21_code, "^W")) |>
+  left_join(lookup_ltla21_lhb22) |>
+  distinct(lsoa11_code, lhb22_code) |>
+  rename(lhb20_code = lhb22_code)
+
+# ---- 2011 to 2021 LSOA census changes ----
+lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
+  filter(str_detect(lsoa21_code, "^W")) |>
+  distinct(lsoa11_code, lsoa21_code, change_code) |>
+  relocate(change_code, .after = lsoa21_code)
+
+# Change codes:
+# - U = Unchanged
+# - S = Split
+# - M = Merged
+# - X = Fragmented (irregular lookups that can't be easilt mapped)
+
+# U: 1,837 LSOAs remained unchanged from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "U") |>
+  distinct(lsoa11_code)
+
+# S: 834 LSOAs were split from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "S") |>
+  distinct(lsoa11_code)
+
+# M: 45 LSOAs were merged from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "M") |>
+  distinct(lsoa11_code)
+
+# X: 0 LSOAs were fragmented from 2011 to 2021
+lsoa_lsoa |>
+  filter(change_code == "X") |>
+  distinct(lsoa11_code)
+
+# Aggregation stategy going from 2021 codes to 2011 codes:
+# - change_code == "U": No action required
+# - change_code == "S": group by lsoa11_code and sum the count to undo the
+#   original split.
+# - change_code == "M": divide the count by two to undo the original merge. Two
+#   is the maximum number of 2011 LSOAs that were merged together, so an
+#   assumption is made that the population is split equally between the two
+#   2011 areas. The maximum number of merged areas can be checked with:
+#   `lsoa_lsoa |> filter(change_code == "M") |> count(lsoa21_code) |> count(n)`
+# - change_code == "X": count the number of times the lsoa21_code appears, when
+#   the lsoa21_code appears only once, assign the original count, when it
+#   appears twice, assign half the count. Then, group by the lsoa11_code and
+#   sum the counts.
+aggregate_census_lsoas <- function(data, count, group = NULL) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, {{ group }}, number = {{ count }})
+
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code, {{ group }}) |>
+    summarise(number = sum({{ count }})) |>
+    ungroup()
+
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    mutate(number = {{ count }} / 2) |>
+    select(lsoa11_code, {{ group }}, number)
+
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "X") |>
+    group_by({{ group }}) |>
+    add_count(lsoa21_code) |>
+    mutate(
+      new_count = case_when(
+        n == 1 ~ {{ count }},
+        TRUE ~ {{ count }} * 0.5
+      )
+    ) |>
+    group_by(lsoa11_code, {{ group }}) |>
+    summarise(number = sum(new_count)) |>
+    ungroup()
+
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+
+  data_aggregated
+}
+
 # ---- Population ----
-population_file <- compositr::download_file(
-  "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationandhouseholdestimatesenglandandwalescensus2021/census2021/census2021firstresultsenglandwales1.xlsx",
-  ".xlsx"
+# Source: https://www.nomisweb.co.uk/sources/census_2021_ts
+# Data set: TS007A - Age by five-year age bands
+# Note: a breakdown by sex, currently isn't available
+population_raw <- read_csv(
+  "data-raw/census-raw/TS007A_age_by_five_year_age_bands_lsoa11.csv",
+  skip = 4
 )
 
-population_raw <-
-  readxl::read_excel(
-    population_file,
-    sheet = "P03",
-    range = "A8:AO383"
-  )
-
-pop_wales<-population_raw|>
-filter(str_detect(`Area code [note 2]`, "^W"))
-
-pop_wales_lhb<-pop_wales [-1, ]|>
-  rename(ltla21_code=`Area code [note 2]`)|>
-  left_join(lookup_ltla21_lhb22)|>
-  distinct(lhb22_code, .keep_all = TRUE)
-
-age_columns <- colnames(pop_wales_lhb)[4:41]
-population_longer <- pop_wales_lhb |>
-  pivot_longer(cols = age_columns, names_to = "age_group", values_to = "population") |>
-  separate(age_group, into = c("gender", "age"), sep = ":\r\nAged ")|>
-  mutate(age = gsub(" years and over\r\n\\[note 12\\]", "", age)) |>
-  mutate(age = gsub(" years\r\n\\[note 12\\]", "", age))
-population_filter_areas <-
-  population_longer |>
-  filter(area_code %in% ltla$ltla21_code)
-
-population_tidy_age <-
-  population_longer |>
-  mutate(sex = if_else(str_detect(age, "^Females"), "Female", "Male")) |>
-  relocate(sex, .after = lhb22_code) |>
-  mutate(age = str_remove_all(age, "Females:\r\nAged ")) |>
-  mutate(age = str_remove_all(age, "Males:\r\nAged ")) |>
-  mutate(age = str_remove_all(age, "\r\n\\[note 12]")) |>
-  mutate(age = str_remove_all(age, " years")) |>
-  mutate(age = str_replace_all(age, " to ", "-")) |>
+population_groupings <- population_raw |>
+  filter(str_detect(mnemonic, "^W")) |>
+  select(-`2021 super output area - lower layer`, -Total) |>
+  rename(lsoa21_code = mnemonic) |>
+  pivot_longer(!lsoa21_code, names_to = "age", values_to = "population") |>
   mutate(
     age = case_when(
-      age == "4 and under" ~ "0-4",
-      age == "90 and over" ~ "90+",
-      TRUE ~ age
-    )
-  )
-
-population_grouppings <-
-  population_tidy_age |>
-  mutate(
-    age = case_when(
-      age == "0-4" ~ "Younger \npeople (< 18)",
-      age == "5-9" ~ "Younger \npeople (< 18)",
-      age == "10-14" ~ "Younger \npeople (< 18)",
-      age == "15-19" ~ "Younger \npeople (< 18)",
-      age == "20-24" ~ "Working \nage (18-65)",
-      age == "25-29" ~ "Working \nage (18-65)",
-      age == "30-34" ~ "Working \nage (18-65)",
-      age == "35-39" ~ "Working \nage (18-65)",
-      age == "40-44" ~ "Working \nage (18-65)",
-      age == "45-49" ~ "Working \nage (18-65)",
-      age == "50-54" ~ "Working \nage (18-65)",
-      age == "55-59" ~ "Working \nage (18-65)",
-      age == "60-64" ~ "Working \nage (18-65)",
-      age == "65-69" ~ "Older \npeople (65+)",
-      age == "70-74" ~ "Older \npeople (65+)",
-      age == "75-79" ~ "Older \npeople (65+)",
-      age == "80-84" ~ "Older \npeople (65+)",
-      age == "85-89" ~ "Older \npeople (65+)",
-      age == "90+" ~ "Older \npeople (65+)"
+      age == "Aged 4 years and under" ~ "Younger \npeople (< 18)",
+      age == "Aged 5 to 9 years" ~ "Younger \npeople (< 18)",
+      age == "Aged 10 to 14 years" ~ "Younger \npeople (< 18)",
+      age == "Aged 15 to 19 years" ~ "Younger \npeople (< 18)",
+      age == "Aged 20 to 24 years" ~ "Working \nage (18-65)",
+      age == "Aged 25 to 29 years" ~ "Working \nage (18-65)",
+      age == "Aged 30 to 34 years" ~ "Working \nage (18-65)",
+      age == "Aged 35 to 39 years" ~ "Working \nage (18-65)",
+      age == "Aged 40 to 44 years" ~ "Working \nage (18-65)",
+      age == "Aged 45 to 49 years" ~ "Working \nage (18-65)",
+      age == "Aged 50 to 54 years" ~ "Working \nage (18-65)",
+      age == "Aged 55 to 59 years" ~ "Working \nage (18-65)",
+      age == "Aged 60 to 64 years" ~ "Working \nage (18-65)",
+      age == "Aged 65 to 69 years" ~ "Older \npeople (65+)",
+      age == "Aged 70 to 74 years" ~ "Older \npeople (65+)",
+      age == "Aged 75 to 79 years" ~ "Older \npeople (65+)",
+      age == "Aged 80 to 84 years" ~ "Older \npeople (65+)",
+      age == "Aged 85 years and over" ~ "Older \npeople (65+)"
     )
   ) |>
-  group_by(lhb22_code, sex, age) |>
+  group_by(lsoa21_code, age) |>
   summarise(population = sum(population)) |>
   ungroup()
 
-population_sex_age_joined <-
-  population_grouppings |>
-  mutate(
-    age = case_when(
-      sex == "Female" & age == "Older \npeople (65+)" ~ "Older \nfemales (65+)",
-      sex == "Female" & age == "Working \nage (18-65)" ~ "Working age \nfemales (18-65)",
-      sex == "Female" & age == "Younger \npeople (< 18)" ~ "Younger \nfemales (< 18)",
-      sex == "Male" & age == "Older \npeople (65+)" ~ "Older \nmales (65+)",
-      sex == "Male" & age == "Working \nage (18-65)" ~ "Working age \nmales (18-65)",
-      sex == "Male" & age == "Younger \npeople (< 18)" ~ "Younger \nmales (< 18)")
-  ) |>
+population_refactored <- population_groupings |>
   mutate(
     age = factor(
       age,
       levels = c(
-        "Younger \nfemales (< 18)",
-        "Younger \nmales (< 18)",
-        "Working age \nfemales (18-65)",
-        "Working age \nmales (18-65)",
-        "Older \nfemales (65+)",
-        "Older \nmales (65+)"
+        "Younger \npeople (< 18)",
+        "Working \nage (18-65)",
+        "Older \npeople (65+)"
       )
     )
-  ) |>
-  select(-sex)
+  )
 
-population_relative <-
-  population_sex_age_joined |>
-  group_by(lhb22_code) |>
-  mutate(population_lhb = sum(population)) |>
+# Aggregate census LSOAs for use in ICB lookup
+# Note: some of the recombined 2011 LSOAs (e.g., "E01033583") have large
+# populations that create a skewed distribution with a long right-tail. This
+# matches the figures and distribtuion of the latest mid-year population
+# estimates that use the same 2011 LSOA areas.
+population_aggregated <- population_refactored |>
+  aggregate_census_lsoas(count = population, group = age)
+
+# Aggregate to ICB's
+population_icb <- population_aggregated |>
+  left_join(lsoa_lhb) |>
+  left_join(lhb) |>
+  group_by(lhb20_name, age) |>
+  summarise(number = sum(number)) |>
+  mutate(lhb_population = sum(number)) |>
   ungroup() |>
-  mutate(population_relative = population / population_lhb) |>
-  select(-population_lhb)
+  mutate(percent = number / lhb_population) |>
+  select(-lhb_population) |>
+  rename(area_name = lhb20_name, variable = age)
 
-age_wales_lhb <-
-  population_relative |>
-  left_join(lhb,by = c("lhb22_code" = "lhb20_code")) |>
+# ---- Ethnicity ----
+# Source: https://www.nomisweb.co.uk/sources/census_2021_ts
+# Data set: TS007A - Age by five-year age bands
+ethnicity_raw <- read_csv(
+  "data-raw/census-raw/TS021_ethnic_group_lsoa11.csv",
+  skip = 7
+) |>
+  slice(1:(n() - 5))
+
+ethnicity_groupings <- ethnicity_raw |>
+  filter(str_detect(mnemonic, "^W")) |>
   select(
-    area_name = lhb20_name,
-    variable = age,
-    number = population,
-    percent = population_relative
-  )
-
-# ---- ethnicity ----
-ethnicity_wales_lhb <-
-  ethnicity21_ltla21 |>
-  filter(str_detect(ltla21_code, "^W"))|>
-  left_join(lookup_ltla21_lhb22)
-
-  ethnicity_higher_level_groupings <- ethnicity_wales_lhb|>
-  mutate(
-    high_level_category =
-      case_when(
-        str_detect(ethnic_group, "^Asian.*\\(number\\)$") ~ "Asian, Asian \nBritish or \nAsian Welsh: number",
-        str_detect(ethnic_group, "^Asian.*\\(percent\\)$") ~ "Asian, Asian \nBritish or \nAsian Welsh: percent",
-        str_detect(ethnic_group, "^Black.*\\(number\\)$") ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African: number",
-        str_detect(ethnic_group, "^Black.*\\(percent\\)$") ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African: percent",
-        str_detect(ethnic_group, "^Mixed.*\\(number\\)$") ~ "Mixed or Multiple \nethnic groups: number",
-        str_detect(ethnic_group, "^Mixed.*\\(percent\\)$") ~ "Mixed or Multiple \nethnic groups: percent",
-        str_detect(ethnic_group, "^White.*\\(number\\)$") ~ "White: number",
-        str_detect(ethnic_group, "^White.*\\(percent\\)$") ~ "White: percent",
-        str_detect(ethnic_group, "^Other.*\\(number\\)$") ~ "Other ethnic \ngroup: number",
-        str_detect(ethnic_group, "^Other.*\\(percent\\)$") ~ "Other ethnic \ngroup: percent",
-      )
+    -`2021 super output area - lower layer`,
+    -`Total: All usual residents`
   ) |>
-  group_by(lhb22_code, high_level_category) |>
-  summarise(value = sum(value)) |>
-  ungroup()
- 
-ethnicity_separate_cols <- ethnicity_higher_level_groupings |>
-    separate(high_level_category, into = c("indicator", "value_type"), ": ") |>
-    pivot_wider(names_from = "value_type", values_from = "value")
-
-ethnicity_wales_lhbs<- ethnicity_separate_cols |>
-  mutate(percent = percent / 100) |>
-  left_join(lhb, by = c("lhb22_code" = "lhb20_code")) |>
-  select(
-    area_name = lhb20_name,
-    variable = indicator,
-    number,
-    percent
+  rename(lsoa21_code = mnemonic) |>
+  pivot_longer(
+    !lsoa21_code,
+    names_to = "ethnicity",
+    values_to = "group_count"
+  ) |>
+  mutate(
+    ethnicity = case_when(
+      ethnicity == "Asian, Asian British or Asian Welsh" ~ "Asian, Asian \nBritish or \nAsian Welsh",
+      ethnicity == "Black, Black British, Black Welsh, Caribbean or African" ~ "Black, Black British, \nBlack Welsh, \nCaribbean or African",
+      ethnicity == "Mixed or Multiple ethnic groups" ~ "Mixed or Multiple \nethnic group",
+      ethnicity == "White" ~ "White",
+      ethnicity == "Other ethnic group" ~ "Other ethnic \ngroup",
+    )
   )
 
-joined <-
-  bind_rows(
-    age_wales_lhb,
-    ethnicity_wales_lhbs
-  )
+ethnicity_aggregated <- ethnicity_groupings |>
+  aggregate_census_lsoas(count = group_count, group = ethnicity)
+
+ethnicity_icb <- ethnicity_aggregated |>
+  left_join(lsoa_lhb) |>
+  left_join(lhb) |>
+  group_by(lhb20_name, ethnicity) |>
+  summarise(number = sum(number)) |>
+  mutate(lhb_population = sum(number)) |>
+  ungroup() |>
+  mutate(percent = number / lhb_population) |>
+  select(-lhb_population) |>
+  rename(area_name = lhb20_name, variable = ethnicity)
+
+# ---- Join ----
+joined <- bind_rows(
+  population_icb, ethnicity_icb
+)
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
-wales_lhb_demographics_scaled <- joined |>
+wales_lhb_demographics_scaled <-
+  joined |>
   group_by(variable) |>
   mutate(scaled_1_1 = scale_1_1(percent)) |>
   ungroup()
-
-# Check distributions
-wales_lhb_demographics_scaled |>
-  ggplot(aes(x = scaled_1_1, y = variable)) +
-  geom_density_ridges(scale = 4) +
-  scale_y_discrete(expand = c(0, 0)) + 
-  scale_x_continuous(expand = c(0, 0)) + 
-  coord_cartesian(clip = "off") + 
-  theme_ridges()
 
 # ---- Add plot labels ----
 wales_lhb_demographics <- wales_lhb_demographics_scaled |>
