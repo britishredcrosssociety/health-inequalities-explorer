@@ -1,6 +1,3 @@
-# Northern Ireland - Secondary Care Indicators
-# Health and Social Care Trusts
-
 # ---- Load libs & helpers ----
 library(tidyverse)
 library(sf)
@@ -34,6 +31,7 @@ pop_ni_hsct <- read_ods(
 
 # ---- RTT ----
 # Higher = worse performance
+# Data is quarterly
 rtt <- ni_rtt_hsct |>
   select(
     trust18_name = "hsct22_name",
@@ -51,7 +49,7 @@ rtt <- ni_rtt_hsct |>
     percent = mean(percent, na.rm = FALSE)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Mar 22 - Jun 22)",
+    variable = "Referral to treatment \nwaiting times (Dec 22 - Mar 23)",
     .after = trust18_name
   ) |>
   filter(!trust18_name %in% c("DPC", "Day Case Procedure Centre"))
