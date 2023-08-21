@@ -121,7 +121,7 @@ secondary_care_polarised |>
 northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Mar 22 - Jun 22)" ~
+      variable == "Referral to treatment \nwaiting times (Dec 22 - Mar 23)" ~
         paste0(
           "<b>", area_name, "</b>",
           "<br>",
