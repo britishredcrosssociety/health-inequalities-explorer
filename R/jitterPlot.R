@@ -51,6 +51,20 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = northern_ireland_hsct_demographics,
           stop("No data selected", call. = FALSE)
         )
+      } else if (selected$geography == "wales_ltla_shp") {
+        switch(type,
+          "summary_metrics" = wales_ltla_summary_metrics,
+          "secondary_care" = wales_ltla_secondary_care,
+          "demographics" = wales_ltla_demographics,
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "wales_lhb_shp") {
+        switch(type,
+          "summary_metrics" = wales_lhb_summary_metrics,
+          "secondary_care" = NA,
+          "demographics" = wales_lhb_demographics,
+          stop("No data selected", call. = FALSE)
+        )
       }
     })
 
