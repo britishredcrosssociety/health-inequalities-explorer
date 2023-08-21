@@ -113,7 +113,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Nov 22 - Dec 22)" ~ scaled_1_1 * -1,
+      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ scaled_1_1 * -1,
       variable == "Delayed discharges \n(July 22 - Sept 22 average)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
