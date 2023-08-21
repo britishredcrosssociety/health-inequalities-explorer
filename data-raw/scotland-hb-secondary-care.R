@@ -31,7 +31,7 @@ rtt <- scotland_rtt_hb |>
     percent = mean(waits_over_18_weeks_percent)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Nov 22 - Dec 22)",
+    variable = "Referral to treatment \nwaiting times (Jan 23 - Mar 23)",
     .after = hb19_code
   )
 
@@ -132,7 +132,7 @@ secondary_care_polarised |>
 scotland_hb_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Nov 22 - Dec 22)" ~ paste0(
+      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
