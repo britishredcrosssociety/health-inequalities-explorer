@@ -14,61 +14,46 @@ trust_names <-
   st_drop_geometry() |>
   select(starts_with("nhs_"))
 
-# ---- Attendances over 4 hours ----
+# ---- A&E attendances over 4 hours ----
+# Data is collected for all A&E types including walk-in centres and 
+# minor injury units. Only acute hospitals are mapped to LTLAs; therefore  
+# A&E types are mapped to acute hospitals.
 attendances_4hours_trust <- england_trust_accidents_emergency |>
   mutate(date = parse_date_time(date, orders = "B Y")) |>
   filter(date >= ymd("2022-05-01"), date <= ymd("2023-04-01")) |>
-  select(nhs_trust22_code, attendances_over_4hours, pct_attendance_over_4hours) |>
-  mutate(
-    attendances_over_4hours = replace(attendances_over_4hours, is.nan(attendances_over_4hours), NA),
-    pct_attendance_over_4hours = replace(pct_attendance_over_4hours, is.nan(pct_attendance_over_4hours), 0)
-    ) |>
+  select(nhs_trust22_code, attendances_over_4hours, total_attendances) |>
   group_by(nhs_trust22_code) |>
-  summarize(number_sum = sum(attendances_over_4hours), percent_mean = mean(pct_attendance_over_4hours)) |>
-  mutate(variable = "Attendances over 4 hours \n(May 22 - April 23 average)", .after = nhs_trust22_code) |>
-  left_join(trust_names) |>
-  relocate(nhs_trust22_name) |>
-  distinct()
+  summarise(number_sum = sum(attendances_over_4hours, na.rm = TRUE), 
+            total_sum = sum(total_attendances, na.rm = TRUE)) 
 
-View(attendances_4hours_trust)
+# Apportion attendances from non-acute trusts to acute trusts
+acute_trusts <- england_ae_acute_trust_attribution |>
+  filter(nhs_trust22_code_all %in% attendances_4hours_trust$nhs_trust22_code) |>
+  left_join(attendances_4hours_trust, by =c("nhs_trust22_code_all" = "nhs_trust22_code")) |>
+  mutate(attributed_number_acute = number_sum * proportion_attendances_attributed_to_acute_trust,
+         attributed_total_acute = total_sum * proportion_attendances_attributed_to_acute_trust) |>
+  group_by(nhs_trust22_code_acute) |>
+  summarise(attributed_number_acute = sum(attributed_number_acute, na.rm = TRUE), 
+            attributed_total_acute = sum(attributed_total_acute, na.rm = TRUE))
 
-attendances_4_hours_ltla <-
-  attendances_4hours_trust |>
-  left_join(lookup_nhs_trusts22_ltla21) |>
+# Add NHS trust names
+attendances_4hours_acute <- acute_trusts |>
+  left_join(trust_names, by = c("nhs_trust22_code_acute" = "nhs_trust22_code")) |>
+  mutate(percent = attributed_number_acute / attributed_total_acute) |>
+  select(-attributed_total_acute)
+
+# Join to LTLA 
+attendances_4_hours_ltla <- attendances_4hours_acute |>
+  left_join(lookup_nhs_trusts22_ltla21, c("nhs_trust22_code_acute" = "nhs_trust22_code")) |>
   mutate(
-    proportion_number = proportion_trust_came_from_ltla * number_sum,
-    proportion_percentage = proportion_trust_came_from_ltla * percent_mean
-  ) 
-
-View(attendances_4_hours_ltla)
-
-# ---- Check NAs ----
-# Check no new NAs have appeared at NHS trust level in the joins
-source_nas <- attendances_4hours_trust  |> 
-  filter(is.na(number_sum)) 
-
-joined_nas <- attendances_4_hours_ltla  |> 
-  filter(is.na(number_sum)) 
-
-unique(joined_nas$nhs_trust22_code) == unique(source_nas$nhs_trust22_code)
-
-# Identify the NHS trusts that has not matched with an LTLA
-trusts_not_matched <- attendances_4_hours_ltla |> 
-  filter(is.na(ltla21_code)) 
-
-print(unique(trusts_not_matched$nhs_trust22_code))
-print(length(unique(trusts_not_matched$nhs_trust22_code)))
-
-
-# ---- Group by LTLA ----
-attendances_4_hours_grouped <- attendances_4_hours_ltla |>
+    proportion_number = coalesce(proportion_trust_came_from_ltla * attributed_number_acute, 0),
+    proportion_percentage = coalesce(proportion_trust_came_from_ltla * percent, 0)
+  ) |>
   group_by(ltla21_code) |>
-  summarise(
-    number = sum(proportion_number),
-    percent = sum(proportion_percentage)
-  ) 
+  summarise(number = sum(proportion_number, na.rm = TRUE),
+            percent = sum(proportion_percentage, na.rm = TRUE)) |>
+  mutate(variable = "A&E attendances over 4 hours \n(May 22 - April 23 average)",
+         .after = ltla21_code) |>
+  slice(-1)
 
-print(nrow(attendances_4_hours_grouped)/sum(is.na(attendances_4_hours_grouped)))
-
-View(attendances_4_hours_grouped)
-
+hist(attendances_4_hours_ltla$percent)

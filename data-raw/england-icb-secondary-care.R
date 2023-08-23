@@ -156,7 +156,7 @@ attendances_4_hours <- england_icb_accidents_emergency |>
   summarise(number = mean(number, na.rm = TRUE), 
             percent = mean(percent, na.rm = TRUE)) |>
   mutate(
-    variable = "Attendances over 4 hours \n(Feb 23 - Apr 23 average)", 
+    variable = "A&E attendances over 4 hours \n(Feb 23 - Apr 23 average)", 
     .after = icb22_code
     ) 
   
@@ -193,7 +193,7 @@ england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
     scaled_1_1 = case_when(
       variable %in% c(
         "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)", 
-        "Attendances over 4 hours \n(Feb 23 - Apr 23 average)"
+        "A&E attendances over 4 hours \n(Feb 23 - Apr 23 average)"
         ) ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
@@ -235,7 +235,7 @@ england_icb_secondary_care <- england_icb_secondary_care_polarised |>
         "<br>",
         "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
       ),
-      variable == "Attendances over 4 hours \n(Feb 23 - Apr 23 average)" ~ paste0(
+      variable == "A&E attendances over 4 hours \n(Feb 23 - Apr 23 average)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
