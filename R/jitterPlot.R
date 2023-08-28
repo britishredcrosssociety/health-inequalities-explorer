@@ -54,14 +54,13 @@ jitterPlotServer <- function(id, selected, type) {
       } else if (selected$geography == "wales_ltla_shp") {
         switch(type,
           "summary_metrics" = wales_ltla_summary_metrics,
-          "secondary_care" = wales_ltla_secondary_care,
           "demographics" = wales_ltla_demographics,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "wales_lhb_shp") {
         switch(type,
           "summary_metrics" = wales_lhb_summary_metrics,
-          "secondary_care" = NA,
+          "secondary_care" = wales_lhb_secondary_care,
           "demographics" = wales_lhb_demographics,
           stop("No data selected", call. = FALSE)
         )
@@ -69,7 +68,19 @@ jitterPlotServer <- function(id, selected, type) {
     })
 
     output$plot <- renderPlotly({
-      if (is.null(selected$areas)) {
+      # Missing secondary care data for Wales ltla
+      if (type == "secondary_care" && selected$geography == "wales_ltla_shp"){
+        # Display a placeholder message for "wales_secondary_care"
+        plot_ly(
+          type = "scatter",
+          mode = "text",
+          x = 0.5,
+          y = 0.5,
+          text = "No data",
+          textfont = list(size = 24, color = "black"),
+          hoverinfo = "none"
+        )
+      } else if (is.null(selected$areas)) {
         jitter_plot_null(data = dataset())
       } else {
         jitter_plot_prep(data = dataset(), selected_areas = selected$areas) |>
@@ -88,9 +99,9 @@ jitterPlotTest <- function() {
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = vector(), geography = "wales_ltla_shp"
     )
-    jitterPlotServer("test", selected, type = "demographics")
+    jitterPlotServer("test", selected, type = "secondary_care")
   }
 
   shinyApp(ui, server)
