@@ -68,19 +68,7 @@ jitterPlotServer <- function(id, selected, type) {
     })
 
     output$plot <- renderPlotly({
-      # Missing secondary care data for Wales ltla
-      if (type == "secondary_care" && selected$geography == "wales_ltla_shp"){
-        # Display a placeholder message for "wales_secondary_care"
-        plot_ly(
-          type = "scatter",
-          mode = "text",
-          x = 0.5,
-          y = 0.5,
-          text = "No data",
-          textfont = list(size = 24, color = "black"),
-          hoverinfo = "none"
-        )
-      } else if (is.null(selected$areas)) {
+      if (is.null(selected$areas)) {
         jitter_plot_null(data = dataset())
       } else {
         jitter_plot_prep(data = dataset(), selected_areas = selected$areas) |>
