@@ -50,7 +50,7 @@ criteria_to_reside_trust <-
   left_join(available_beds) |>
   mutate(perc_not_meet_criteria = coalesce(do_not_meet_criteria_to_reside / available_beds, 0)) |>
   select(-month) |>
-  #filter(date >= max(date) %m-% months(3)) |> # Last quarter
+  # filter(date >= max(date) %m-% months(3)) |> # Last quarter
   filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
@@ -94,7 +94,7 @@ discharged_patients_trust <-
   ) |>
   left_join(available_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
-  #filter(date >= max(date) %m-% months(3)) |> # Last quarter
+  # filter(date >= max(date) %m-% months(3)) |> # Last quarter
   filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   select(nhs_trust22_code, percent_discharged, number_discharged = discharged_total) |>
   left_join(trust_names) |>
@@ -132,7 +132,7 @@ bed_occupancy_trust <-
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
   mutate(date = my(date)) |>
-  #filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  # filter(date >= max(date) %m-% months(2)) |> # Last quarter
   filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
@@ -164,8 +164,8 @@ bed_occupancy_ltla <-
   )
 
 # ---- A&E attendances over 4 hours ----
-# Data is collected for all A&E types including walk-in centres and 
-# minor injury units. Only acute hospitals are mapped to LTLAs; therefore  
+# Data is collected for all A&E types including walk-in centres and
+# minor injury units. Only acute hospitals are mapped to LTLAs; therefore
 # A&E types are mapped to acute hospitals.
 
 attendances_4hours_trust <- england_trust_accidents_emergency |>
@@ -173,18 +173,24 @@ attendances_4hours_trust <- england_trust_accidents_emergency |>
   filter(date >= ymd("2023-01-01"), date < ymd("2023-04-01")) |>
   select(nhs_trust22_code, attendances_over_4hours, total_attendances) |>
   group_by(nhs_trust22_code) |>
-  summarise(number_mean = mean(attendances_over_4hours, na.rm = TRUE), 
-            total_mean = mean(total_attendances, na.rm = TRUE)) 
+  summarise(
+    number_mean = mean(attendances_over_4hours, na.rm = TRUE),
+    total_mean = mean(total_attendances, na.rm = TRUE)
+  )
 
 # Apportion attendances from non-acute trusts to acute trusts
 acute_trusts <- england_ae_acute_trust_attribution |>
   filter(nhs_trust22_code_all %in% attendances_4hours_trust$nhs_trust22_code) |>
-  left_join(attendances_4hours_trust, by =c("nhs_trust22_code_all" = "nhs_trust22_code")) |>
-  mutate(attributed_number_acute = number_mean * proportion_attendances_attributed_to_acute_trust,
-         attributed_total_acute = total_mean * proportion_attendances_attributed_to_acute_trust) |>
+  left_join(attendances_4hours_trust, by = c("nhs_trust22_code_all" = "nhs_trust22_code")) |>
+  mutate(
+    attributed_number_acute = number_mean * proportion_attendances_attributed_to_acute_trust,
+    attributed_total_acute = total_mean * proportion_attendances_attributed_to_acute_trust
+  ) |>
   group_by(nhs_trust22_code_acute) |>
-  summarise(attributed_number_acute = sum(attributed_number_acute, na.rm = TRUE), 
-            attributed_total_acute = sum(attributed_total_acute, na.rm = TRUE))
+  summarise(
+    attributed_number_acute = sum(attributed_number_acute, na.rm = TRUE),
+    attributed_total_acute = sum(attributed_total_acute, na.rm = TRUE)
+  )
 
 # Add NHS trust names
 attendances_4hours_acute <- acute_trusts |>
@@ -192,7 +198,7 @@ attendances_4hours_acute <- acute_trusts |>
   mutate(percent = attributed_number_acute / attributed_total_acute) |>
   select(-attributed_total_acute)
 
-# Join to LTLA 
+# Join to LTLA
 attendances_4hours_ltla <- attendances_4hours_acute |>
   left_join(lookup_nhs_trusts22_ltla21, c("nhs_trust22_code_acute" = "nhs_trust22_code")) |>
   mutate(
@@ -200,10 +206,14 @@ attendances_4hours_ltla <- attendances_4hours_acute |>
     proportion_percentage = coalesce(proportion_trust_came_from_ltla * percent, 0)
   ) |>
   group_by(ltla21_code) |>
-  summarise(number = sum(proportion_number, na.rm = TRUE),
-            percent = sum(proportion_percentage, na.rm = TRUE)) |>
-  mutate(variable = "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)",
-         .after = ltla21_code) |>
+  summarise(
+    number = sum(proportion_number, na.rm = TRUE),
+    percent = sum(proportion_percentage, na.rm = TRUE)
+  ) |>
+  mutate(
+    variable = "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)",
+    .after = ltla21_code
+  ) |>
   filter(!is.na(ltla21_code))
 
 

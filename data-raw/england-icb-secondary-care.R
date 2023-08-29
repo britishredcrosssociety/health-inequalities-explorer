@@ -22,7 +22,8 @@ bed_occupancy_trust <-
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
   mutate(date = my(date)) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  # filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
   group_by(nhs_trust22_code, type) |>
@@ -31,7 +32,7 @@ bed_occupancy_trust <-
   pivot_wider(names_from = type, values_from = all_beds) |>
   mutate(
     number = available - occupied,
-    percent = number / available
+    percent = coalesce(number / available, 0)
   ) |>
   select(nhs_trust22_code, number, percent)
 
@@ -39,8 +40,8 @@ bed_occupancy_icb <-
   bed_occupancy_trust |>
   left_join(lookup_nhs_trusts22_icb22) |>
   mutate(
-    number = proportion_trust_came_from_icb * number,
-    percent = proportion_trust_came_from_icb * percent
+    number = coalesce(proportion_trust_came_from_icb * number, 0),
+    percent = coalesce(proportion_trust_came_from_icb * percent, 0)
   ) |>
   group_by(icb22_code) |>
   summarise(
@@ -91,7 +92,8 @@ criteria_to_reside_icb <-
   ) |>
   left_join(available_icb_beds) |>
   mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
-  filter(date >= max(date) %m-% months(3)) |>
+  # filter(date >= max(date) %m-% months(3)) |>
+  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(icb22_code) |>
   summarise(
     number = mean(do_not_meet_criteria_to_reside),
@@ -114,7 +116,8 @@ discharged_patients_icb <-
   ) |>
   left_join(available_icb_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
-  filter(date >= max(date) %m-% months(3)) |>
+  # filter(date >= max(date) %m-% months(3)) |>
+  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(icb22_code) |>
   summarise(
     number = mean(discharged_total),
@@ -136,15 +139,33 @@ iapt_icb_aggregated <- england_sicb_iapt |>
 
 iapt_icb <- iapt_icb_aggregated |>
   mutate(date = my(date)) |>
-  filter(date >= max(date) %m-% months(2)) |>
+  # filter(date >= max(date) %m-% months(2)) |>
+  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(icb22_code) |>
   summarise(percent = mean(value)) |>
   mutate(percent = percent / 100) |>
   mutate(
-    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)",
+    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Jan 23 - Mar 23 average)",
     number = NA
   ) |>
   relocate(percent, .after = number)
+
+# ---- A&E attendances over 4 hours ----
+attendances_4_hours <- england_icb_accidents_emergency |>
+  mutate(date = parse_date_time(date, orders = "B Y")) |>
+  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  select(icb22_code, attendances_over_4hours, pct_attendance_over_4hours) |>
+  rename(number = attendances_over_4hours, percent = pct_attendance_over_4hours) |>
+  group_by(icb22_code) |>
+  summarise(
+    number = mean(number, na.rm = TRUE),
+    percent = mean(percent, na.rm = TRUE)
+  ) |>
+  mutate(
+    variable = "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)",
+    .after = icb22_code
+  )
+
 
 # ---- Combine ----
 joined <-
@@ -152,7 +173,8 @@ joined <-
     bed_occupancy_icb,
     criteria_to_reside_icb,
     discharged_patients_icb,
-    iapt_icb
+    iapt_icb,
+    attendances_4_hours
   ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -176,7 +198,11 @@ icb_secondary_care_england_scaled <-
 england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Dec 22 - Feb 23 average)" ~ scaled_1_1 * -1,
+      variable %in% c(
+        "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
+        "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)"
+      )
+      ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -212,10 +238,16 @@ england_icb_secondary_care <- england_icb_secondary_care_polarised |>
         "<br>", "No. of discharged beds: ", round(number),
         "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
       ),
-      variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Nov 22 - Jan 23 average)" ~ paste0(
+      variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Jan 23 - Mar 23 average)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
+      ),
+      variable == "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of patients seeking medical attention that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
+        "<br>", "Percentage of patients seeking medical attention that spend over 4 hours from arrival to admission, transfer or discharge: ", round(percent * 100, 1), "%"
       )
     )
   )
