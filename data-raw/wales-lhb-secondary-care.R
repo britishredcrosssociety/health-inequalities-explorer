@@ -9,11 +9,11 @@ devtools::load_all(".")
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
 
-pop_wales_lhb <- wales_lhb_demographics |> 
-  filter(variable %in% c("Younger \npeople (< 18)", "Working \nage (18-65)", "Older \npeople (65+)")) |> 
+pop_wales_lhb <- wales_lhb_demographics |>
+  filter(variable %in% c("Younger \npeople (< 18)", "Working \nage (18-65)", "Older \npeople (65+)")) |>
   group_by(area_name) |>
-  summarise(total_pop = sum(number)) |> 
-  rename(lhb20_name = area_name) |> 
+  summarise(total_pop = sum(number)) |>
+  rename(lhb20_name = area_name) |>
   left_join(lhb)
 
 # ---- RTT ----
@@ -28,7 +28,8 @@ rtt <- wales_rtt_lhb |>
   left_join(pop_wales_lhb) |>
   mutate(
     percent = number / total_pop
-  ) |> 
+  ) |>
+  select(-total_pop, -lhb20_name) |> 
   mutate(
     variable = "Referral to treatment \nwaiting times (Mar 23 - May 23)",
     .after = lhb20_code
@@ -99,7 +100,7 @@ wales_lhb_secondary_care <- secondary_care_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
-        "<br>", "Percentage waiting over 18 weeks: ", round(percent * 100, 1), "%"
+        "<br>", "Waiting times over 18 weeks per 10,000 people: ", round(percent * 10000, 1)
       ),
       variable == "Bed availability \n(Mar 2022)" ~ paste0(
         "<b>", area_name, "</b>",
