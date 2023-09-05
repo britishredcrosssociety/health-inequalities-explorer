@@ -4,8 +4,17 @@ library(geographr)
 library(sf)
 library(ggridges)
 
+devtools::load_all(".")
+
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
+
+pop_wales_lhb <- wales_lhb_demographics |> 
+  filter(variable %in% c("Younger \npeople (< 18)", "Working \nage (18-65)", "Older \npeople (65+)")) |> 
+  group_by(area_name) |>
+  summarise(total_pop = sum(number)) |> 
+  rename(lhb20_name = area_name) |> 
+  left_join(lhb)
 
 # ---- RTT ----
 # Higher = worse performance
@@ -15,8 +24,11 @@ rtt <- wales_rtt_lhb |>
   group_by(lhb20_code) |>
   summarise(
     number = mean(waits_over_18_weeks),
-    percent = mean(waits_over_18_weeks)
   ) |>
+  left_join(pop_wales_lhb) |>
+  mutate(
+    percent = number / total_pop
+  ) |> 
   mutate(
     variable = "Referral to treatment \nwaiting times (Mar 23 - May 23)",
     .after = lhb20_code
