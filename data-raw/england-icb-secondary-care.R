@@ -22,8 +22,16 @@ bed_occupancy_trust <-
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
   mutate(date = my(date)) |>
-  # filter(date >= max(date) %m-% months(2)) |> # Last quarter
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_bed <- min(bed_occupancy_trust$date) |>
+  format("%B %Y")
+max_date_bed <- max(bed_occupancy_trust$date) |>
+  format("%B %Y")
+bed_label <- paste("Bed availability \n(", min_date_bed, " - ", max_date_bed, " average)", sep = "")
+
+bed_occupancy_grouped <- bed_occupancy_trust |>
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
   group_by(nhs_trust22_code, type) |>
@@ -32,24 +40,24 @@ bed_occupancy_trust <-
   pivot_wider(names_from = type, values_from = all_beds) |>
   mutate(
     number = available - occupied,
-    percent = coalesce(number / available, 0)
+    percent = number / available
   ) |>
   select(nhs_trust22_code, number, percent)
 
 bed_occupancy_icb <-
-  bed_occupancy_trust |>
+  bed_occupancy_grouped |>
   left_join(lookup_nhs_trusts22_icb22) |>
   mutate(
-    number = coalesce(proportion_trust_came_from_icb * number, 0),
-    percent = coalesce(proportion_trust_came_from_icb * percent, 0)
+    number = proportion_trust_came_from_icb * number,
+    percent = proportion_trust_came_from_icb * percent
   ) |>
   group_by(icb22_code) |>
   summarise(
-    number = sum(number),
-    percent = sum(percent)
+    number = sum(number, na.rm = TRUE),
+    percent = sum(percent, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Bed availability \n(Jan 23 - Mar 23 average)",
+    variable = bed_label,
     .after = icb22_code
   )
 
@@ -81,7 +89,7 @@ available_icb_beds <-
   summarise(available_beds = sum(available_beds, na.rm = TRUE)) |>
   ungroup()
 
-criteria_to_reside_icb <-
+criteria_to_reside_icb_ungrouped <-
   england_icb_criteria_to_reside |>
   mutate(
     month = str_c(
@@ -92,20 +100,28 @@ criteria_to_reside_icb <-
   ) |>
   left_join(available_icb_beds) |>
   mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
-  # filter(date >= max(date) %m-% months(3)) |>
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  filter(date >= max(date) %m-% months(2))
+
+# Create dynamic label
+min_date_reside <- min(criteria_to_reside_icb_ungrouped$date) |>
+  format("%B %Y")
+max_date_reside <- max(criteria_to_reside_icb_ungrouped$date) |>
+  format("%B %Y")
+reside_label <- paste("Beds not meeting \ncriteria to reside\n(", min_date_reside, " - ", max_date_reside, " average)", sep = "")
+
+criteria_to_reside_icb <- criteria_to_reside_icb_ungrouped |>
   group_by(icb22_code) |>
   summarise(
-    number = mean(do_not_meet_criteria_to_reside),
-    percent = mean(perc_not_meet_criteria)
+    number = mean(do_not_meet_criteria_to_reside, na.rm = TRUE),
+    percent = mean(perc_not_meet_criteria, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
+    variable = reside_label,
     .after = icb22_code
   )
 
 # ---- Discharged patients ----
-discharged_patients_icb <-
+discharged_patients_icb_ungrouped <-
   england_icb_discharged_patients |>
   mutate(
     month = str_c(
@@ -116,15 +132,23 @@ discharged_patients_icb <-
   ) |>
   left_join(available_icb_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
-  # filter(date >= max(date) %m-% months(3)) |>
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  filter(date >= max(date) %m-% months(2))
+
+# Create dynamic label
+min_date_discharged <- min(discharged_patients_icb_ungrouped$date) |>
+  format("%B %Y")
+max_date_discharged <- max(discharged_patients_icb_ungrouped$date) |>
+  format("%B %Y")
+discharged_patients_label <- paste("Discharged beds \n(", min_date_discharged, " - ", max_date_discharged, " average)", sep = "")
+
+discharged_patients_icb <- discharged_patients_icb_ungrouped |>
   group_by(icb22_code) |>
   summarise(
-    number = mean(discharged_total),
-    percent = mean(percent_discharged)
+    number = mean(discharged_total, na.rm = TRUE),
+    percent = mean(percent_discharged, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Discharged beds \n(Jan 23 - Mar 23 average)",
+    variable = discharged_patients_label,
     .after = icb22_code
   )
 
@@ -134,26 +158,44 @@ iapt_icb_aggregated <- england_sicb_iapt |>
   mutate(value = as.numeric(value)) |>
   left_join(sicb_icb) |>
   group_by(icb22_code, date, name) |>
-  summarise(value = mean(value)) |>
-  ungroup()
+  summarise(value = mean(value), na.rm = TRUE) |>
+  ungroup() |>
+  mutate(date = my(date)) |>
+  filter(date >= max(date) %m-% months(2))
+
+# Create dynamic label
+min_date_iapt <- min(iapt_icb_aggregated$date) |>
+  format("%B %Y")
+max_date_iapt <- max(iapt_icb_aggregated$date) |>
+  format("%B %Y")
+iapt_label <- paste("Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(", min_date_iapt, " - ", max_date_iapt, " average)", sep = "")
 
 iapt_icb <- iapt_icb_aggregated |>
-  mutate(date = my(date)) |>
-  # filter(date >= max(date) %m-% months(2)) |>
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
   group_by(icb22_code) |>
-  summarise(percent = mean(value)) |>
+  summarise(percent = mean(value, na.rm = TRUE)) |>
   mutate(percent = percent / 100) |>
   mutate(
-    variable = "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Jan 23 - Mar 23 average)",
+    variable = iapt_label,
     number = NA
   ) |>
   relocate(percent, .after = number)
 
 # ---- A&E attendances over 4 hours ----
-attendances_4_hours <- england_icb_accidents_emergency |>
+attendances_4_hours_ungrouped <- england_icb_accidents_emergency |>
   mutate(date = parse_date_time(date, orders = "B Y")) |>
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  filter(date >= max(date) %m-% months(2))
+
+# Create dynamic label
+min_date_aande <- min(attendances_4_hours_ungrouped$date) |>
+  format("%B %Y")
+max_date_aande <- max(attendances_4_hours_ungrouped$date) |>
+  format("%B %Y")
+aande_label <- paste("A&E attendances over 4 hours \n(", min_date_aande, " - ",
+  max_date_aande, " average)",
+  sep = ""
+)
+
+attendances_4_hours_icb <- attendances_4_hours_ungrouped |>
   select(icb22_code, attendances_over_4hours, pct_attendance_over_4hours) |>
   rename(number = attendances_over_4hours, percent = pct_attendance_over_4hours) |>
   group_by(icb22_code) |>
@@ -162,10 +204,9 @@ attendances_4_hours <- england_icb_accidents_emergency |>
     percent = mean(percent, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)",
+    variable = aande_label,
     .after = icb22_code
   )
-
 
 # ---- Combine ----
 joined <-
@@ -174,7 +215,7 @@ joined <-
     criteria_to_reside_icb,
     discharged_patients_icb,
     iapt_icb,
-    attendances_4_hours
+    attendances_4_hours_icb
   ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -199,8 +240,8 @@ england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable %in% c(
-        "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
-        "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)"
+        paste("Beds not meeting \ncriteria to reside\n(", min_date_reside, " - ", max_date_reside, " average)", sep = ""),
+        aande_label
       )
       ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
@@ -220,30 +261,30 @@ england_icb_secondary_care_polarised |>
 england_icb_secondary_care <- england_icb_secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == bed_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),
         "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
       ),
-      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == reside_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of beds not meeting criteria to reside: ", round(number),
         "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
       ),
-      variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == discharged_patients_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of discharged beds: ", round(number),
         "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
       ),
-      variable == "Talking therapies: \nfinished a course of \ntreatment in 18 weeks \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == iapt_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Percentage that finished treatment: ", round(percent * 100, 1), "%"
       ),
-      variable == "A&E attendances over 4 hours \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == aande_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of patients seeking medical attention that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
