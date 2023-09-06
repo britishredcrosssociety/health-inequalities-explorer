@@ -38,7 +38,7 @@ available_beds <-
 
 # Divide criteria to reside by bed availability, matching by month
 # These figures are daily, not monthly figures:
-criteria_to_reside_trust <-
+criteria_to_reside_trust_filtered <-
   england_trust_criteria_to_reside |>
   mutate(
     month = str_c(
@@ -50,8 +50,17 @@ criteria_to_reside_trust <-
   left_join(available_beds) |>
   mutate(perc_not_meet_criteria = coalesce(do_not_meet_criteria_to_reside / available_beds, 0)) |>
   select(-month) |>
-  # filter(date >= max(date) %m-% months(3)) |> # Last quarter
-  filter(date >= as.Date("2023-01-01") & date <= as.Date("2023-03-31")) |>
+  filter(date >= max(date) %m-% months(2))  # Last quarter
+
+# Create dynamic label
+min_date_reside <- min(criteria_to_reside_trust_filtered$date) |>
+  format("%B %Y")
+max_date_reside <- max(criteria_to_reside_trust_filtered$date) |>
+  format("%B %Y")
+reside_label <- paste("Beds not meeting \ncriteria to reside \n(", 
+  min_date_reside, " - ", max_date_reside, " average)", sep = "")
+
+criteria_to_reside_trust <- criteria_to_reside_trust_filtered |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
@@ -68,9 +77,9 @@ criteria_to_reside_ltla <-
   criteria_to_reside_trust |>
   left_join(lookup_nhs_trusts22_ltla21) |>
   mutate(
-    proportion_mean_not_meet_criteria = coalesce(proportion_trust_came_from_ltla * mean_not_meet_criteria, 0),
-    proportion_mean_available_beds = coalesce(proportion_trust_came_from_ltla * mean_available_beds, 0),
-    proportion_mean_perc_not_meet_criteria = coalesce(proportion_trust_came_from_ltla * mean_perc_not_meet_criteria, 0)
+    proportion_mean_not_meet_criteria = proportion_trust_came_from_ltla * mean_not_meet_criteria,
+    proportion_mean_available_beds = proportion_trust_came_from_ltla * mean_available_beds,
+    proportion_mean_perc_not_meet_criteria = proportion_trust_came_from_ltla * mean_perc_not_meet_criteria
   ) |>
   group_by(ltla21_code) |>
   summarise(
@@ -78,7 +87,7 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
+    variable = reside_label,
     .after = ltla21_code
   )
 
