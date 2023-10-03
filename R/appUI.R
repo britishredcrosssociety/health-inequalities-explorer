@@ -10,10 +10,10 @@ ui <- function() {
 
     # ---- Non-grid elements ----
     includeCSS("inst/www/styles.css"),
-    
+
     # ---- Layout specified in R/gridConfig.R ----
     layout = grid_config,
-    
+
     # ---- Header, Intro & User Guide ----
     grid_card(
       area = "header",
@@ -114,19 +114,18 @@ ui <- function() {
       has_border = FALSE,
       tags$h4(tags$b("Secondary Care Indicators"))
     ),
-    
     grid_card(
       area = "secondary_note",
       has_border = FALSE,
       conditionalPanel(
         condition = "input['geography-selectGeography'] == 'wales_ltla_shp'",
-          tags$p(
+        tags$p(
           tags$span(class = "note-banner", "NOTE"),
           "No data is available at Local Authorities level, please refer to
           the Local Health Boards view for information on secondary care
           indicators in Wales"
-          )
-        ),
+        )
+      ),
       conditionalPanel(
         condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
         tags$p(
@@ -152,7 +151,6 @@ ui <- function() {
         helpButtonUI("help_secondary")
       )
     ),
-    
     conditionalPanel(
       condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
       grid_card(
@@ -167,7 +165,7 @@ ui <- function() {
       ) |>
         tagAppendAttributes(class = "collapsed"),
     ),
-    
+
     # ---- Demographics ----
     grid_card(
       area = "demographics_title",
