@@ -713,29 +713,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         )
 
         # ---- wales_ltla_secondary_care ----
-      } else if (selected$geography == "wales_ltla_shp" & type == "secondary_care") {
-        tagList(
-          tags$p(
-            "Referral to treatment waiting times show the number of people waiting
-            over 18 weeks from their initial referral to the start of their
-            treatment. More information can be viewed ",
-            tags$a(
-              href = "https://statswales.gov.wales/Catalogue/Health-and-Social-Care/NHS-Hospital-Waiting-Times/Referral-to-Treatment",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "Bed availability shows the number of available staffed beds across
-            all specialties. More information can be viewed ",
-            tags$a(
-              href = "https://statswales.gov.wales/Catalogue/Health-and-Social-Care/NHS-Hospital-Activity/NHS-Beds/nhsbeds-by-organisation-specialty-month",
-              target = "_blank",
-              "here."
-            )
-          )
-        )
-
+        # No data available
         # ---- wales_ltla_demographics ----
       } else if (selected$geography == "wales_ltla_shp" & type == "demographics") {
         tagList(
