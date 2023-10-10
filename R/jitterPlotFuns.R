@@ -23,6 +23,7 @@ ggplotly_default <- function(plot, indicator_count) {
   ggplotly(
     plot,
     height = indicator_count * 160,
+    width = 1000,
     tooltip = c("text")
   ) |>
     config(
