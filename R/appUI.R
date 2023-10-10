@@ -151,20 +151,18 @@ ui <- function() {
         helpButtonUI("help_secondary")
       )
     ),
-    conditionalPanel(
-      condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
-      grid_card(
-        area = "secondary_descriptions",
-        has_border = FALSE,
-        conditionalPanel(
-          class = "indicator-details",
-          collapsible = TRUE,
-          title = title_collapsible("Show indicator details"),
-          indicatorDescriptionsUI("secondaryCareDescriptions")
-        )
-      ) |>
-        tagAppendAttributes(class = "collapsed"),
-    ),
+    grid_card(
+      area = "secondary_descriptions",
+      has_border = FALSE,
+      class = "indicator-details",
+      collapsible = TRUE,
+      title = title_collapsible("Show indicator details"),
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        indicatorDescriptionsUI("secondaryCareDescriptions")
+      )
+      )|>
+      tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
     grid_card(
