@@ -51,6 +51,19 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = northern_ireland_hsct_demographics,
           stop("No data selected", call. = FALSE)
         )
+      } else if (selected$geography == "wales_ltla_shp") {
+        switch(type,
+          "summary_metrics" = wales_ltla_summary_metrics,
+          "demographics" = wales_ltla_demographics,
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "wales_lhb_shp") {
+        switch(type,
+          "summary_metrics" = wales_lhb_summary_metrics,
+          "secondary_care" = wales_lhb_secondary_care,
+          "demographics" = wales_lhb_demographics,
+          stop("No data selected", call. = FALSE)
+        )
       }
     })
 
@@ -74,9 +87,9 @@ jitterPlotTest <- function() {
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = vector(), geography = "wales_ltla_shp"
     )
-    jitterPlotServer("test", selected, type = "demographics")
+    jitterPlotServer("test", selected, type = "secondary_care")
   }
 
   shinyApp(ui, server)

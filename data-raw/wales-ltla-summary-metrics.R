@@ -114,7 +114,7 @@ wales_ltla_summary_metrics <- wales_ltla_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of left-behind smaller areas (MSOA's) in the Local Authority: ", round(number),
-        "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Local Authority: ", round(percent * 100, 1), "%"
+        "<br>", "Percentage of all left-behind smaller areas (MSOA's) in the Local Authority: ", round(percent * 100, 1), "%"
       ),
       variable == "Health Index \nrank" ~ paste0(
         "<b>", area_name, "</b>",

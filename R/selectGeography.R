@@ -8,7 +8,9 @@ selectGeographyUI <- function(id) {
       "Scotland: Local Authorities" = "scotland_ltla_shp",
       "Scotland: Health Boards" = "scotland_hb_shp",
       "Northern Ireland: Local Authorities" = "northern_ireland_ltla_shp",
-      "Northern Ireland: Health and Social Care Trusts" = "northern_ireland_hsct_shp"
+      "Northern Ireland: Health and Social Care Trusts" = "northern_ireland_hsct_shp",
+      "Wales: Local Authorities" = "wales_ltla_shp",
+      "Wales: Local Health Boards" = "wales_lhb_shp"
     ),
     multiple = FALSE
   )

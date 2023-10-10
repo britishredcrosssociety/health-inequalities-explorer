@@ -16,10 +16,9 @@ mapServer <- function(id, selected) {
         57
       } else if (grepl("^northern_ireland_", selected$geography)) {
         54.78
+      } else if (grepl("^wales_", selected$geography)) {
+        52.13
       }
-      # else if (grepl("^wales_", selected$geography)) {
-      #   52.13
-      # }
     })
 
     longitude <- reactive({
@@ -29,10 +28,9 @@ mapServer <- function(id, selected) {
         -4.5
       } else if (grepl("^northern_ireland_", selected$geography)) {
         -6.5
+      } else if (grepl("^wales_", selected$geography)) {
+        -3.78
       }
-      # else if (grepl("^wales_", selected$geography)) {
-      #   -3.78
-      # }
     })
 
     output$map <-
@@ -138,7 +136,7 @@ mapTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "northern_ireland_hsct_shp"
+      areas = vector(), geography = "wales_ltla_shp"
     )
     mapServer("test", selected)
   }

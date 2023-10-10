@@ -107,6 +107,8 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Secondary care ----
+    # Secondary care in Wales LTLA does not have data
+    # So note content & plot appearance is conditional on geography selected
     grid_card(
       area = "secondary_title",
       has_border = FALSE,
@@ -115,21 +117,39 @@ ui <- function() {
     grid_card(
       area = "secondary_note",
       has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "Clusters of points have similar values. See the help button for more
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] == 'wales_ltla_shp'",
+        tags$p(
+          tags$span(class = "note-banner", "NOTE"),
+          "No data is available at Local Authorities level, please refer to
+          the Local Health Boards view for information on secondary care
+          indicators in Wales"
+        )
+      ),
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        tags$p(
+          tags$span(class = "note-banner", "NOTE"),
+          "Clusters of points have similar values. See the help button for more
         info."
+        )
       )
     ),
     grid_card(
       area = "secondary_care",
       has_border = FALSE,
-      jitterPlotUI("secondaryCarePlot")
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        jitterPlotUI("secondaryCarePlot")
+      )
     ),
     grid_card(
       area = "help_button_secondary",
       has_border = FALSE,
-      helpButtonUI("help_secondary")
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        helpButtonUI("help_secondary")
+      )
     ),
     grid_card(
       area = "secondary_descriptions",
@@ -137,8 +157,11 @@ ui <- function() {
       class = "indicator-details",
       collapsible = TRUE,
       title = title_collapsible("Show indicator details"),
-      indicatorDescriptionsUI("secondaryCareDescriptions")
-    ) |>
+      conditionalPanel(
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        indicatorDescriptionsUI("secondaryCareDescriptions")
+      )
+      )|>
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
