@@ -240,7 +240,7 @@ england_icb_secondary_care_polarised <- icb_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable %in% c(
-        paste("Beds not meeting \ncriteria to reside\n(", min_date_reside, " - ", max_date_reside, " average)", sep = ""),
+        reside_label,
         aande_label
       )
       ~ scaled_1_1 * -1,
