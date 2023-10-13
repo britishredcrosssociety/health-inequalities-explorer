@@ -31,7 +31,7 @@ rtt <- scotland_rtt_hb |>
     percent = mean(waits_over_18_weeks_percent)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Nov 22 - Dec 22)",
+    variable = "Referral to treatment \nwaiting times (Jan 23 - Mar 23)",
     .after = hb19_code
   )
 
@@ -113,7 +113,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Nov 22 - Dec 22)" ~ scaled_1_1 * -1,
+      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ scaled_1_1 * -1,
       variable == "Delayed discharges \n(July 22 - Sept 22 average)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
@@ -132,7 +132,7 @@ secondary_care_polarised |>
 scotland_hb_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Nov 22 - Dec 22)" ~ paste0(
+      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
@@ -148,7 +148,7 @@ scotland_hb_secondary_care <- secondary_care_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Average daily no. of delayed beds: ", round(number),
-        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent * 100, 1), "%"
+        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent, 1)
       )
     )
   )

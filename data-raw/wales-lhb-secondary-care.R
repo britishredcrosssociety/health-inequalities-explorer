@@ -4,8 +4,17 @@ library(geographr)
 library(sf)
 library(ggridges)
 
+devtools::load_all(".")
+
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
+
+pop_wales_lhb <- wales_lhb_demographics |>
+  filter(variable %in% c("Younger \npeople (< 18)", "Working \nage (18-65)", "Older \npeople (65+)")) |>
+  group_by(area_name) |>
+  summarise(total_pop = sum(number)) |>
+  rename(lhb20_name = area_name) |>
+  left_join(lhb)
 
 # ---- RTT ----
 # Higher = worse performance
@@ -15,10 +24,14 @@ rtt <- wales_rtt_lhb |>
   group_by(lhb20_code) |>
   summarise(
     number = mean(waits_over_18_weeks),
-    percent = mean(waits_over_18_weeks)
   ) |>
+  left_join(pop_wales_lhb) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Jul 22 - Sep 22)",
+    percent = number / total_pop
+  ) |>
+  select(-total_pop, -lhb20_name) |> 
+  mutate(
+    variable = "Referral to treatment \nwaiting times (Mar 23 - May 23)",
     .after = lhb20_code
   )
 
@@ -65,7 +78,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Jul 22 - Sep 22)" ~ scaled_1_1 * -1,
+      variable == "Referral to treatment \nwaiting times (Mar 23 - May 23)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -83,11 +96,11 @@ secondary_care_polarised |>
 wales_lhb_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Jul 22 - Sep 22)" ~ paste0(
+      variable == "Referral to treatment \nwaiting times (Mar 23 - May 23)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
-        "<br>", "Percentage waiting over 18 weeks: ", round(percent * 100, 1), "%"
+        "<br>", "Waiting times over 18 weeks per 10,000 people: ", round(percent * 10000, 1)
       ),
       variable == "Bed availability \n(Mar 2022)" ~ paste0(
         "<b>", area_name, "</b>",
