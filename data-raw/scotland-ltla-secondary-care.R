@@ -104,7 +104,7 @@ scotland_ltla_secondary_care <- scotland_ltla_secondary_care_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Average daily no. of delayed beds: ", round(number),
-        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent * 100, 1), "%"
+        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent, 1)
       )
     )
   )
