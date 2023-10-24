@@ -148,7 +148,7 @@ scotland_hb_secondary_care <- secondary_care_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Average daily no. of delayed beds: ", round(number),
-        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent * 100, 1), "%"
+        "<br>", "Average daily no. of delayed beds per 10,000 people: ", round(percent, 1)
       )
     )
   )
