@@ -1,6 +1,3 @@
-# Northern Ireland - Secondary Care Indicators
-# Health and Social Care Trusts
-
 # ---- Load libs & helpers ----
 library(tidyverse)
 library(sf)
@@ -34,6 +31,7 @@ pop_ni_hsct <- read_ods(
 
 # ---- RTT ----
 # Higher = worse performance
+# Data is quarterly
 rtt <- ni_rtt_hsct |>
   select(
     trust18_name = "hsct22_name",
