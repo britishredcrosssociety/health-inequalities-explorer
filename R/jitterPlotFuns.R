@@ -22,7 +22,8 @@ jitter_plot_prep <- function(data, selected_areas) {
 ggplotly_default <- function(plot, indicator_count) {
   ggplotly(
     plot,
-    height = indicator_count * 130,
+    height = indicator_count * 160,
+    width = 1000,
     tooltip = c("text")
   ) |>
     config(
@@ -68,7 +69,7 @@ ggplotly_default <- function(plot, indicator_count) {
     ) |>
     add_annotations(
       x = 0,
-      y = indicator_count + 0.6,
+      y = indicator_count + 0.8,
       text = "Mean",
       showarrow = F
     )

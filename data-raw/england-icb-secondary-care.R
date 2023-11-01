@@ -16,11 +16,21 @@ sicb_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |>
   distinct(sicbl22_code, icb22_code)
 
 # ---- Bed occupancy ----
+# Yeovil District Hospital NHS Foundation Trust -- code RA4 -- was merged into
+# Somerset NHS Foundation Trust -- code RH5 -- in April 2023
 bed_occupancy_trust <-
   england_critical_general_acute_beds |>
-  select(nhs_trust22_code, date, ends_with("occupied"), ends_with("available")) |>
+  select(
+    nhs_trust22_code,
+    date,
+    ends_with("occupied"),
+    ends_with("available")
+  ) |>
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
-  mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
+  mutate(type = if_else(str_detect(name, "_occupied$"),
+                        "occupied",
+                        "available"
+  )) |>
   mutate(date = my(date)) |>
   filter(date >= max(date) %m-% months(2)) # Last quarter
 
@@ -32,6 +42,7 @@ max_date_bed <- max(bed_occupancy_trust$date) |>
 bed_label <- paste("Bed availability \n(", min_date_bed, " - ", max_date_bed, " average)", sep = "")
 
 bed_occupancy_grouped <- bed_occupancy_trust |>
+  filter(nhs_trust22_code != "RA4") |> # Account for trusts merger
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
   group_by(nhs_trust22_code, type) |>
