@@ -1,6 +1,3 @@
-# # Northern Ireland - Secondary Care Indicators
-# Local Government Districts
-
 # ---- Load libs & helpers ----
 library(tidyverse)
 library(geographr)
@@ -74,8 +71,7 @@ northern_ireland_ltla_secondary_care <- secondary_care_polarised |>
           "<b>", area_name, "</b>",
           "<br>",
           "<br>", "No. of persons with no unpaid care: ", round(number),
-          "<br>", "Percentage of persons with no unpaid care: ", round(percent * 100, 1),
-          "%"
+          "<br>", "Percentage of persons with no unpaid care: ", round(percent, 1), "%"
         )
     )
   )
