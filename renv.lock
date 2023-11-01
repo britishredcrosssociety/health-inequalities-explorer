@@ -1107,14 +1107,15 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "humaniverse",
       "RemoteRepo": "healthyr",
-      "RemoteRef": "main",
-      "RemoteSha": "16fcac38d021cc0fcbd0e2690b07b34ca56fa8bc",
+      "RemoteUsername": "humaniverse",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "9e4b81620a946e9dd15babe3e19b720077172f12",
       "Requirements": [
-        "R"
+        "R",
+        "tibble"
       ],
-      "Hash": "de63dbffa0046dce010037d3811ec1c7"
+      "Hash": "b07190c01aceef48153997c75130e228"
     },
     "highr": {
       "Package": "highr",
