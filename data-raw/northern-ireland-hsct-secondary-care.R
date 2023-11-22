@@ -1,6 +1,3 @@
-# Northern Ireland - Secondary Care Indicators
-# Health and Social Care Trusts
-
 # ---- Load libs & helpers ----
 library(tidyverse)
 library(sf)
@@ -14,44 +11,28 @@ library(geographr)
 hsct <- boundaries_trusts_ni18 |>
   st_drop_geometry()
 
-# Population counts
-# Source: https://www.ninis2.nisra.gov.uk/public/AreaProfileReportViewer.aspx?FromAPAddressMulipleRecords=Northern@@Northern@20?
-
-url <- "https://www.ninis2.nisra.gov.uk/Download/Population/Population%20Estimates%20Broad%20Age%20Bands%20(administrative%20geographies).ods"
-
-pop_raw <- download_file(url, ".ods")
-
-pop_ni_hsct <- read_ods(
-  pop_raw,
-  sheet = "HSCT",
-  range = "A4:C9"
-) |>
-  select(
-    trust18_name = "HSCT",
-    trust18_code = "HSCT Code",
-    population = "Persons"
-  )
-
 # ---- RTT ----
 # Higher = worse performance
+# Data is quarterly
 rtt <- ni_rtt_hsct |>
   select(
     trust18_name = "hsct22_name",
     date,
-    waits_over_18_weeks
+    waits_over_18_weeks,
+    total_waits
   ) |>
-  filter(date >= max(date) %m-% months(3)) |> # Last 3 months
-  left_join(pop_ni_hsct) |>
-  group_by(trust18_code, date) |>
-  mutate(waits_over_18_weeks = sum(waits_over_18_weeks)) |>
-  mutate(percent = waits_over_18_weeks / population) |>
+  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  group_by(trust18_name, date) |>
+  mutate(waits_over_18_weeks = sum(waits_over_18_weeks),
+            total_waits = sum(total_waits)) |>
+  mutate(percent = waits_over_18_weeks / total_waits) |>
   group_by(trust18_name) |>
   summarise(
     number = sum(waits_over_18_weeks),
     percent = mean(percent, na.rm = FALSE)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Mar 22 - Jun 22)",
+    variable = "Referral to treatment \nwaiting times (Q2 2023)",
     .after = trust18_name
   ) |>
   filter(!trust18_name %in% c("DPC", "Day Case Procedure Centre"))
@@ -102,7 +83,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Mar 22 - Jun 22)" ~ scaled_1_1 * -1,
+      variable == "Referral to treatment \nwaiting times (Q2 2023)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -123,12 +104,12 @@ secondary_care_polarised |>
 northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Mar 22 - Jun 22)" ~
+      variable == "Referral to treatment \nwaiting times (Q2 2023)" ~
         paste0(
           "<b>", area_name, "</b>",
           "<br>",
-          "<br>", "No. waiting over 18 weeks: ", round(number),
-          "<br>", "Percentage waiting over 18 weeks: ", round(percent * 100, 1),
+          "<br>", "No. waiting times over 18 weeks: ", round(number),
+          "<br>", "Percentage of waiting times over 18 weeks: ", round(percent * 100, 1),
           "%"
         ),
       variable == "Bed availability \n(Q1 2022)" ~ paste0(

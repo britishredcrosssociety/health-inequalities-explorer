@@ -38,7 +38,7 @@ available_beds <-
 
 # Divide criteria to reside by bed availability, matching by month
 # These figures are daily, not monthly figures:
-criteria_to_reside_trust <-
+criteria_to_reside_trust_filtered <-
   england_trust_criteria_to_reside |>
   mutate(
     month = str_c(
@@ -48,16 +48,28 @@ criteria_to_reside_trust <-
     )
   ) |>
   left_join(available_beds) |>
-  mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
+  mutate(perc_not_meet_criteria = coalesce(do_not_meet_criteria_to_reside / available_beds, 0)) |>
   select(-month) |>
-  filter(date >= max(date) %m-% months(3)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_reside <- min(criteria_to_reside_trust_filtered$date) |>
+  format("%B %Y")
+max_date_reside <- max(criteria_to_reside_trust_filtered$date) |>
+  format("%B %Y")
+reside_label <- paste("Beds not meeting \ncriteria to reside \n(",
+  min_date_reside, " - ", max_date_reside, " average)",
+  sep = ""
+)
+
+criteria_to_reside_trust <- criteria_to_reside_trust_filtered |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
   mutate(
-    mean_not_meet_criteria = mean(do_not_meet_criteria_to_reside),
-    mean_available_beds = mean(available_beds),
-    mean_perc_not_meet_criteria = mean(perc_not_meet_criteria)
+    mean_not_meet_criteria = mean(do_not_meet_criteria_to_reside, na.rm = TRUE),
+    mean_available_beds = mean(available_beds, na.rm = TRUE),
+    mean_perc_not_meet_criteria = mean(perc_not_meet_criteria, na.rm = TRUE)
   ) |>
   ungroup() |>
   select(starts_with("nhs_"), starts_with("mean_")) |>
@@ -77,12 +89,12 @@ criteria_to_reside_ltla <-
     percent = sum(proportion_mean_perc_not_meet_criteria)
   ) |>
   mutate(
-    variable = "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)",
+    variable = reside_label,
     .after = ltla21_code
   )
 
-# ---- Dishcarged patients ----
-discharged_patients_trust <-
+# ---- Discharged patients ----
+discharged_patients_trust_filtered <-
   england_trust_discharged_patients |>
   mutate(
     month = str_c(
@@ -93,14 +105,26 @@ discharged_patients_trust <-
   ) |>
   left_join(available_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
-  filter(date >= max(date) %m-% months(3)) |> # Last quarter
+  filter(date >= max(date) %m-% months(3)) # Last quarter
+
+# Create dynamic label
+min_date_discharged <- min(discharged_patients_trust_filtered$date) |>
+  format("%B %Y")
+max_date_discharged <- max(discharged_patients_trust_filtered$date) |>
+  format("%B %Y")
+discharged_label <- paste("Discharged beds \n(",
+  min_date_reside, " - ", max_date_reside, " average)",
+  sep = ""
+)
+
+discharged_patients_trust <- discharged_patients_trust_filtered |>
   select(nhs_trust22_code, percent_discharged, number_discharged = discharged_total) |>
   left_join(trust_names) |>
   relocate(nhs_trust22_name) |>
   group_by(nhs_trust22_code) |>
   mutate(
-    mean_number_discharged = mean(number_discharged),
-    mean_percentage_discharged = mean(percent_discharged)
+    mean_number_discharged = mean(number_discharged, na.rm = TRUE),
+    mean_percentage_discharged = mean(percent_discharged, na.rm = TRUE)
   ) |>
   ungroup() |>
   select(starts_with("nhs_"), starts_with("mean_")) |>
@@ -115,22 +139,34 @@ discharged_patients_ltla <-
   ) |>
   group_by(ltla21_code) |>
   summarise(
-    number = sum(proportion_mean_number_discharged),
-    percent = sum(proportion_mean_percentage_discharged)
+    number = sum(proportion_mean_number_discharged, na.rm = TRUE),
+    percent = sum(proportion_mean_percentage_discharged, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Discharged beds \n(Jan 23 - Mar 23 average)",
+    variable = discharged_label,
     .after = ltla21_code
   )
 
 # ---- Bed Occupancy ----
-bed_occupancy_trust <-
+bed_occupancy_trust_filtered <-
   england_critical_general_acute_beds |>
   select(nhs_trust22_code, date, ends_with("occupied"), ends_with("available")) |>
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"), "occupied", "available")) |>
   mutate(date = my(date)) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_occupancy <- min(bed_occupancy_trust_filtered$date) |>
+  format("%B %Y")
+max_date_occupancy <- max(bed_occupancy_trust_filtered$date) |>
+  format("%B %Y")
+occupancy_label <- paste("Bed availability \n(",
+  min_date_reside, " - ", max_date_reside, " average)",
+  sep = ""
+)
+
+bed_occupancy_trust <- bed_occupancy_trust_filtered |>
   group_by(nhs_trust22_code, date, type) |>
   summarise(all_beds = sum(value, na.rm = TRUE)) |>
   group_by(nhs_trust22_code, type) |>
@@ -152,19 +188,86 @@ bed_occupancy_ltla <-
   ) |>
   group_by(ltla21_code) |>
   summarise(
-    number = sum(number),
-    percent = sum(percent)
+    number = sum(number, na.rm = TRUE),
+    percent = sum(percent, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Bed availability \n(Jan 23 - Mar 23 average)",
+    variable = occupancy_label,
     .after = ltla21_code
   )
+
+# ---- A&E attendances over 4 hours ----
+# Data is collected for all A&E types including walk-in centres and
+# minor injury units. Only acute hospitals are mapped to LTLAs; therefore
+# A&E types are mapped to acute hospitals.
+
+attendances_4hours_trust_filtered <- england_trust_accidents_emergency |>
+  mutate(date = parse_date_time(date, orders = "B Y")) |>
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_aande <- min(attendances_4hours_trust_filtered$date) |>
+  format("%B %Y")
+max_date_aande <- max(attendances_4hours_trust_filtered$date) |>
+  format("%B %Y")
+aande_label <- paste("A&E attendances over 4 hours \n(",
+  min_date_reside, " - ", max_date_reside, " average)",
+  sep = ""
+)
+
+attendances_4hours_trust <- attendances_4hours_trust_filtered |>
+  select(nhs_trust22_code, attendances_over_4hours, total_attendances) |>
+  group_by(nhs_trust22_code) |>
+  summarise(
+    attendances_over_4hours_mean = mean(attendances_over_4hours, na.rm = TRUE),
+    total_attendances_mean = mean(total_attendances, na.rm = TRUE)
+  )
+
+# Apportion attendances from non-acute trusts to acute trusts
+acute_trusts <- england_ae_acute_trust_attribution |>
+  filter(nhs_trust22_code_all %in% attendances_4hours_trust$nhs_trust22_code) |>
+  left_join(attendances_4hours_trust, by = c("nhs_trust22_code_all" = "nhs_trust22_code")) |>
+  mutate(
+    attributed_attendances_over_4hours_acute = attendances_over_4hours_mean * proportion_attendances_attributed_to_acute_trust,
+    attributed_total_attendances_acute = total_attendances_mean * proportion_attendances_attributed_to_acute_trust
+  ) |>
+  group_by(nhs_trust22_code_acute) |>
+  summarise(
+    attributed_attendances_over_4hours_acute = sum(attributed_attendances_over_4hours_acute, na.rm = TRUE),
+    attributed_total_attendances_acute = sum(attributed_total_attendances_acute, na.rm = TRUE)
+  )
+
+# Add NHS trust names
+attendances_4hours_acute <- acute_trusts |>
+  left_join(trust_names, by = c("nhs_trust22_code_acute" = "nhs_trust22_code")) |>
+  mutate(percent = attributed_attendances_over_4hours_acute / attributed_total_attendances_acute) |>
+  select(-attributed_total_attendances_acute)
+
+# Join to LTLA
+attendances_4hours_ltla <- attendances_4hours_acute |>
+  left_join(lookup_nhs_trusts22_ltla21, c("nhs_trust22_code_acute" = "nhs_trust22_code")) |>
+  mutate(
+    proportion_number = proportion_trust_came_from_ltla * attributed_attendances_over_4hours_acute,
+    proportion_percentage = proportion_trust_came_from_ltla * percent
+  ) |>
+  group_by(ltla21_code) |>
+  summarise(
+    number = sum(proportion_number, na.rm = TRUE),
+    percent = sum(proportion_percentage, na.rm = TRUE)
+  ) |>
+  mutate(
+    variable = aande_label,
+    .after = ltla21_code
+  ) |>
+  filter(!is.na(ltla21_code))
+
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   criteria_to_reside_ltla,
   discharged_patients_ltla,
-  bed_occupancy_ltla
+  bed_occupancy_ltla,
+  attendances_4hours_ltla
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -188,7 +291,11 @@ ltla_secondary_care_england_scaled <-
 england_ltla_secondary_care_polarised <- ltla_secondary_care_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
+      variable %in% c(
+        reside_label,
+        aande_label
+      )
+      ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -206,23 +313,29 @@ england_ltla_secondary_care_polarised |>
 england_ltla_secondary_care <- england_ltla_secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Bed availability \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == occupancy_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),
         "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
       ),
-      variable == "Beds not meeting \ncriteria to reside \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == reside_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of beds not meeting criteria to reside: ", round(number),
         "<br>", "Percentage of all beds not meeting criteria to reside: ", round(percent * 100, 1), "%"
       ),
-      variable == "Discharged beds \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == discharged_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of discharged beds: ", round(number),
         "<br>", "Percentage of all beds discharged: ", round(percent * 100, 1), "%"
+      ),
+      variable == aande_label ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
+        "<br>", "Percentage of all A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(percent * 100, 1), "%"
       )
     )
   )
