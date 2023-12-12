@@ -116,7 +116,7 @@ depahri <-
   mutate(number = rank(extent))|>
   select(-extent) |>
   mutate(
-    variable = "DEPAHRI rank",
+    variable = "Access to Healthcare \n (Physical and Digital)",
     .after = ltla21_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -146,7 +146,7 @@ ltla_summary_metrics_england_scaled <-
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
-      variable == "DEPAHRI rank" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
@@ -159,7 +159,7 @@ england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
-      variable == "DEPAHRI rank" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -193,7 +193,7 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
         "<br>",
         "<br>", "Health Index rank: ", round(number)
       ),
-      variable == "DEPAHRI rank" ~ paste0(
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
