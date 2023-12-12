@@ -3,6 +3,8 @@ library(IMD)
 library(geographr)
 library(sf)
 library(ggridges)
+library(DEPAHRI)
+library(demographr)
 
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
@@ -11,14 +13,19 @@ lookup_lsoa11_ltla21_lhb22 <- lookup_lsoa11_ltla21 |>
   filter(str_detect(ltla21_code, "^W")) |>
   left_join(lookup_ltla21_lhb22) |>
   distinct(lsoa11_code, lhb22_code, lhb22_name, ltla21_code) |>
-  select(lsoa_code = lsoa11_code, lhb20_code = lhb22_code, ltla21_code)
+  select(lsoa11_code, lhb20_code = lhb22_code, ltla21_code)
+
+population_lsoa <-
+  population20_lsoa11 |> 
+  select(lsoa11_code, total_population) |> 
+  filter(str_detect(lsoa11_code, "^W"))
 
 # ---- IMD score ----
 # Decile 1 = most deprived
 # Higher percentage / number = worse health
 imd <-
   imd_wales_lsoa |>
-  left_join(lookup_lsoa11_ltla21_lhb22) |>
+  left_join(lookup_lsoa11_ltla21_lhb22, by = c("lsoa_code" = "lsoa11_code")) |>
   select(lsoa_code, lhb20_code, IMD_decile) |>
   mutate(top_10 = if_else(IMD_decile == 1, "yes", "no")) |>
   group_by(lhb20_code, top_10) |>
@@ -71,11 +78,38 @@ lba <-
   select(lhb20_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = lhb20_code)
 
+# ---- DEPAHRI score ----
+# Data is at LSOA level: need to aggregate to LHB level using calculate_extent
+# Extent is the proportion of the local population that live in areas 
+# classified as among the most deprived (here at risk) in the higher geography
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+depahri_lsoa <- 
+  wales_lsoa_depahri |> 
+  left_join(lookup_lsoa11_ltla21_lhb22) |> 
+  select(lsoa11_code, depahri_score_national, lhb20_code) |> 
+  left_join(population_lsoa)
+
+depahri <-
+  calculate_extent(depahri_lsoa, 
+                   depahri_score_national, 
+                   lhb20_code, 
+                   total_population, 
+                   weight_high_scores = TRUE) |> 
+  mutate(number = rank(extent))|>
+  select(-extent) |>
+  mutate(
+    variable = "Access to Healthcare \n (Physical and Digital)",
+    .after = lhb20_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index
+  health_index,
+  depahri
 ) |>
   left_join(lhb) |>
   select(-lhb20_code) |>
@@ -94,14 +128,15 @@ lhb_summary_metrics_wales_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number)
+      variable == "Health Index \nrank" ~ scale_1_1(number),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, and health index, as currently higher = worse health
+# Flip IMD, LBA, health index, and DEPAHRI, as currently higher = worse health
 wales_lhb_summary_metrics_polarised <- lhb_summary_metrics_wales_scaled |>
   mutate(scaled_1_1 = scaled_1_1 * -1)
 
@@ -134,6 +169,11 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Health Index rank: ", round(number)
+      ),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "DEPAHRI rank: ", round(number)
       )
     )
   )
