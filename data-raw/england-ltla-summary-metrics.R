@@ -153,7 +153,7 @@ ltla_summary_metrics_england_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD and LBA, as currently higher = worse health
+# Flip IMD, LBA, and DEPAHRI as currently higher = worse health
 england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
