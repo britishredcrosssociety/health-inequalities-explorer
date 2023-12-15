@@ -3,6 +3,8 @@ library(IMD)
 library(geographr)
 library(sf)
 library(ggridges)
+library(DEPAHRI)
+library(demographr)
 
 hb <- boundaries_hb19 |>
   st_drop_geometry()
@@ -16,6 +18,11 @@ lookup_iz_hb <- lookup_dz11_iz11_ltla20 |>
 
 lookup_ltla_hb <- lookup_dz11_ltla19_hb19 |>
   distinct(ltla19_code, hb19_code)
+
+population_dz <-
+  population20_dz11 |> 
+  filter(sex == "All") |> 
+  select(dz11_code, total_population)
 
 # ---- IMD ----
 # Decile 1 = most deprived
@@ -73,11 +80,39 @@ health_index <- health_index_raw |>
   relocate(variable, .after = hb19_code) |>
   select(-score)
 
+# ---- DEPAHRI score ----
+# Data is at LSOA level: need to aggregate to HB level using calculate_extent
+# Extent is the proportion of the local population that live in areas 
+# classified as among the most deprived (here at risk) in the higher geography
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+depahri_lsoa <- 
+  scotland_lsoa_depahri |> 
+  left_join(lookup_dz_hb, by = c("lsoa11_code" = "dz11_code")) |> 
+  select(lsoa11_code, depahri_score_national, hb19_code) |> 
+  left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
+
+depahri <-
+  calculate_extent(depahri_lsoa, 
+                   depahri_score_national, 
+                   hb19_code, 
+                   total_population, 
+                   weight_high_scores = TRUE) |> 
+  mutate(number = rank(extent))|>
+  select(-extent) |>
+  mutate(
+    variable = "Access to Healthcare \n (Physical and Digital)",
+    .after = hb19_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
+
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index
+  health_index,
+  depahri
 ) |>
   left_join(hb) |>
   select(-hb19_code) |>
@@ -96,14 +131,15 @@ hb_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number)
+      variable == "Health Index \nrank" ~ scale_1_1(number),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, and health index, as currently higher = worse health
+# Flip IMD, LBA, health index, and DEPAHRI as currently higher = worse health
 scotland_hb_summary_metrics_polarised <- hb_summary_metrics_scotland_scaled |>
   mutate(scaled_1_1 = scaled_1_1 * -1)
 
@@ -136,6 +172,11 @@ scotland_hb_summary_metrics <- scotland_hb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Health Index rank: ", round(number)
+      ),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "DEPAHRI rank: ", round(number)
       )
     )
   )
