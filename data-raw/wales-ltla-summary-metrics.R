@@ -4,6 +4,8 @@ library(geographr)
 library(sf)
 library(ggridges)
 library(stringr)
+library(DEPAHRI)
+library(demographr)
 
 ltla <- boundaries_ltla21 |>
   st_drop_geometry() |>
@@ -13,6 +15,16 @@ ltla <- boundaries_ltla21 |>
 lookup_msoa_ltla <- lookup_msoa11_ltla21 |>
   select(msoa11_code, ltla21_code) |>
   filter(str_starts(ltla21_code, "W"))
+
+lookup_lsoa_ltla <-
+  lookup_lsoa11_lsoa21_ltla22 |>
+  distinct(lsoa11_code, ltla22_code) |>
+  filter(str_detect(ltla22_code, "^W"))
+
+population_lsoa <-
+  population20_lsoa11 |> 
+  select(lsoa11_code, total_population) |> 
+  filter(str_detect(lsoa11_code, "^W"))
 
 # ---- IMD score ----
 # Higher extent = more deprived /
@@ -58,11 +70,38 @@ health_index <- health_index_raw |>
   mutate(variable = "Health Index \nrank") |>
   relocate(variable, .after = ltla21_code)
 
+# ---- DEPAHRI score ----
+# Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
+# Extent is the proportion of the local population that live in areas 
+# classified as among the most deprived (here at risk) in the higher geography
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+depahri_lsoa <- 
+  wales_lsoa_depahri |> 
+  left_join(lookup_lsoa_ltla) |> 
+  distinct(lsoa11_code, depahri_score_national, ltla21_code = ltla22_code) |> 
+  left_join(population_lsoa)
+
+depahri <-
+  calculate_extent(depahri_lsoa, 
+                   depahri_score_national, 
+                   ltla21_code, 
+                   total_population, 
+                   weight_high_scores = TRUE) |> 
+  mutate(number = rank(extent))|>
+  select(-extent) |>
+  mutate(
+    variable = "Access to Healthcare \n (Physical and Digital)",
+    .after = ltla21_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index
+  health_index,
+  depahri
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -80,14 +119,15 @@ ltla_summary_metrics_wales_scaled <- metrics_joined |>
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number)
+      variable == "Health Index \nrank" ~ scale_1_1(number),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, and health index, as currently higher = worse health
+# Flip IMD, LBA, health index, and DEPAHRI, as currently higher = worse health
 wales_ltla_summary_metrics_polarised <-
   ltla_summary_metrics_wales_scaled |>
   mutate(scaled_1_1 = scaled_1_1 * -1)
@@ -120,6 +160,11 @@ wales_ltla_summary_metrics <- wales_ltla_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Health Index rank: ", round(number)
+      ),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "DEPAHRI rank: ", round(number)
       )
     )
   )

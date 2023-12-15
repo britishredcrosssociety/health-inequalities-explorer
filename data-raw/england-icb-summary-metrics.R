@@ -5,6 +5,8 @@ library(compositr)
 library(sf)
 library(IMD)
 library(ggridges)
+library(DEPAHRI)
+library(demographr)
 
 # ---- Create lookups ----
 icb <- boundaries_icb22 |>
@@ -14,6 +16,11 @@ icb <- boundaries_icb22 |>
 
 lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |>
   distinct(lsoa11_code, icb22_code)
+
+population_lsoa <-
+  population20_lsoa11 |> 
+  select(lsoa11_code, total_population) |> 
+  filter(str_detect(lsoa11_code, "^E"))
 
 # ---- IMD score ----
 # Decile 1 = most deprived
@@ -130,11 +137,39 @@ lba <-
   select(icb22_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = icb22_code)
 
+# ---- DEPAHRI score ----
+# Data is at LSOA level: need to aggregate to ICB level using calculate_extent
+# Extent is the proportion of the local population that live in areas 
+# classified as among the most deprived (here at risk) in the higher geography
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+depahri_lsoa <- 
+  england_lsoa_depahri |> 
+  left_join(lsoa_icb) |> 
+  distinct(lsoa11_code, depahri_score_national, icb22_code) |> 
+  left_join(population_lsoa)
+
+depahri <-
+  calculate_extent(depahri_lsoa, 
+                   depahri_score_national, 
+                   icb22_code, 
+                   total_population, 
+                   weight_high_scores = TRUE) |> 
+  mutate(number = rank(extent))|>
+  select(-extent) |>
+  mutate(
+    variable = "Access to Healthcare \n (Physical and Digital)",
+    .after = icb22_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
+
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index
+  health_index,
+  depahri
 ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -153,19 +188,21 @@ icb_summary_metrics_england_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "ONS Health \nIndex rank" ~ scale_1_1(number)
+      variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD and LBA, as currently higher = worse health
+# Flip IMD, LBA, and DEPAHRI as currently higher = worse health
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -199,6 +236,11 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Health Index rank: ", round(number)
+      ),
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "DEPAHRI rank: ", round(number)
       )
     )
   )
