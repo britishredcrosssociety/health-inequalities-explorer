@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.3",
+    "Version": "4.2.1",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -19,6 +19,21 @@
         "methods"
       ],
       "Hash": "b2866e62bab9378c3cc9476a1954226b"
+    },
+    "DEPAHRI": {
+      "Package": "DEPAHRI",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "DEPAHRI",
+      "RemoteUsername": "humaniverse",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b713f67af76c6014214db4fb07e4b9fe87bbd647",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "1ae98a52ac26f3670d649a49077d2d65"
     },
     "IMD": {
       "Package": "IMD",
@@ -1443,6 +1458,21 @@
         "rlang"
       ],
       "Hash": "001cecbeac1cff9301bdc3775ee46a86"
+    },
+    "loneliness": {
+      "Package": "loneliness",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "loneliness",
+      "RemoteUsername": "humaniverse",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "330d200bf9de4a76ca1e82e3d84a3c5aba946707",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "8897c129e841ea695fd0ba25b4da31d4"
     },
     "lubridate": {
       "Package": "lubridate",

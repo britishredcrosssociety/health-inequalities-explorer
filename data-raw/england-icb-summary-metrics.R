@@ -7,6 +7,7 @@ library(IMD)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 # ---- Create lookups ----
 icb <- boundaries_icb22 |>
@@ -162,6 +163,76 @@ depahri <-
     .after = icb22_code
   ) |>
   mutate(percent = NA, .after = number)
+
+# ---- Loneliness score ----
+# Decile 1 = least loneliness
+# Higher percentage / number = worse health
+
+# Convert LSOA'21 to LSOA'11 codes
+lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
+  filter(str_detect(lsoa21_code, "^E")) |>
+  distinct(lsoa11_code, lsoa21_code, change_code) |>
+  relocate(change_code, .after = lsoa21_code)
+
+# Change codes:
+# - U = Unchanged - 31,810 LSOAs remained unchanged from 2011 to 2021
+# - S = Split - 834 LSOAs were split from 2011 to 2021
+# - M = Merged - 194 LSOAs were merged from 2011 to 2021
+# - X = Fragmented - 6 LSOAs were fragmented from 2011 to 2021
+
+# Aggregation strategy going from 2021 codes to 2011 codes:
+# - change_code == "U": no action required
+# - change_code == "S": take the average score of the 2021 LSOA
+# - change_code == "M": 2011 LSOA inherits the score of the 2021 LSOA
+# - change_code == "X": 2011 LSOA inherits the score of 2021 LSOA.
+#   then group by 2011 LSOA
+
+aggregate_loneliness_lsoas <- function(data) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, lba = `Left Behind Area?`)
+  
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code) |>
+    summarize(lba = any(`Left Behind Area?` == TRUE)) |>
+    ungroup()
+  
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    select(lsoa11_code, lba = `Left Behind Area?`)
+  
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "X") |>
+    group_by(lsoa11_code) |>
+    summarize(lba = any(`Left Behind Area?` == TRUE)) |>
+    ungroup()
+  
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+  
+  data_aggregated
+}
+
+lba <-
+  aggregate_lba_lsoas(cni2023_england_lsoa21) |>
+  left_join(lsoa_icb) |>
+  group_by(icb22_code) |>
+  count(lba) |>
+  mutate(percent = n / sum(n)) |>
+  ungroup() |>
+  filter(lba == TRUE) |>
+  right_join(icb) |>
+  mutate(percent = replace_na(percent, 0)) |>
+  mutate(n = replace_na(n, 0)) |>
+  select(icb22_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = icb22_code)
 
 
 # ---- Combine & rename (pretty printing) ----
