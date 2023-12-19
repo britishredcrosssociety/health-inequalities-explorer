@@ -8,199 +8,79 @@ indicatorDescriptionsServer <- function(id, selected, type) {
       # ---- england_ltla_summary_metrics ----
       if (selected$geography == "england_ltla_shp" & type == "summary_metrics") {
         tagList(
-          list_indicators[list_indicators$id == "summary_intro",]$tag,
-          list_indicators[list_indicators$id == "health_index",]$tag,
-          list_indicators[list_indicators$id == "lba",]$tag,
-          list_indicators[list_indicators$id == "imd_england",]$tag
+          list_descriptions[list_descriptions$id == "summary_intro",]$tag,
+          list_descriptions[list_descriptions$id == "health_index",]$tag,
+          list_descriptions[list_descriptions$id == "lba",]$tag,
+          list_descriptions[list_descriptions$id == "imd_england",]$tag
         )
 
         # ---- england_ltla_secondary_care ----
       } else if (selected$geography == "england_ltla_shp" & type == "secondary_care") {
         tagList(
-          list_indicators[list_indicators$id == "second_care_intro_eng",]$tag,
-          list_indicators[list_indicators$id == "iapt",]$tag,
-          list_indicators[list_indicators$id == "discharged_eng",]$tag,
-          list_indicators[list_indicators$id == "crit_reside_eng",]$tag
+          list_descriptions[list_descriptions$id == "second_care_intro_eng",]$tag,
+          list_descriptions[list_descriptions$id == "iapt",]$tag,
+          list_descriptions[list_descriptions$id == "discharged_eng",]$tag,
+          list_descriptions[list_descriptions$id == "crit_reside_eng",]$tag
         )
 
         # ---- england_ltla_demographics ----
       } else if (selected$geography == "england_ltla_shp" & type == "demographics") {
         tagList(
-          list_indicators[list_indicators$id == "demog_ONS",]$tag
+          list_descriptions[list_descriptions$id == "demog_ONS",]$tag
         )
 
         # ---- england_icb_summary_metrics ----
       } else if (selected$geography == "england_icb_shp" & type == "summary_metrics") {
         tagList(
-          list_indicators[list_indicators$id == "summary_intro",]$tag,
-          list_indicators[list_indicators$id == "health_index",]$tag,
-          list_indicators[list_indicators$id == "lba",]$tag,
-          list_indicators[list_indicators$id == "imd_england",]$tag,
+          list_descriptions[list_descriptions$id == "summary_intro",]$tag,
+          list_descriptions[list_descriptions$id == "health_index",]$tag,
+          list_descriptions[list_descriptions$id == "lba",]$tag,
+          list_descriptions[list_descriptions$id == "imd_england",]$tag,
         )
 
         # ---- england_icb_secondary_care ----
       } else if (selected$geography == "england_icb_shp" & type == "secondary_care") {
         tagList(
-          list_indicators[list_indicators$id == "second_care_intro_eng",]$tag,
-          list_indicators[list_indicators$id == "iapt",]$tag,
-          list_indicators[list_indicators$id == "discharged_eng",]$tag,
-          list_indicators[list_indicators$id == "crit_reside_eng",]$tag
+          list_descriptions[list_descriptions$id == "second_care_intro_eng",]$tag,
+          list_descriptions[list_descriptions$id == "iapt",]$tag,
+          list_descriptions[list_descriptions$id == "discharged_eng",]$tag,
+          list_descriptions[list_descriptions$id == "crit_reside_eng",]$tag
         )
 
         # ---- england_icb_demographics ----
       } else if (selected$geography == "england_icb_shp" & type == "demographics") {
         tagList(
-          list_indicators[list_indicators$id == "demog_ONS",]$tag
+          list_descriptions[list_descriptions$id == "demog_ONS",]$tag
         )
 
         # ---- scotland_ltla_summary_metrics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "summary_metrics") {
         tagList(
-          tags$p(
-            "These indicators summarise a selection of health metrics into a single
-        score. They can be useful for comparing the overall health of different
-        areas and are a good place to start. But, they should not be used in
-        isolation to make judgements about all aspects of an area's health. For
-        example, an area may score poorly in a summary metric, yet still excel
-        in certain aspects of health."
-          ),
-          tags$p(
-            "The ",
-            tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
-              target = "_blank",
-              "ONS Health Index"
-            ),
-            " is England specific and provides an indication of health outcomes,
-            risk factors, and the wider determinants of health. As part of the
-            British Red Cross Resilience Index, an equivalent Scottish version
-            was created. More details of this index can
-            be viewed ",
-            tags$a(
-              href = "https://github.com/britishredcrosssociety/resilience-index",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "Left-behind areas are places high in deprivation and socio-economic
-        challenges, and low in social infrastructure and investment to meet those
-        challenges. Research has shown they are associated with high health
-        inequalities. More information on these areas can be found ",
-            tags$a(
-              href = "https://ocsi.uk/left-behind-neighbourhoods/",
-              target = "_blank",
-              "here."
-            ),
-            " An interactive map to visualise these areas can be found",
-            tags$a(
-              href = "https://britishredcross.shinyapps.io/left-behind-areas/",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "The Scottish Indices of Multiple Deprivation (IMD) include a measure
-            of health that measures the risk of premature death and the impairment
-            of quality of life through poor mental health and drug and alcohol
-            misuse. More
-            information can be viewed ",
-            tags$a(
-              href = "https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/",
-              target = "_blank",
-              "here."
-            )
-          )
+          list_descriptions[list_descriptions$id == "summary_intro",]$tag,
+          list_descriptions[list_descriptions$id == "health_index_scot",]$tag,
+          list_descriptions[list_descriptions$id == "lba",]$tag,
+          list_descriptions[list_descriptions$id == "imd_scotland",]$tag,
         )
 
         # ---- scotland_ltla_secondary_care ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "secondary_care") {
         tagList(
-          tags$p(
-            "Delayed discharges indicate the average number of hospital bed days
-            occupied by patients who were clinically ready for discharge. More
-            information can be viewed ",
-            tags$a(
-              href = "https://www.opendata.nhs.scot/dataset/delayed-discharges-in-nhsscotland",
-              target = "_blank",
-              "here."
-            )
-          )
+          list_descriptions[list_descriptions$id == "delayed_discharged",]$tag,
         )
 
         # ---- scotland_ltla_demographics ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "demographics") {
         tagList(
-          tags$p(
-            "These indicators can be used alongside other indicators to understand
-        the population breakdowns of the areas being assessed. All data come from
-        the latest ",
-            tags$a(
-              href = "https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021",
-              target = "_blank",
-              "mid-2021 population estimates."
-            )
-          )
+          list_descriptions[list_descriptions$id == "demog_scotland",]$tag,
         )
 
         # ---- scotland_hb_summary_metrics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "summary_metrics") {
         tagList(
-          tags$p(
-            "These indicators summarise a selection of health metrics into a single
-        score. They can be useful for comparing the overall health of different
-        areas and are a good place to start. But, they should not be used in
-        isolation to make judgements about all aspects of an area's health. For
-        example, an area may score poorly in a summary metric, yet still excel
-        in certain aspects of health."
-          ),
-          tags$p(
-            "The ",
-            tags$a(
-              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
-              target = "_blank",
-              "ONS Health Index"
-            ),
-            " is England specific and provides an indication of health outcomes,
-            risk factors, and the wider determinants of health. As part of the
-            British Red Cross Resilience Index, an equivalent Scottish version
-            was created. More details of this index can
-            be viewed ",
-            tags$a(
-              href = "https://github.com/britishredcrosssociety/resilience-index",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "Left-behind areas are places high in deprivation and socio-economic
-        challenges, and low in social infrastructure and investment to meet those
-        challenges. Research has shown they are associated with high health
-        inequalities. More information on these areas can be found ",
-            tags$a(
-              href = "https://ocsi.uk/left-behind-neighbourhoods/",
-              target = "_blank",
-              "here."
-            ),
-            " An interactive map to visualise these areas can be found",
-            tags$a(
-              href = "https://britishredcross.shinyapps.io/left-behind-areas/",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "The Scottish Indices of Multiple Deprivation (IMD) include a measure
-            of health that measures the risk of premature death and the impairment
-            of quality of life through poor mental health and drug and alcohol
-            misuse. More
-            information can be viewed ",
-            tags$a(
-              href = "https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/",
-              target = "_blank",
-              "here."
-            )
-          )
+          list_descriptions[list_descriptions$id == "summary_intro",]$tag,
+          list_descriptions[list_descriptions$id == "health_index_scot",]$tag,
+          list_descriptions[list_descriptions$id == "lba",]$tag,
+          list_descriptions[list_descriptions$id == "imd_scotland",]$tag,
         )
 
         # ---- scotland_hb_secondary_care ----
