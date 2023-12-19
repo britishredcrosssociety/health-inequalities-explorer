@@ -18,7 +18,6 @@ list_descriptions <-
         example, an area may score poorly in a summary metric, yet still excel
         in certain aspects of health."
     ),
-    
     "health_index", "summary_metrics", "Health Index", "England", tags$p(
       "The ONS Health Index provides an indication of health outcomes, risk
         factors, and the wider determinants of health. A detailed breakdown
@@ -29,7 +28,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "health_index_devolved", "summary_metrics", "Health Index", "Devolved Nations", tags$p(
       "The ",
       tags$a(
@@ -48,7 +46,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "lba", "summary_metrics", "Left-behind Areas", "All", tags$p(
       "Left-behind areas are places high in deprivation and socio-economic
         challenges, and low in social infrastructure and investment to meet those
@@ -66,7 +63,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "imd_england", "summary_metrics", "IMD", "England", tags$p(
       "The Indices of Multiple Deprivation (IMD) include a measure of health
         that measures the risk of premature death and the impairment of quality
@@ -78,7 +74,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "imd_scotland", "summary_metrics", "IMD", "Scotland", tags$p(
       "The Scottish Indices of Multiple Deprivation (IMD) include a measure
             of health that measures the risk of premature death and the impairment
@@ -91,7 +86,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "imd_ni", "summary_metrics", "IMD", "Northern Ireland", tags$p(
       "The Indices of Multiple Deprivation (IMD) include a measure of health
         that measures the risk of premature death and the impairment of quality
@@ -99,6 +93,17 @@ list_descriptions <-
         viewed ",
       tags$a(
         href = "https://www.nisra.gov.uk/statistics/deprivation/northern-ireland-multiple-deprivation-measure-2017-nimdm2017",
+        target = "_blank",
+        "here."
+      )
+    ),
+    "imd_wales", "summary_metrics", "IMD", "Wales", tags$p(
+      "The Indices of Multiple Deprivation (IMD) include a measure of health
+        that measures the risk of premature death and the impairment of quality
+        of life through poor physical or mental health. More information can be
+        viewed ",
+      tags$a(
+        href = "https://statswales.gov.wales/Catalogue/Community-Safety-and-Social-Inclusion/Welsh-Index-of-Multiple-Deprivation#:~:text=The%20Welsh%20Index%20of%20Multiple,to%201%2C909%20(least%20deprived).",
         target = "_blank",
         "here."
       )
@@ -117,7 +122,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "iapt", "secondary_care", "IAPT", "England", tags$p(
       "The Improving Access to Pyschological Therapies (IAPT) programme offers
         talking therapies for mental health problems. To address both access to
@@ -131,7 +135,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "discharged_eng", "secondary_care", "Discharged beds", "England", tags$p(
       "Discharged beds indicates the total number of patients discharged from
         beds, and the percentage this makes up of all beds. More detailed
@@ -142,7 +145,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "crit_reside_eng", "secondary_care", "Beds not meeting criteria to reside", "England", tagList(
       tags$p(
         "Beds not meeting criteria to reside shows the number of patients who
@@ -166,7 +168,6 @@ list_descriptions <-
         )
       )
     ),
-    
     "delayed_discharged_scotland", "secondary_care", "Delayed discharges", "Scotland", tags$p(
       "Delayed discharges indicate the average number of hospital bed days
             occupied by patients who were clinically ready for discharge. More
@@ -177,7 +178,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "rtt_scotland", "secondary_care", "Referral to treatment waiting times", "Scotland", tags$p(
       "Referral to treatment waiting times show the number of people waiting
             over 18 weeks from their initial referral to the start of their
@@ -190,7 +190,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "rtt_ni", "secondary_care", "Referral to treatment waiting times", "Northern Ireland", tags$p(
       "Referral to treatment waiting times show the number of people waiting
             over 18 weeks from their initial referral to the start of their
@@ -208,7 +207,16 @@ list_descriptions <-
       ),
       " for outpatient waiting times."
     ),
-    
+    "rtt_wales", "secondary_care", "Referral to treatment waiting times", "Wales", tags$p(
+      "Referral to treatment waiting times show the number of people waiting
+            over 18 weeks from their initial referral to the start of their
+            treatment. More information can be viewed ",
+      tags$a(
+        href = "https://statswales.gov.wales/Catalogue/Health-and-Social-Care/NHS-Hospital-Waiting-Times/Referral-to-Treatment",
+        target = "_blank",
+        "here."
+      )
+    ),
     "bed_availability_scotland", "secondary_care", "Bed availability", "Scotland", tags$p(
       "Bed availability shows the number of available staffed beds across
             all specialties. More information can be viewed ",
@@ -218,7 +226,6 @@ list_descriptions <-
         "here."
       )
     ),
-    
     "bed_availability_ni", "secondary_care", "Bed availability", "Northern Ireland", tags$p(
       "Bed availability shows the number of available staffed beds across
             all specialties. More information can be viewed ",
@@ -228,7 +235,15 @@ list_descriptions <-
         "here."
       )
     ),
-    
+    "bed_availability_wales", "secondary_care", "Bed availability", "Wales", tags$p(
+      "Bed availability shows the number of available staffed beds across
+            all specialties. More information can be viewed ",
+      tags$a(
+        href = "https://statswales.gov.wales/Catalogue/Health-and-Social-Care/NHS-Hospital-Activity/NHS-Beds/nhsbeds-by-organisation-specialty-month",
+        target = "_blank",
+        "here."
+      )
+    ),
     "unpaid_care", "secondary_care", "Provision of unpaid care", "Northern Ireland", tags$p(
       "Provision of unpaid care covers looking after, giving help or support
             to anyone because they have long-term physical or mental health
@@ -241,20 +256,19 @@ list_descriptions <-
         "here."
       )
     ),
-    
-    
+
+
     # ----Demographics----
-    "demog_ONS", "demographics", "Demographics", "England", tags$p(
+    "demog_ONS", "demographics", "Demographics", "England & Wales", tags$p(
       "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assessed. All data come from
         the latest ",
       tags$a(
-        href = "https://www.ons.gov.uk/census",
+        href = "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationandhouseholdestimatesenglandandwales/census2021unroundeddata#:~:text=On%20Census%20Day%2C%2021%20March,census%20in%20England%20and%20Wales",
         target = "_blank",
         "2021 census."
       )
     ),
-    
     "demog_scotland", "demographics", "Demographics", "Scotland", tags$p(
       "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assessed. All data come from
@@ -265,7 +279,6 @@ list_descriptions <-
         "mid-2021 population estimates."
       )
     ),
-    
     "demog_ni", "demographics", "Demographics", "Northern Ireland", tags$p(
       "These indicators can be used alongside other indicators to understand
         the population breakdowns of the areas being assessed. All data come from
