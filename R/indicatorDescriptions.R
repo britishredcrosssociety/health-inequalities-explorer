@@ -11,7 +11,8 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "summary_intro",]$tag,
           list_descriptions[list_descriptions$id == "health_index",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
-          list_descriptions[list_descriptions$id == "imd_england",]$tag
+          list_descriptions[list_descriptions$id == "imd_england",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- england_ltla_secondary_care ----
@@ -35,7 +36,8 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "summary_intro",]$tag,
           list_descriptions[list_descriptions$id == "health_index",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
-          list_descriptions[list_descriptions$id == "imd_england",]$tag
+          list_descriptions[list_descriptions$id == "imd_england",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- england_icb_secondary_care ----
@@ -59,7 +61,8 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "summary_intro",]$tag,
           list_descriptions[list_descriptions$id == "health_index_devolved",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
-          list_descriptions[list_descriptions$id == "imd_scotland",]$tag
+          list_descriptions[list_descriptions$id == "imd_scotland",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- scotland_ltla_secondary_care ----
@@ -80,7 +83,8 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "summary_intro",]$tag,
           list_descriptions[list_descriptions$id == "health_index_devolved",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
-          list_descriptions[list_descriptions$id == "imd_scotland",]$tag
+          list_descriptions[list_descriptions$id == "imd_scotland",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- scotland_hb_secondary_care ----
@@ -147,6 +151,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "health_index_devolved",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
           list_descriptions[list_descriptions$id == "imd_wales",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- wales_ltla_secondary_care ----
@@ -165,13 +170,14 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_descriptions[list_descriptions$id == "health_index_devolved",]$tag,
           list_descriptions[list_descriptions$id == "lba",]$tag,
           list_descriptions[list_descriptions$id == "imd_wales",]$tag,
+          list_descriptions[list_descriptions$id == "depahri",]$tag
         )
 
         # ---- wales_lhb_secondary_care ----
       } else if (selected$geography == "wales_lhb_shp" & type == "secondary_care") {
         tagList(
           list_descriptions[list_descriptions$id == "rtt_wales",]$tag,
-          list_descriptions[list_descriptions$id == "bed_availability_wales",]$tag,
+          list_descriptions[list_descriptions$id == "bed_availability_wales",]$tag
         )
 
         # ---- wales_lhb_demographics ----

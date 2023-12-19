@@ -103,7 +103,18 @@ list_descriptions <-
         of life through poor physical or mental health. More information can be
         viewed ",
       tags$a(
-        href = "https://statswales.gov.wales/Catalogue/Community-Safety-and-Social-Inclusion/Welsh-Index-of-Multiple-Deprivation#:~:text=The%20Welsh%20Index%20of%20Multiple,to%201%2C909%20(least%20deprived).",
+        href = "https://statswales.gov.wales/Catalogue/Community-Safety-and-Social-Inclusion/Welsh-Index-of-Multiple-Deprivation#:~:text=The%20Welsh%20Index%20of%20Multiple,to%201%2C909%20(least%20deprived)",
+        target = "_blank",
+        "here."
+      )
+    ),
+    "depahri", "summary_metrics", "DEPAHRI", "England, Scotland, Wales", tags$p(
+      "The Digital Exclusion and Physical Access to Healthcare Risk Index
+      (DEPAHRI) indicates the overall difficulty of accessing healthcare
+      services, both physically and digitally. It is building upon the Digital
+      Exclusion Risk Index. More information available ",
+      tags$a(
+        href = "https://github.com/GreaterManchesterODA/Digital-Exclusion-Risk-Index",
         target = "_blank",
         "here."
       )
