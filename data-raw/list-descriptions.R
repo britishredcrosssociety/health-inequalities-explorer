@@ -30,7 +30,7 @@ list_descriptions <-
       )
     ),
     
-    "health_index_scot", "summary_metrics", "Health Index", "Scotland", tags$p(
+    "health_index_devolved", "summary_metrics", "Health Index", "Devolved Nations", tags$p(
       "The ",
       tags$a(
         href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/bulletins/healthinengland/2015to2021",
@@ -39,8 +39,8 @@ list_descriptions <-
       ),
       " is England specific and provides an indication of health outcomes,
             risk factors, and the wider determinants of health. As part of the
-            British Red Cross Resilience Index, an equivalent Scottish version
-            was created. More details of this index can
+            British Red Cross Resilience Index, an equivalent version
+            was created for devolved nations. More details of this index can
             be viewed ",
       tags$a(
         href = "https://github.com/britishredcrosssociety/resilience-index",
@@ -87,6 +87,18 @@ list_descriptions <-
             information can be viewed ",
       tags$a(
         href = "https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/",
+        target = "_blank",
+        "here."
+      )
+    ),
+    
+    "imd_ni", "summary_metrics", "IMD", "Northern Ireland", tags$p(
+      "The Indices of Multiple Deprivation (IMD) include a measure of health
+        that measures the risk of premature death and the impairment of quality
+        of life through poor physical or mental health. More information can be
+        viewed ",
+      tags$a(
+        href = "https://www.nisra.gov.uk/statistics/deprivation/northern-ireland-multiple-deprivation-measure-2017-nimdm2017",
         target = "_blank",
         "here."
       )
@@ -179,6 +191,24 @@ list_descriptions <-
       )
     ),
     
+    "rtt_ni", "secondary_care", "Referral to treatment waiting times", "Northern Ireland", tags$p(
+      "Referral to treatment waiting times show the number of people waiting
+            over 18 weeks from their initial referral to the start of their
+            treatment. More information can be viewed ",
+      tags$a(
+        href = "https://www.health-ni.gov.uk/publications/northern-ireland-waiting-time-statistics-inpatient-and-day-case-waiting-times-december-2022",
+        target = "_blank",
+        "here"
+      ),
+      " for inpatient and day case waiting times, and ",
+      tags$a(
+        href = "https://www.health-ni.gov.uk/publications/northern-ireland-waiting-time-statistics-outpatient-waiting-times-december-2022",
+        target = "_blank",
+        "here"
+      ),
+      " for outpatient waiting times."
+    ),
+    
     "bed_availability_scotland", "secondary_care", "Bed availability", "Scotland", tags$p(
       "Bed availability shows the number of available staffed beds across
             all specialties. More information can be viewed ",
@@ -188,7 +218,31 @@ list_descriptions <-
         "here."
       )
     ),
-
+    
+    "bed_availability_ni", "secondary_care", "Bed availability", "Northern Ireland", tags$p(
+      "Bed availability shows the number of available staffed beds across
+            all specialties. More information can be viewed ",
+      tags$a(
+        href = "https://www.health-ni.gov.uk/publications/hospital-statistics-inpatient-and-day-case-activity-202122",
+        target = "_blank",
+        "here."
+      )
+    ),
+    
+    "unpaid_care", "secondary_care", "Provision of unpaid care", "Northern Ireland", tags$p(
+      "Provision of unpaid care covers looking after, giving help or support
+            to anyone because they have long-term physical or mental health
+            conditions or illnesses, or problems related to old age. It excludes
+            any activities carried out in paid employment. More information can
+            be viewed ",
+      tags$a(
+        href = "https://www.nisra.gov.uk/publications/census-2021-main-statistics-health-disability-and-unpaid-care-tables",
+        target = "_blank",
+        "here."
+      )
+    ),
+    
+    
     # ----Demographics----
     "demog_ONS", "demographics", "Demographics", "England", tags$p(
       "These indicators can be used alongside other indicators to understand
@@ -209,6 +263,17 @@ list_descriptions <-
         href = "https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021",
         target = "_blank",
         "mid-2021 population estimates."
+      )
+    ),
+    
+    "demog_ni", "demographics", "Demographics", "Northern Ireland", tags$p(
+      "These indicators can be used alongside other indicators to understand
+        the population breakdowns of the areas being assessed. All data come from
+        the latest ",
+      tags$a(
+        href = "https://www.nisra.gov.uk/statistics/census/2021-census",
+        target = "_blank",
+        "2021 census."
       )
     )
   )
