@@ -11,7 +11,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_indicators[list_indicators$id == "summary_intro",]$tag,
           list_indicators[list_indicators$id == "health_index",]$tag,
           list_indicators[list_indicators$id == "lba",]$tag,
-          list_indicators[list_indicators$id == "imd_england",]$tag,
+          list_indicators[list_indicators$id == "imd_england",]$tag
         )
 
         # ---- england_ltla_secondary_care ----
@@ -20,22 +20,13 @@ indicatorDescriptionsServer <- function(id, selected, type) {
           list_indicators[list_indicators$id == "second_care_intro_eng",]$tag,
           list_indicators[list_indicators$id == "iapt",]$tag,
           list_indicators[list_indicators$id == "discharged_eng",]$tag,
-          list_indicators[list_indicators$id == "crit_reside_eng",]$tag,
+          list_indicators[list_indicators$id == "crit_reside_eng",]$tag
         )
 
         # ---- england_ltla_demographics ----
       } else if (selected$geography == "england_ltla_shp" & type == "demographics") {
         tagList(
-          tags$p(
-            "These indicators can be used alongside other indicators to understand
-        the population breakdowns of the areas being assessed. All data come from
-        the latest ",
-            tags$a(
-              href = "https://www.ons.gov.uk/census",
-              target = "_blank",
-              "2021 census."
-            )
-          )
+          list_indicators[list_indicators$id == "demog_ONS",]$tag
         )
 
         # ---- england_icb_summary_metrics ----

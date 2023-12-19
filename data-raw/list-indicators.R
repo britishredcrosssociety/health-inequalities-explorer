@@ -115,6 +115,18 @@ list_indicators <-
         "here."
         )
       )
+    ),
+    
+    # ----Demographics----
+    "demog_ONS", "demographics", "Demographics", "England", tags$p(
+      "These indicators can be used alongside other indicators to understand
+        the population breakdowns of the areas being assessed. All data come from
+        the latest ",
+      tags$a(
+        href = "https://www.ons.gov.uk/census",
+        target = "_blank",
+        "2021 census."
+      )
     )
     
     
