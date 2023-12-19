@@ -65,7 +65,7 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         # ---- scotland_ltla_secondary_care ----
       } else if (selected$geography == "scotland_ltla_shp" & type == "secondary_care") {
         tagList(
-          list_descriptions[list_descriptions$id == "delayed_discharged",]$tag,
+          list_descriptions[list_descriptions$id == "delayed_discharged_scotland",]$tag,
         )
 
         # ---- scotland_ltla_demographics ----
@@ -86,53 +86,17 @@ indicatorDescriptionsServer <- function(id, selected, type) {
         # ---- scotland_hb_secondary_care ----
       } else if (selected$geography == "scotland_hb_shp" & type == "secondary_care") {
         tagList(
-          tags$p(
-            "Referral to treatment waiting times show the number of people waiting
-            over 18 weeks from their initial referral to the start of their
-            treatment. The Scottish Government determined that at least
-            90% of patients should be seen within at least 18 weeks. More
-            information can be viewed ",
-            tags$a(
-              href = "https://www.opendata.nhs.scot/dataset/18-weeks-referral-to-treatment",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "Delayed discharges indicate the average number of hospital bed days
-            occupied by patients who were clinically ready for discharge. More
-            information can be viewed ",
-            tags$a(
-              href = "https://www.opendata.nhs.scot/dataset/delayed-discharges-in-nhsscotland",
-              target = "_blank",
-              "here."
-            )
-          ),
-          tags$p(
-            "Bed availability shows the number of available staffed beds across
-            all specialties. More information can be viewed ",
-            tags$a(
-              href = "https://www.opendata.nhs.scot/dataset/hospital-beds-information",
-              target = "_blank",
-              "here."
-            )
-          )
+          list_descriptions[list_descriptions$id == "rtt_scotland",]$tag,
+          list_descriptions[list_descriptions$id == "delayed_discharged_scotland",]$tag,
+          list_descriptions[list_descriptions$id == "bed_availability_scotland",]$tag,
         )
 
         # ---- scotland_hb_demographics ----
       } else if (selected$geography == "scotland_hb_shp" & type == "demographics") {
         tagList(
-          tags$p(
-            "These indicators can be used alongside other indicators to understand
-        the population breakdowns of the areas being assessed. All data come from
-        the latest ",
-            tags$a(
-              href = "https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/mid-2021",
-              target = "_blank",
-              "mid-2021 population estimates."
-            )
-          )
+          list_descriptions[list_descriptions$id == "demog_scotland",]$tag,
         )
+
         # ---- northern_ireland_ltla_summary_metrics ----
       } else if (selected$geography == "northern_ireland_ltla_shp" & type == "summary_metrics") {
         tagList(

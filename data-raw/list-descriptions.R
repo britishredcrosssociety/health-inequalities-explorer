@@ -155,12 +155,35 @@ list_descriptions <-
       )
     ),
     
-    "delayed_discharged", "secondary_care", "Delayed discharges", "Scotland", tags$p(
+    "delayed_discharged_scotland", "secondary_care", "Delayed discharges", "Scotland", tags$p(
       "Delayed discharges indicate the average number of hospital bed days
             occupied by patients who were clinically ready for discharge. More
             information can be viewed ",
       tags$a(
         href = "https://www.opendata.nhs.scot/dataset/delayed-discharges-in-nhsscotland",
+        target = "_blank",
+        "here."
+      )
+    ),
+    
+    "rtt_scotland", "secondary_care", "Referral to treatment waiting times", "Scotland", tags$p(
+      "Referral to treatment waiting times show the number of people waiting
+            over 18 weeks from their initial referral to the start of their
+            treatment. The Scottish Government determined that at least
+            90% of patients should be seen within at least 18 weeks. More
+            information can be viewed ",
+      tags$a(
+        href = "https://www.opendata.nhs.scot/dataset/18-weeks-referral-to-treatment",
+        target = "_blank",
+        "here."
+      )
+    ),
+    
+    "bed_availability_scotland", "secondary_care", "Bed availability", "Scotland", tags$p(
+      "Bed availability shows the number of available staffed beds across
+            all specialties. More information can be viewed ",
+      tags$a(
+        href = "https://www.opendata.nhs.scot/dataset/hospital-beds-information",
         target = "_blank",
         "here."
       )
