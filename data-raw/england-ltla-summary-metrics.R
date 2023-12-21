@@ -8,6 +8,7 @@ library(readxl)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 ltla <-
   boundaries_ltla21 |>
@@ -121,12 +122,43 @@ depahri <-
   ) |>
   mutate(percent = NA, .after = number)
 
+# ---- Loneliness score ----
+# Higher percentage / number = worse health
+loneliness_lsoa <- 
+  england_cls_loneliness_lsoa |> 
+  left_join(lookup_england_lsoa_ltla, by = "lsoa21_code") |> 
+  distinct(lsoa11_code, perc, ltla21_code = ltla22_code) |> 
+  left_join(population_lsoa, by ="lsoa11_code")
+
+loneliness <- loneliness_lsoa |>
+  group_by(ltla21_code) |>
+  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+    mutate(
+      variable = "Loneliness",
+      .after = ltla21_code
+    ) |>
+    mutate(number = NA, .before = percent)
+
+# loneliness <-
+#   calculate_extent(loneliness_lsoa,
+#                    perc,
+#                    ltla21_code,
+#                    total_population,
+#                    weight_high_scores = TRUE) |>
+#   rename(percent = extent)|>
+#   mutate(
+#     variable = "Loneliness",
+#     .after = ltla21_code
+#   ) |>
+#   mutate(number = NA, .before = percent)
+
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   health_index,
-  depahri
+  depahri,
+  loneliness
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -146,7 +178,8 @@ ltla_summary_metrics_england_scaled <-
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Loneliness" ~ scale_1_1(percent),
     )
   ) |>
   ungroup()
@@ -160,6 +193,7 @@ england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scaled_1_1 * -1,
+      variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -197,6 +231,11 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
+      ),
+      variable == "Loneliness" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent*100), "%"
       )
     )
   )
