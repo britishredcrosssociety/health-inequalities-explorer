@@ -133,7 +133,7 @@ ltla_summary_metrics_scotland_scaled <-
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
-      variable == "Loneliness" ~ scale_1_1(number)
+      variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
   ungroup()
