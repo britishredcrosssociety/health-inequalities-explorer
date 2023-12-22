@@ -5,6 +5,7 @@ library(sf)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 hb <- boundaries_hb19 |>
   st_drop_geometry()
@@ -106,13 +107,28 @@ depahri <-
   ) |>
   mutate(percent = NA, .after = number)
 
+# ---- Loneliness  ----
+# Decile 1 = least lonely
+# Calculate % of dzs in decile 1 per hb
+loneliness <-
+  scotland_clinical_loneliness_dz |>
+  left_join(lookup_dz_hb) |>
+  select(dz11_code, hb19_code, deciles) |>
+  group_by(hb19_code) |>
+  mutate(number = sum(deciles == 1, na.rm = TRUE),
+         percent = sum(deciles == 1, na.rm = TRUE) / n()) |>
+  summarise(percent = first(percent),
+            number = first(number)) |>
+  mutate(variable = "Loneliness", .after = hb19_code)
 
-# ---- Combine & reanme (pretty printing) ----
+
+# ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   health_index,
-  depahri
+  depahri,
+  loneliness
 ) |>
   left_join(hb) |>
   select(-hb19_code) |>
@@ -132,7 +148,8 @@ hb_summary_metrics_scotland_scaled <-
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Health Index \nrank" ~ scale_1_1(number),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
   ungroup()
@@ -177,6 +194,12 @@ scotland_hb_summary_metrics <- scotland_hb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
+      ),
+      variable == "Loneliness" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of Intermediate Zones in the Health Board that are in the 10% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all Intermediate Zones in the Health Board that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
