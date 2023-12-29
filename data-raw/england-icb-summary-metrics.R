@@ -208,21 +208,31 @@ aggregate_loneliness_lsoas <- function(data) {
   data_aggregated
 }
 
-# Use calculate extent to aggregate to ICB to take into account population  per LSOA
+# Used mean weighted by population size to aggregate to icb from lsoa
 loneliness_lsoa <-
   aggregate_loneliness_lsoas(england_cls_loneliness_lsoa) |>
   left_join(lsoa_icb) |>
   left_join(population_lsoa) 
 
-loneliness <-
-  calculate_extent(loneliness_lsoa, 
-                   perc,
-                   icb22_code,
-                   total_population,
-                   weight_high_scores = TRUE) |>
-  rename(percent = extent) |>
-  mutate(variable = "Loneliness", .after = icb22_code) |>
-  mutate(number = NA, .after = variable)
+loneliness <- loneliness_lsoa |>
+  group_by(icb22_code) |>
+  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+  mutate(
+    variable = "Loneliness",
+    .after = icb22_code
+  ) |>
+  mutate(percent = percent/100) |>
+  mutate(number = NA, .before = percent)
+
+# loneliness <-
+#   calculate_extent(loneliness_lsoa, 
+#                    perc,
+#                    icb22_code,
+#                    total_population,
+#                    weight_high_scores = TRUE) |>
+#   rename(percent = extent) |>
+#   mutate(variable = "Loneliness", .after = icb22_code) |>
+#   mutate(number = NA, .after = variable)
 
 
 # ---- Combine & rename (pretty printing) ----

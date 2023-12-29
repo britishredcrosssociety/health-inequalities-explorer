@@ -123,7 +123,9 @@ depahri <-
   mutate(percent = NA, .after = number)
 
 # ---- Loneliness score ----
-# Higher percentage / number = worse health
+# Higher percentage / number = more lonely
+# Used mean weighted by population size to aggregate to ltla from lsoa
+
 loneliness_lsoa <- 
   england_cls_loneliness_lsoa |> 
   left_join(lookup_england_lsoa_ltla, by = "lsoa21_code") |> 
@@ -132,11 +134,12 @@ loneliness_lsoa <-
 
 loneliness <- loneliness_lsoa |>
   group_by(ltla21_code) |>
-  summarise(percent = (weighted.mean(perc, w = total_population, na.rm = TRUE)))/100 |>
+  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
     mutate(
       variable = "Loneliness",
       .after = ltla21_code
     ) |>
+  mutate(percent = percent/100) |>
     mutate(number = NA, .before = percent)
 
 # loneliness <-
