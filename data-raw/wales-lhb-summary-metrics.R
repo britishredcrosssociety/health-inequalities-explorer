@@ -86,12 +86,20 @@ lba <-
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
 
-# TO CHECK - THE TREND DOESN'T SEEM IN LINE WITH OTHER INDICATORS
 depahri_lsoa <-
   wales_lsoa_depahri |>
   left_join(lookup_lsoa11_ltla21_lhb22) |>
   select(lsoa11_code, depahri_score_national, lhb20_code) |>
   left_join(population_lsoa)
+
+# depahri <- depahri_lsoa |>
+#   group_by(lhb20_code) |>
+#   summarise(number = weighted.mean(depahri_score_national, w = total_population, na.rm = TRUE)) |>
+#   mutate(
+#     variable = "Access to Healthcare \n (Physical and Digital)",
+#     .after = lhb20_code
+#   ) |>
+#   mutate(percent = NA, .after = number)
 
 depahri <-
   calculate_extent(depahri_lsoa,
