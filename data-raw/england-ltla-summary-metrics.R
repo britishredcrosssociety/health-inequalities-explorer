@@ -132,7 +132,7 @@ loneliness_lsoa <-
 
 loneliness <- loneliness_lsoa |>
   group_by(ltla21_code) |>
-  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+  summarise(percent = (weighted.mean(perc, w = total_population, na.rm = TRUE)))/100 |>
     mutate(
       variable = "Loneliness",
       .after = ltla21_code
@@ -152,7 +152,7 @@ loneliness <- loneliness_lsoa |>
 #   ) |>
 #   mutate(number = NA, .before = percent)
 
-# ---- Combine & reanme (pretty printing) ----
+# ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,

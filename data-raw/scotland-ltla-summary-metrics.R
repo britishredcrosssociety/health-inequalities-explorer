@@ -100,8 +100,8 @@ loneliness <-
   left_join(lookup_dz_ltla) |>
   select(dz11_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
-  mutate(number = sum(deciles == 1, na.rm = TRUE),
-         percent = sum(deciles == 1, na.rm = TRUE) / n()) |>
+  mutate(number = sum(deciles == 10, na.rm = TRUE),
+         percent = sum(deciles == 10, na.rm = TRUE) / n()) |>
   summarise(percent = first(percent),
             number = first(number)) |>
   mutate(variable = "Loneliness", .after = ltla21_code)

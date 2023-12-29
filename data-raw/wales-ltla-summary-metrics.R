@@ -145,15 +145,14 @@ aggregate_loneliness_lsoas <- function(data) {
   data_aggregated
 }
 
-# TO CHECK - THE TREND DOESN'T SEEM IN LINE WITH OTHER INDICATORS
 loneliness <-
   aggregate_loneliness_lsoas(wales_clinical_loneliness_lsoa) |>
   left_join(lookup_lsoa_ltla) |>
   select(ltla21_code = ltla22_code, lsoa11_code, deciles) |>
   group_by(ltla21_code) |>
   mutate(
-    number = sum(deciles == 1, na.rm = TRUE),
-    percent = sum(deciles == 1, na.rm = TRUE) / n()
+    number = sum(deciles == 10, na.rm = TRUE),
+    percent = sum(deciles == 10, na.rm = TRUE) / n()
   ) |>
   summarise(
     number = first(number),

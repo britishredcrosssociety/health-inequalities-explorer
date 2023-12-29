@@ -64,15 +64,15 @@ lba <-
 
 # ---- Loneliness  ----
 # Decile 1 = least lonely
-# Calculate % of sdz in ltla in decile 1 nationally
+# Calculate % of sdz in ltla in decile 10 nationally
 loneliness <-
   ni_clinical_loneliness_sdz |>
   left_join(lookup_sdz_ltla) |>
   select(sdz21_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
   mutate(
-    number = sum(deciles == 1, na.rm = TRUE),
-    percent = sum(deciles == 1, na.rm = TRUE) / n()
+    number = sum(deciles == 10, na.rm = TRUE),
+    percent = sum(deciles == 10, na.rm = TRUE) / n()
   ) |>
   summarise(
     percent = first(percent),

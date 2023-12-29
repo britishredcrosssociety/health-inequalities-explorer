@@ -57,6 +57,7 @@ lba <-
   mutate(variable = "Left-behind areas", .after = trust_name)
 
 # Loneliness: % sdz per trust that is in top 10% of loneliness nationally
+# Decile 1 = least lonely
 loneliness <-
   ni_clinical_loneliness_sdz |>
   left_join(lookup_sdz_ltla) |>
@@ -64,8 +65,8 @@ loneliness <-
   select(sdz21_code, trust_name, deciles) |>
   group_by(trust_name) |>
   mutate(
-    number = sum(deciles == 1, na.rm = TRUE),
-    percent = sum(deciles == 1, na.rm = TRUE) / n()
+    number = sum(deciles == 10, na.rm = TRUE),
+    percent = sum(deciles == 10, na.rm = TRUE) / n()
   ) |>
   summarise(
     percent = first(percent),
