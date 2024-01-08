@@ -111,10 +111,34 @@ list_descriptions <-
     "depahri", "summary_metrics", "DEPAHRI", "England, Scotland, Wales", tags$p(
       "The Digital Exclusion and Physical Access to Healthcare Risk Index
       (DEPAHRI) indicates the overall difficulty of accessing healthcare
-      services, both physically and digitally. It is building upon the Digital
-      Exclusion Risk Index. More information available ",
+      services. It includes measures of broadband connectivity, demography, 
+      deprivation and road distances to healthcare services. More information available ",
       tags$a(
-        href = "https://github.com/GreaterManchesterODA/Digital-Exclusion-Risk-Index",
+        href = "https://github.com/humaniverse/DEPAHRI",
+        target = "_blank",
+        "here."
+      )
+    ),
+    "loneliness_eng", "summary_metrics", "Loneliness", "England", tags$p(
+      "Loneliness scores for England indicate responses to a direct question on
+      loneliness asked in the Community Life Survey 2020-21. The question is
+      'How often do you feel lonely?' and the percentage represents responses of
+      'Often/always' or 'some of the time'. More information on the survey ",
+      tags$a(
+        href = "https://www.gov.uk/government/statistical-data-sets/dcms-community-life-survey-ad-hoc-statistical-releases",
+        target = "_blank",
+        "here."
+      )
+    ),
+    "loneliness_excl_eng", "summary_metrics", "Loneliness", "Scotland, Wales, Northern Ireland", tags$p(
+      "Loneliness scores for Scotland, Wales and Northern Ireland indicate 
+      loneliness risk levels. It is calculated from GP prescriptions for 
+      conditions related to loneliness: Alzheimer's disease, depression, 
+      hypertension, insomnia, addiction, social anxiety, diabetes and 
+      cardiovascular disease. It is based on an approach developed by the Office
+      for National Statistics, available ",
+      tags$a(
+        href = "https://datasciencecampus.ons.gov.uk/developing-a-loneliness-prescription-index/",
         target = "_blank",
         "here."
       )
@@ -133,8 +157,19 @@ list_descriptions <-
         "here."
       )
     ),
+    "aande_eng", "secondary_care", "A&E waits over four hours", "England", tags$p(
+        "Accident and emergency attendances (A&E) show the number of patients 
+        for all A&E types, including Minor Injury Units and Walk-in Centres, 
+        that are discharged, admitted or transferred after over four hours of arrival. 
+        For a more detailed breakdown, see",
+        tags$a(
+          href = "https://www.england.nhs.uk/statistics/statistical-work-areas/ae-waiting-times-and-activity/ae-attendances-and-emergency-admissions-2023-24/",
+          target = "_blank",
+          "here."
+        )
+      ),
     "iapt", "secondary_care", "IAPT", "England", tags$p(
-      "The Improving Access to Pyschological Therapies (IAPT) programme offers
+      "The Improving Access to Psychological Therapies (IAPT) programme offers
         talking therapies for mental health problems. To address both access to
         mental health services and the success rate of their interventions, the
         percentage of referrals that were able to access a service within 18

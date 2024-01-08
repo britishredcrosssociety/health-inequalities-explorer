@@ -334,10 +334,11 @@ england_ltla_secondary_care <- england_ltla_secondary_care_polarised |>
       variable == aande_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(number),
-        "<br>", "Percentage of all A&E patients that spend over 4 hours from arrival to admission, transfer or discharge: ", round(percent * 100, 1), "%"
+        "<br>", "No. of A&E waits of over four hours: ", round(number),
+        "<br>", "Percentage of A&E waits of over four hours: ", round(percent * 100, 1), "%"
       )
     )
   )
 
 usethis::use_data(england_ltla_secondary_care, overwrite = TRUE)
+

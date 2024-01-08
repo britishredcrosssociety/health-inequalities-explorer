@@ -5,6 +5,7 @@ library(sf)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
@@ -16,8 +17,8 @@ lookup_lsoa11_ltla21_lhb22 <- lookup_lsoa11_ltla21 |>
   select(lsoa11_code, lhb20_code = lhb22_code, ltla21_code)
 
 population_lsoa <-
-  population20_lsoa11 |> 
-  select(lsoa11_code, total_population) |> 
+  population20_lsoa11 |>
+  select(lsoa11_code, total_population) |>
   filter(str_detect(lsoa11_code, "^W"))
 
 # ---- IMD score ----
@@ -40,7 +41,7 @@ imd <-
   select(-top_10, -n, -freq, -total_number_lsoas)
 
 # ---- health ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
+# An official Health Index for Wales does not exists. Use the BRC Resilience
 # Index version
 # Source: https://github.com/britishredcrosssociety/resilience-index
 
@@ -80,23 +81,34 @@ lba <-
 
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LHB level using calculate_extent
-# Extent is the proportion of the local population that live in areas 
+# Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <- 
-  wales_lsoa_depahri |> 
-  left_join(lookup_lsoa11_ltla21_lhb22) |> 
-  select(lsoa11_code, depahri_score_national, lhb20_code) |> 
+
+depahri_lsoa <-
+  wales_lsoa_depahri |>
+  left_join(lookup_lsoa11_ltla21_lhb22) |>
+  select(lsoa11_code, depahri_score_national, lhb20_code) |>
   left_join(population_lsoa)
 
+# depahri <- depahri_lsoa |>
+#   group_by(lhb20_code) |>
+#   summarise(number = weighted.mean(depahri_score_national, w = total_population, na.rm = TRUE)) |>
+#   mutate(
+#     variable = "Access to Healthcare \n (Physical and Digital)",
+#     .after = lhb20_code
+#   ) |>
+#   mutate(percent = NA, .after = number)
+
 depahri <-
-  calculate_extent(depahri_lsoa, 
-                   depahri_score_national, 
-                   lhb20_code, 
-                   total_population, 
-                   weight_high_scores = TRUE) |> 
-  mutate(number = rank(extent))|>
+  calculate_extent(depahri_lsoa,
+    depahri_score_national,
+    lhb20_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare \n (Physical and Digital)",
@@ -104,12 +116,75 @@ depahri <-
   ) |>
   mutate(percent = NA, .after = number)
 
+# ---- Loneliness  ----
+# Decile 1 = least lonely
+# Calculate % of LSOAs in decile 1 per LHB
+
+# Convert LSOA'21 to LSOA'11 codes
+# Aggregation strategy going from 2021 codes to 2011 codes:
+# - change_code == "U": no action required
+# - change_code == "S": take the average score of the 2021 LSOA
+# - change_code == "M": 2011 LSOA inherits the score of the 2021 LSOA
+# - change_code == "X": 2011 LSOA inherits the score of 2021 LSOA.
+#   then group by 2011 LSOA
+lsoa_lsoa <- lookup_lsoa11_lsoa21_ltla22 |>
+  filter(str_detect(lsoa21_code, "^W")) |>
+  distinct(lsoa11_code, lsoa21_code, change_code) |>
+  relocate(change_code, .after = lsoa21_code)
+
+aggregate_loneliness_lsoas <- function(data) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, deciles)
+
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code) |>
+    summarize(deciles = mean(deciles, na.rm = TRUE), ) |>
+    ungroup()
+
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    select(lsoa11_code, deciles)
+
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "X") |>
+    group_by(lsoa11_code) |>
+    summarize(deciles = mean(deciles, na.rm = TRUE), ) |>
+    ungroup()
+
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+
+  data_aggregated
+}
+
+loneliness <-
+  aggregate_loneliness_lsoas(wales_clinical_loneliness_lsoa) |>
+  left_join(lookup_lsoa11_ltla21_lhb22) |>
+  select(ltla21_code, lhb20_code, deciles) |>
+  group_by(lhb20_code) |>
+  mutate(
+    number = sum(deciles == 10, na.rm = TRUE),
+    percent = sum(deciles == 10, na.rm = TRUE) / n()
+  ) |>
+  summarise(
+    number = first(number),
+    percent = first(percent)
+  ) |>
+  mutate(variable = "Loneliness", .after = lhb20_code)
+
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   health_index,
-  depahri
+  depahri,
+  loneliness
 ) |>
   left_join(lhb) |>
   select(-lhb20_code) |>
@@ -129,7 +204,8 @@ lhb_summary_metrics_wales_scaled <-
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Health Index \nrank" ~ scale_1_1(number),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
   ungroup()
@@ -174,6 +250,12 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
+      ),
+      variable == "Loneliness" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of LSOAs in the LHB that are in the 10% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all LSOAs in the LHB that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
