@@ -7,6 +7,7 @@ library(IMD)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 # ---- Create lookups ----
 icb <- boundaries_icb22 |>
@@ -163,13 +164,84 @@ depahri <-
   ) |>
   mutate(percent = NA, .after = number)
 
+# ---- Loneliness score ----
+# Higher percentage / number = worse health
+
+# Convert LSOA'21 to LSOA'11 codes
+# Aggregation strategy going from 2021 codes to 2011 codes:
+# - change_code == "U": no action required
+# - change_code == "S": take the average score of the 2021 LSOA
+# - change_code == "M": 2011 LSOA inherits the score of the 2021 LSOA
+# - change_code == "X": 2011 LSOA inherits the score of 2021 LSOA.
+#   then group by 2011 LSOA
+
+aggregate_loneliness_lsoas <- function(data) {
+  data_u <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "U") |>
+    select(lsoa11_code, perc)
+  
+  data_s <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "S") |>
+    group_by(lsoa11_code) |>
+    summarize(perc = mean(perc, na.rm = TRUE),
+              ) |>
+    ungroup()
+  
+  data_m <- data |>
+    left_join(lsoa_lsoa) |>
+    relocate(lsoa11_code) |>
+    filter(change_code == "M") |>
+    select(lsoa11_code, perc)
+  
+  data_x <- data |>
+    left_join(lsoa_lsoa) |>
+    filter(change_code == "X") |>
+    group_by(lsoa11_code) |>
+    summarize(perc = mean(perc, na.rm = TRUE),
+              ) |>
+    ungroup()
+  
+  data_aggregated <- bind_rows(data_u, data_s, data_m, data_x)
+  
+  data_aggregated
+}
+
+# Used mean weighted by population size to aggregate to icb from lsoa
+loneliness_lsoa <-
+  aggregate_loneliness_lsoas(england_cls_loneliness_lsoa) |>
+  left_join(lsoa_icb) |>
+  left_join(population_lsoa) 
+
+loneliness <- loneliness_lsoa |>
+  group_by(icb22_code) |>
+  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+  mutate(
+    variable = "Loneliness",
+    .after = icb22_code
+  ) |>
+  mutate(percent = percent/100) |>
+  mutate(number = NA, .before = percent)
+
+# loneliness <-
+#   calculate_extent(loneliness_lsoa, 
+#                    perc,
+#                    icb22_code,
+#                    total_population,
+#                    weight_high_scores = TRUE) |>
+#   rename(percent = extent) |>
+#   mutate(variable = "Loneliness", .after = icb22_code) |>
+#   mutate(number = NA, .after = variable)
+
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   health_index,
-  depahri
+  depahri,
+  loneliness
 ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -189,20 +261,22 @@ icb_summary_metrics_england_scaled <-
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
   ungroup()
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, and DEPAHRI as currently higher = worse health
+# Flip IMD, LBA, DEPAHRI, loneliness as currently higher = worse health
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scaled_1_1 * -1,
+      variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -241,6 +315,11 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
+      ),
+      variable == "Loneliness" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent*100), "%"
       )
     )
   )

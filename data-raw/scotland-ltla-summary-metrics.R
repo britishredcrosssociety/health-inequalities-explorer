@@ -5,6 +5,7 @@ library(sf)
 library(ggridges)
 library(DEPAHRI)
 library(demographr)
+library(loneliness)
 
 ltla <- boundaries_ltla21 |>
   st_drop_geometry() |>
@@ -92,12 +93,26 @@ depahri <-
   ) |>
   mutate(percent = NA, .after = number)
 
+# ---- Loneliness----
+# Decile 1 = least lonely
+loneliness <-
+  scotland_clinical_loneliness_dz |>
+  left_join(lookup_dz_ltla) |>
+  select(dz11_code, ltla21_code, deciles) |>
+  group_by(ltla21_code) |>
+  mutate(number = sum(deciles == 10, na.rm = TRUE),
+         percent = sum(deciles == 10, na.rm = TRUE) / n()) |>
+  summarise(percent = first(percent),
+            number = first(number)) |>
+  mutate(variable = "Loneliness", .after = ltla21_code)
+
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   health_index, 
-  depahri
+  depahri,
+  loneliness
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -117,7 +132,8 @@ ltla_summary_metrics_scotland_scaled <-
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Health Index \nrank" ~ scale_1_1(number),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number)
+      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
   ungroup()
@@ -161,6 +177,12 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "DEPAHRI rank: ", round(number)
+      ),
+      variable == "Loneliness" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "No. of Intermediate Zones in the Local Authority that are in the 10% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all Intermediate Zones in the Local Authority that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
