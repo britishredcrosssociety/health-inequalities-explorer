@@ -41,7 +41,7 @@ imd <-
   select(-top_10, -n, -freq, -total_number_lsoas)
 
 # ---- health ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
+# An official Health Index for Wales does not exists. Use the BRC Resilience
 # Index version
 # Source: https://github.com/britishredcrosssociety/resilience-index
 
