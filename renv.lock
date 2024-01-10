@@ -1128,12 +1128,12 @@
       "RemoteRepo": "healthyr",
       "RemoteUsername": "humaniverse",
       "RemoteRef": "HEAD",
-      "RemoteSha": "9e4b81620a946e9dd15babe3e19b720077172f12",
+      "RemoteSha": "c8ec0bffa66d643533f55f3bac89a94c790734a1",
       "Requirements": [
         "R",
         "tibble"
       ],
-      "Hash": "b07190c01aceef48153997c75130e228"
+      "Hash": "4c84ceb2731cee053fc7856c9c56568e"
     },
     "highr": {
       "Package": "highr",

@@ -113,7 +113,7 @@ min_date_discharged <- min(discharged_patients_trust_filtered$date) |>
 max_date_discharged <- max(discharged_patients_trust_filtered$date) |>
   format("%B %Y")
 discharged_label <- paste("Discharged beds \n(",
-  min_date_reside, " - ", max_date_reside, " average)",
+  min_date_discharged, " - ", max_date_discharged, " average)",
   sep = ""
 )
 
@@ -162,7 +162,7 @@ min_date_occupancy <- min(bed_occupancy_trust_filtered$date) |>
 max_date_occupancy <- max(bed_occupancy_trust_filtered$date) |>
   format("%B %Y")
 occupancy_label <- paste("Bed availability \n(",
-  min_date_reside, " - ", max_date_reside, " average)",
+  min_date_occupancy, " - ", max_date_occupancy, " average)",
   sep = ""
 )
 
@@ -211,7 +211,7 @@ min_date_aande <- min(attendances_4hours_trust_filtered$date) |>
 max_date_aande <- max(attendances_4hours_trust_filtered$date) |>
   format("%B %Y")
 aande_label <- paste("A&E attendances over 4 hours \n(",
-  min_date_reside, " - ", max_date_reside, " average)",
+  min_date_aande, " - ", max_date_aande, " average)",
   sep = ""
 )
 
