@@ -31,7 +31,7 @@ bed_occupancy_trust <-
                         "occupied",
                         "available"
   )) |>
-  mutate(date = my(date)) |>
+  mutate(date = my(date)) |> 
   filter(date >= max(date) %m-% months(2)) # Last quarter
 
 # Create dynamic label
@@ -81,6 +81,10 @@ bed_occupancy_icb <-
 # Women’s Trusts) are not in scope of this collection.
 
 # Match available bed numbers to requirements above (18+ including critical)
+# Yeovil District Hospital NHS Foundation Trust -- code RA4 -- was merged into
+# Somerset NHS Foundation Trust -- code RH5 -- in April 2023
+
+
 available_trust_beds <-
   england_critical_general_acute_beds |>
   select(
@@ -90,6 +94,7 @@ available_trust_beds <-
     adult_critical_care_beds_available
   ) |>
   mutate(available_beds = general_acute_beds_available + adult_critical_care_beds_available) |>
+  filter(nhs_trust22_code != "RA4") |> # Account for trusts merger
   select(nhs_trust22_code, month = date, available_beds)
 
 available_icb_beds <-
@@ -109,9 +114,9 @@ criteria_to_reside_icb_ungrouped <-
       sep = " "
     )
   ) |>
-  left_join(available_icb_beds) |>
+  left_join(available_icb_beds, by = c("icb22_code", "month")) |>
   mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
-  filter(date >= max(date) %m-% months(2))
+  filter(date >= max(date) %m-% months(3))
 
 # Create dynamic label
 min_date_reside <- min(criteria_to_reside_icb_ungrouped$date) |>

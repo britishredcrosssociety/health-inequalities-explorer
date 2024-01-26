@@ -105,7 +105,7 @@ discharged_patients_trust_filtered <-
   ) |>
   left_join(available_beds) |>
   mutate(percent_discharged = discharged_total / available_beds) |>
-  filter(date >= max(date) %m-% months(3)) # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
 
 # Create dynamic label
 min_date_discharged <- min(discharged_patients_trust_filtered$date) |>

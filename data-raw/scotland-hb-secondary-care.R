@@ -23,7 +23,16 @@ pop_scotland <- pop_raw |>
 # ---- RTT ----
 # Higher = worse performance
 rtt <- scotland_rtt_hb |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_rtt <- min(rtt$date) |>
+  format("%B %Y")
+max_date_rtt <- max(rtt$date) |>
+  format("%B %Y")
+rtt_label <- paste("Referral to treatment \nwaiting times\n(", min_date_rtt, " - ", max_date_rtt, " average)", sep = "")
+
+rtt <- rtt |>
   filter(hb19_code != "SB0801") |>
   group_by(hb19_code) |>
   summarise(
@@ -31,17 +40,26 @@ rtt <- scotland_rtt_hb |>
     percent = mean(waits_over_18_weeks_percent)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Jan 23 - Mar 23)",
+    variable = rtt_label,
     .after = hb19_code
   )
 
 # ---- Beds ----
 # Higher = better performance
 available_beds <- scotland_beds |>
-  filter(date >= max(date)) |> # Note: data is quarterly
+  filter(date >= max(date)) # Note: data is quarterly
+
+# Create dynamic label
+min_date_bed <- max(available_beds$date) %m-% months(2) |>
+  format("%B %Y")
+max_date_bed <- max(available_beds$date) |>
+  format("%B %Y")
+bed_label <- paste("Bed availability\n(", min_date_bed, " - ", max_date_bed, " average)", sep = "")
+
+available_beds <- available_beds |>
   filter(specialty == "All Specialties") |>
   mutate(percent_avilable = 1 - percent_occupied_beds) |>
-  mutate(variable = "Bed availability \n(Q4 2022)") |>
+  mutate(variable = bed_label) |>
   select(
     hb19_code,
     variable,
@@ -53,7 +71,16 @@ available_beds <- scotland_beds |>
 # Higher = worse
 delayed_discharge_monthly <- scotland_delayed_discharge_hb |>
   filter(hb_code != "S92000003") |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2))  # Last quarter
+
+# Create dynamic label
+min_date_delayed <- max(delayed_discharge_monthly$date) %m-% months(2) |>
+  format("%B %Y")
+max_date_delayed <- max(delayed_discharge_monthly$date) |>
+  format("%B %Y")
+delayed_label <- paste("Delayed discharge\n(", min_date_delayed, " - ", max_date_delayed, " average)", sep = "")
+
+delayed_discharge_monthly <- delayed_discharge_monthly |>
   filter(age_group == "18-74" | age_group == "75plus") |>
   filter(delay_reason == "All Delay Reasons") |>
   rename(hb19_code = hb_code) |>
@@ -81,7 +108,7 @@ delayed_discharges <- delayed_discharge_summary |>
     percent = beds_per_10000
   ) |>
   mutate(
-    variable = "Delayed discharges \n(July 22 - Sept 22 average)",
+    variable = delayed_label,
     .after = hb19_code
   )
 
@@ -113,8 +140,8 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ scaled_1_1 * -1,
-      variable == "Delayed discharges \n(July 22 - Sept 22 average)" ~ scaled_1_1 * -1,
+      variable == rtt_label ~ scaled_1_1 * -1,
+      variable == delayed_label ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -132,19 +159,19 @@ secondary_care_polarised |>
 scotland_hb_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Jan 23 - Mar 23)" ~ paste0(
+      variable == rtt_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
         "<br>", "Percentage waiting over 18 weeks: ", round(percent * 100, 1), "%"
       ),
-      variable == "Bed availability \n(Q4 2022)" ~ paste0(
+      variable == bed_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),
         "<br>", "Percentage of all beds available: ", round(percent * 100, 1), "%"
       ),
-      variable == "Delayed discharges \n(July 22 - Sept 22 average)" ~ paste0(
+      variable == delayed_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Average daily no. of delayed beds: ", round(number),
