@@ -115,8 +115,8 @@ loneliness <-
   left_join(lookup_dz_hb) |>
   select(dz11_code, hb19_code, deciles) |>
   group_by(hb19_code) |>
-  mutate(number = sum(deciles == 10, na.rm = TRUE),
-         percent = sum(deciles == 10, na.rm = TRUE) / n()) |>
+  mutate(number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+         percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()) |>
   summarise(percent = first(percent),
             number = first(number)) |>
   mutate(variable = "Loneliness", .after = hb19_code)
@@ -198,8 +198,8 @@ scotland_hb_summary_metrics <- scotland_hb_summary_metrics_polarised |>
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of Intermediate Zones in the Health Board that are in the 10% most lonely nationally: ", round(number),
-        "<br>", "Percentage of all Intermediate Zones in the Health Board that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
+        "<br>", "No. of Intermediate Zones in the Health Board that are in the 20% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all Intermediate Zones in the Health Board that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
