@@ -23,7 +23,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_london_shp", selected$geography)) {
         51.509
       } else if (grepl("brc_north_shp", selected$geography)) {
-        53
+        54
       } else if (grepl("brc_south_shp", selected$geography)) {
         51
       } else if (grepl("brc_southeast_shp", selected$geography)) {
@@ -45,7 +45,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_london_shp", selected$geography)) {
         -0.12
       } else if (grepl("brc_north_shp", selected$geography)) {
-        -1.03
+        -1.94
       } else if (grepl("brc_south_shp", selected$geography)) {
         -3
       } else if (grepl("brc_southeast_shp", selected$geography)) {

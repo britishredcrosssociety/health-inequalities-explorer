@@ -9,6 +9,7 @@ jitterPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
+      # Local Authorities and ICB
       if (selected$geography == "england_ltla_shp") {
         switch(type,
           "summary_metrics" = england_ltla_summary_metrics,
@@ -64,6 +65,58 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = wales_lhb_demographics,
           stop("No data selected", call. = FALSE)
         )
+
+        # BRC Regions
+      } else if (selected$geography == "brc_central_shp") {
+        switch(type,
+          "summary_metrics" = england_ltla_summary_metrics |>
+            filter(area_name %in% brc_central_shp$area_name),
+          "secondary_care" = england_ltla_secondary_care |>
+            filter(area_name %in% brc_central_shp$area_name),
+          "demographics" = england_ltla_demographics |>
+            filter(area_name %in% brc_central_shp$area_name),
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_london_shp") {
+        switch(type,
+          "summary_metrics" = england_ltla_summary_metrics |>
+            filter(area_name %in% brc_london_shp$area_name),
+          "secondary_care" = england_ltla_secondary_care |>
+            filter(area_name %in% brc_london_shp$area_name),
+          "demographics" = england_ltla_demographics |>
+            filter(area_name %in% brc_london_shp$area_name),
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_north_shp") {
+        switch(type,
+          "summary_metrics" = england_ltla_summary_metrics |>
+            filter(area_name %in% brc_north_shp$area_name),
+          "secondary_care" = england_ltla_secondary_care |>
+            filter(area_name %in% brc_north_shp$area_name),
+          "demographics" = england_ltla_demographics |>
+            filter(area_name %in% brc_north_shp$area_name),
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_south_shp") {
+        switch(type,
+          "summary_metrics" = england_ltla_summary_metrics |>
+            filter(area_name %in% brc_south_shp$area_name),
+          "secondary_care" = england_ltla_secondary_care |>
+            filter(area_name %in% brc_south_shp$area_name),
+          "demographics" = england_ltla_demographics |>
+            filter(area_name %in% brc_south_shp$area_name),
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_southeast_shp") {
+        switch(type,
+          "summary_metrics" = england_ltla_summary_metrics |>
+            filter(area_name %in% brc_southeast_shp$area_name),
+          "secondary_care" = england_ltla_secondary_care |>
+            filter(area_name %in% brc_southeast_shp$area_name),
+          "demographics" = england_ltla_demographics |>
+            filter(area_name %in% brc_southeast_shp$area_name),
+          stop("No data selected", call. = FALSE)
+        )
       }
     })
 
@@ -87,7 +140,7 @@ jitterPlotTest <- function() {
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "wales_ltla_shp"
+      areas = vector(), geography = "brc_london_shp"
     )
     jitterPlotServer("test", selected, type = "secondary_care")
   }
@@ -96,4 +149,4 @@ jitterPlotTest <- function() {
 }
 
 # Examples
-# jitterPlotTest()
+jitterPlotTest()
