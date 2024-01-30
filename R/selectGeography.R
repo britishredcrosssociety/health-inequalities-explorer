@@ -16,11 +16,11 @@ selectGeographyUI <- function(id) {
       "Central" = "brc_central_shp",
       "London" = "brc_london_shp",
       "North" = "brc_north_shp",
-      #"Northern Ireland and Isle of Man" = "northern_ireland_ltla_shp",
-      #"Scotland" = "scotland_ltla_shp",
+      "Northern Ireland and Isle of Man" = "northern_ireland_ltla_shp_copy",
+      "Scotland" = "scotland_ltla_shp_copy",
       "South and the Channel Islands" = "brc_south_shp",
-      "South East" = "brc_southeast_shp"
-      #"Wales" = "wales_ltla_shp"
+      "South East" = "brc_southeast_shp",
+      "Wales" = "wales_ltla_shp_copy"
       
     )),
     multiple = FALSE

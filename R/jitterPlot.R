@@ -24,7 +24,8 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = england_icb_demographics,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "scotland_ltla_shp") {
+      } else if (selected$geography == "scotland_ltla_shp" |
+        selected$geography == "scotland_ltla_shp_copy") {
         switch(type,
           "summary_metrics" = scotland_ltla_summary_metrics,
           "secondary_care" = scotland_ltla_secondary_care,
@@ -38,7 +39,8 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = scotland_hb_demographics,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "northern_ireland_ltla_shp") {
+      } else if (selected$geography == "northern_ireland_ltla_shp" |
+        selected$geography == "northern_ireland_ltla_shp_copy") {
         switch(type,
           "summary_metrics" = northern_ireland_ltla_summary_metrics,
           "secondary_care" = northern_ireland_ltla_secondary_care,
@@ -52,7 +54,8 @@ jitterPlotServer <- function(id, selected, type) {
           "demographics" = northern_ireland_hsct_demographics,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "wales_ltla_shp") {
+      } else if (selected$geography == "wales_ltla_shp" |
+        selected$geography == "wales_ltla_shp_copy") {
         switch(type,
           "summary_metrics" = wales_ltla_summary_metrics,
           "demographics" = wales_ltla_demographics,
@@ -140,7 +143,7 @@ jitterPlotTest <- function() {
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "brc_london_shp"
+      areas = vector(), geography = "scotland_ltla_shp_copy"
     )
     jitterPlotServer("test", selected, type = "secondary_care")
   }
@@ -149,4 +152,4 @@ jitterPlotTest <- function() {
 }
 
 # Examples
-jitterPlotTest()
+# jitterPlotTest()

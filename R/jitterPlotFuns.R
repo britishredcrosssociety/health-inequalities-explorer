@@ -88,7 +88,11 @@ jitter_plot_null <- function(data) {
     )
   ) +
     geom_point(
-      position = position_jitter(height = 0.25, width = 0.1, seed = 123),
+      position = position_jitter(
+        height = 0.25,
+        width = 0.1,
+        seed = 123
+      ),
       size = 4,
       shape = 21,
       alpha = 0.1,

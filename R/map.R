@@ -27,7 +27,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_south_shp", selected$geography)) {
         51
       } else if (grepl("brc_southeast_shp", selected$geography)) {
-        51.18
+        51.509
       }
     })
 
@@ -49,7 +49,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_south_shp", selected$geography)) {
         -3
       } else if (grepl("brc_southeast_shp", selected$geography)) {
-        0.55
+        -0.12
       }
     })
     
