@@ -26,8 +26,7 @@ selectAreasServer <- function(id, selected) {
     })
 
     observeEvent(input$selectAreas,
-      {
-        selected$areas <- input$selectAreas
+      {selected$areas <- input$selectAreas
       },
       ignoreNULL = FALSE
     )
@@ -50,7 +49,7 @@ selectAreasTest <- function() {
   )
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = vector(), geography = "brc_london_shp"
     )
     selectAreasServer("test", selected)
   }
@@ -58,4 +57,4 @@ selectAreasTest <- function() {
 }
 
 # Examples
-# selectAreasTest()
+selectAreasTest()

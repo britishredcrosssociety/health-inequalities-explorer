@@ -2,7 +2,7 @@ selectGeographyUI <- function(id) {
   selectizeInput(
     NS(id, "selectGeography"),
     label = NULL,
-    choices = c(
+    choices = list("Local Authorities and ICB" = c(
       "England: Local Authorities" = "england_ltla_shp",
       "England: Integrated Care Boards" = "england_icb_shp",
       "Scotland: Local Authorities" = "scotland_ltla_shp",
@@ -12,6 +12,17 @@ selectGeographyUI <- function(id) {
       "Wales: Local Authorities" = "wales_ltla_shp",
       "Wales: Local Health Boards" = "wales_lhb_shp"
     ),
+    "BRC Areas" = c(
+      "Central" = "brc_central_shp",
+      "London" = "brc_london_shp",
+      "North" = "brc_north_shp",
+      #"Northern Ireland and Isle of Man" = "northern_ireland_ltla_shp",
+      #"Scotland" = "scotland_ltla_shp",
+      "South and the Channel Islands" = "brc_south_shp",
+      "South East" = "brc_southeast_shp"
+      #"Wales" = "wales_ltla_shp"
+      
+    )),
     multiple = FALSE
   )
 }
@@ -36,4 +47,4 @@ selectGeographyTest <- function() {
 }
 
 # Examples
-# selectGeographyTest()
+ selectGeographyTest()

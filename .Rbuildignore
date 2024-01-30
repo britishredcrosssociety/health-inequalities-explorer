@@ -4,3 +4,4 @@
 ^app\.R$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
