@@ -1,5 +1,4 @@
 library(tidyverse)
-devtools::install_github("humaniverse/healthyr", ref = "pull/30/head")
 library(healthyr)
 library(geographr)
 library(sf)

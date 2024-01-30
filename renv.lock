@@ -1127,13 +1127,13 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "healthyr",
       "RemoteUsername": "humaniverse",
-      "RemoteRef": "pull/30/head",
-      "RemoteSha": "0c42237f96611dfedaa8a8c82d04bd5e26a2e05b",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b1f57b685b3b44aa50fadb69259fa459f9aee185",
       "Requirements": [
         "R",
         "tibble"
       ],
-      "Hash": "1272753509cb1245572a71ab92e54c67"
+      "Hash": "61c9f76be7639008e5b3b6100ae14a51"
     },
     "highr": {
       "Package": "highr",
