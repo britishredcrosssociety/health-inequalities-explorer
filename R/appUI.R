@@ -118,16 +118,18 @@ ui <- function() {
       area = "secondary_note",
       has_border = FALSE,
       conditionalPanel(
-        condition = "input['geography-selectGeography'] == 'wales_ltla_shp'",
+        condition = "input['geography-selectGeography'] == 'wales_ltla_shp' || 
+        input['geography-selectGeography'] == 'wales_ltla_shp_copy'",
         tags$p(
           tags$span(class = "note-banner", "NOTE"),
           "No data is available at Local Authorities level, please refer to
           the Local Health Boards view for information on secondary care
-          indicators in Wales"
+          indicators in Wales."
         )
       ),
       conditionalPanel(
-        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp' &&
+        input['geography-selectGeography'] != 'wales_ltla_shp_copy'",
         tags$p(
           tags$span(class = "note-banner", "NOTE"),
           "Clusters of points have similar values. See the help button for more
@@ -139,7 +141,8 @@ ui <- function() {
       area = "secondary_care",
       has_border = FALSE,
       conditionalPanel(
-        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp' &&
+        input['geography-selectGeography'] != 'wales_ltla_shp_copy'",
         jitterPlotUI("secondaryCarePlot")
       )
     ),
@@ -147,7 +150,8 @@ ui <- function() {
       area = "help_button_secondary",
       has_border = FALSE,
       conditionalPanel(
-        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp' &&
+        input['geography-selectGeography'] != 'wales_ltla_shp_copy'",
         helpButtonUI("help_secondary")
       )
     ),
@@ -158,10 +162,11 @@ ui <- function() {
       collapsible = TRUE,
       title = title_collapsible("Show indicator details"),
       conditionalPanel(
-        condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
+        condition = "input['geography-selectGeography'] != 'wales_ltla_shp' &&
+        input['geography-selectGeography'] != 'wales_ltla_shp_copy'",
         indicatorDescriptionsUI("secondaryCareDescriptions")
       )
-      )|>
+    ) |>
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
