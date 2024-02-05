@@ -19,5 +19,6 @@ Imports:
     pkgload,
     plotly,
     sf,
-    shiny
+    shiny,
+    healthyr
 LazyData: true

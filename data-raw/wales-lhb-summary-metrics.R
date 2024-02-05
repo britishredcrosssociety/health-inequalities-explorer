@@ -169,8 +169,8 @@ loneliness <-
   select(ltla21_code, lhb20_code, deciles) |>
   group_by(lhb20_code) |>
   mutate(
-    number = sum(deciles == 10, na.rm = TRUE),
-    percent = sum(deciles == 10, na.rm = TRUE) / n()
+    number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
     number = first(number),
@@ -254,8 +254,8 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of LSOAs in the LHB that are in the 10% most lonely nationally: ", round(number),
-        "<br>", "Percentage of all LSOAs in the LHB that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
+        "<br>", "No. of LSOAs in the LHB that are in the 20% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all LSOAs in the LHB that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )

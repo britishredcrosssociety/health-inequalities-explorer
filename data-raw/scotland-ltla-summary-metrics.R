@@ -100,8 +100,8 @@ loneliness <-
   left_join(lookup_dz_ltla) |>
   select(dz11_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
-  mutate(number = sum(deciles == 10, na.rm = TRUE),
-         percent = sum(deciles == 10, na.rm = TRUE) / n()) |>
+  mutate(number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
+         percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()) |>
   summarise(percent = first(percent),
             number = first(number)) |>
   mutate(variable = "Loneliness", .after = ltla21_code)
@@ -181,10 +181,11 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of Intermediate Zones in the Local Authority that are in the 10% most lonely nationally: ", round(number),
-        "<br>", "Percentage of all Intermediate Zones in the Local Authority that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
+        "<br>", "No. of Intermediate Zones in the Local Authority that are in the 20% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all Intermediate Zones in the Local Authority that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
 
 usethis::use_data(scotland_ltla_summary_metrics, overwrite = TRUE)
+

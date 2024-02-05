@@ -19,9 +19,19 @@ rtt <- ni_rtt_hsct |>
     trust18_name = "hsct22_name",
     date,
     waits_over_18_weeks,
-    total_waits
+    total_waits,
   ) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+max_date_rtt <- max(rtt$date) |>
+  format("%B %Y")
+min_date_rtt <- max(rtt$date) %m-% months(2) |>
+  format("%B %Y")
+
+rtt_label <- paste("Referral to treatment \nwaiting times \n(", min_date_rtt, " - ", max_date_rtt, " average)", sep = "")
+
+rtt <- rtt |>
   group_by(trust18_name, date) |>
   mutate(waits_over_18_weeks = sum(waits_over_18_weeks),
             total_waits = sum(total_waits)) |>
@@ -32,7 +42,7 @@ rtt <- ni_rtt_hsct |>
     percent = mean(percent, na.rm = FALSE)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Q2 2023)",
+    variable = rtt_label,
     .after = trust18_name
   ) |>
   filter(!trust18_name %in% c("DPC", "Day Case Procedure Centre"))
@@ -40,19 +50,29 @@ rtt <- ni_rtt_hsct |>
 # ---- Beds ----
 # Higher = better performance
 available_beds <- ni_beds |>
+  mutate(date = as.Date(date, format = "%Y-%m-%d")) |>
   left_join(hsct, by = "trust18_code") |>
   mutate(
     percent_available = total_available_beds /
       (total_available_beds + total_occupied_beds)
   ) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+max_date_beds <- max(available_beds$date) |>
+  format("%B %Y")
+min_date_beds <- max(available_beds$date) %m-% months(2) |>
+  format("%B %Y")
+beds_label <-  paste("Bed availablity \n(", min_date_beds, " - ", max_date_beds, " average)", sep = "")
+
+available_beds <- available_beds |>
   group_by(trust18_name) |>
   summarise(
     number = sum(total_available_beds),
     percent = mean(percent_available, na.rm = TRUE)
   ) |>
   mutate(
-    variable = "Bed availability \n(Q1 2022)",
+    variable = beds_label,
     .after = trust18_name
   )
 
@@ -83,7 +103,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Q2 2023)" ~ scaled_1_1 * -1,
+      variable == rtt_label ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -104,7 +124,7 @@ secondary_care_polarised |>
 northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Q2 2023)" ~
+      variable == rtt_label ~
         paste0(
           "<b>", area_name, "</b>",
           "<br>",
@@ -112,7 +132,7 @@ northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
           "<br>", "Percentage of waiting times over 18 weeks: ", round(percent * 100, 1),
           "%"
         ),
-      variable == "Bed availability \n(Q1 2022)" ~ paste0(
+      variable == beds_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),

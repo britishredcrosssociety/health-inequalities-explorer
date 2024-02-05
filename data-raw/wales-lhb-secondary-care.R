@@ -3,44 +3,77 @@ library(healthyr)
 library(geographr)
 library(sf)
 library(ggridges)
+library(lubridate)
 
 lhb <- boundaries_lhb20 |>
   st_drop_geometry()
 
 # ---- RTT ----
 # Higher = worse performance
-rtt <- wales_rtt_lhb |>
+rtt_raw <- wales_rtt_lhb |>
   rename(lhb20_code = lhb22_code) |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_rtt <- min(rtt_raw$date) |>
+  format("%B %Y")
+max_date_rtt <- max(rtt_raw$date) |>
+  format("%B %Y")
+rtt_label <- paste("Referral to treatment \nwaiting times \n(",
+                      min_date_rtt, " - ", max_date_rtt, " average)",
+                      sep = ""
+)
+
+rtt <- rtt_raw |>
   group_by(lhb20_code) |>
   summarise(
     number = mean(waits_over_18_weeks),
-    percent = mean(waits_over_18_weeks)
+    total = mean(total_waits)
   ) |>
   mutate(
-    variable = "Referral to treatment \nwaiting times (Jul 22 - Sep 22)",
-    .after = lhb20_code
-  )
+    percent = number/total,
+    variable = rtt_label,
+  ) |>
+  relocate(variable, .before = number) |>
+  select(-total)
 
 # ---- Beds ----
 # Higher = better performance
-available_beds <- wales_health_board_critical_general_acute_beds |>
+available_beds_raw <- wales_health_board_critical_general_acute_beds |>
   rename(lhb20_name = health_board_name) |>
   right_join(lhb) |>
   relocate(lhb20_code) |>
-  filter(date == "Mar-22") |>
+  mutate(date = dmy(paste("01-", date, sep = ""))) |>
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+
+# Create dynamic label
+min_date_bed <- min(available_beds_raw$date) |>
+  format("%B %Y")
+max_date_bed <- max(available_beds_raw$date) |>
+  format("%B %Y")
+bed_label <- paste("Bed availability\n(",
+                   min_date_bed, " - ", max_date_bed, " average)",
+                   sep = ""
+)
+
+available_beds <- available_beds_raw |>
   filter(specialism == "all_specialties") |>
+  group_by(lhb20_code) |>
+  summarise(
+    beds_occupancy_rate = mean(as.numeric(beds_occupancy_rate), na.rm = TRUE),
+    daily_beds_available = mean(as.numeric(daily_beds_available), na.rm = TRUE)
+  ) |>
   mutate(beds_occupancy_rate = beds_occupancy_rate / 100) |>
-  mutate(percent_avilable = 1 - beds_occupancy_rate) |>
-  mutate(variable = "Bed availability \n(Mar 2022)") |>
+  mutate(percent_available = 1 - beds_occupancy_rate) |>
+  mutate(variable = bed_label) |>
   select(
     lhb20_code,
     variable,
     number = daily_beds_available,
-    percent = percent_avilable
+    percent = percent_available
   )
 
-# ---- Combine & rename (pretty printing) ----
+ # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   rtt,
   available_beds
@@ -65,7 +98,7 @@ secondary_care_scaled <-
 secondary_care_polarised <- secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Referral to treatment \nwaiting times (Jul 22 - Sep 22)" ~ scaled_1_1 * -1,
+      variable == rtt_label ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -83,13 +116,13 @@ secondary_care_polarised |>
 wales_lhb_secondary_care <- secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Referral to treatment \nwaiting times (Jul 22 - Sep 22)" ~ paste0(
+      variable == rtt_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. waiting over 18 weeks: ", round(number),
         "<br>", "Percentage waiting over 18 weeks: ", round(percent * 100, 1), "%"
       ),
-      variable == "Bed availability \n(Mar 2022)" ~ paste0(
+      variable == bed_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "No. of available beds: ", round(number),

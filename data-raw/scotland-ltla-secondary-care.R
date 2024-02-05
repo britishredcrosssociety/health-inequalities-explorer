@@ -26,7 +26,19 @@ pop_scotland <- pop_raw |>
 delayed_discharge_monthly <- scotland_delayed_discharge_ltla |>
   drop_na() |>
   filter(ltla_code != "S92000003") |>
-  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
+  
+# Create dynamic labels
+min_date_delayed <- min(delayed_discharge_monthly$date) |>
+  format("%B %Y")
+max_date_delayed <- max(delayed_discharge_monthly$date) |>
+  format("%B %Y")
+delayed_label <- paste("Delayed discharges \n(",
+                      min_date_delayed, " - ", max_date_delayed, " average)",
+                      sep = ""
+)
+ 
+delayed_discharge_monthly <- delayed_discharge_monthly |> 
   filter(age_group == "18-74" | age_group == "75plus") |>
   filter(delay_reason == "All Delay Reasons") |>
   rename(ltla21_code = ltla_code) |>
@@ -54,7 +66,7 @@ delayed_discharges <- delayed_discharge_summary |>
     percent = beds_per_10000
   ) |>
   mutate(
-    variable = "Delayed discharges \n(Jan 23 - Mar 23 average)",
+    variable = delayed_label,
     .after = ltla21_code
   )
 
@@ -82,7 +94,7 @@ scotland_ltla_secondary_care_scaled <-
 scotland_ltla_secondary_care_polarised <- scotland_ltla_secondary_care_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Delayed discharges \n(Jan 23 - Mar 23 average)" ~ scaled_1_1 * -1,
+      variable == delayed_label ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
   )
@@ -100,7 +112,7 @@ scotland_ltla_secondary_care_polarised |>
 scotland_ltla_secondary_care <- scotland_ltla_secondary_care_polarised |>
   mutate(
     label = case_when(
-      variable == "Delayed discharges \n(Jan 23 - Mar 23 average)" ~ paste0(
+      variable == delayed_label ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Average daily no. of delayed beds: ", round(number),

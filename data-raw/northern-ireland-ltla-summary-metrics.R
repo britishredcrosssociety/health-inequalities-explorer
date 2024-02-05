@@ -71,8 +71,8 @@ loneliness <-
   select(sdz21_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
   mutate(
-    number = sum(deciles == 10, na.rm = TRUE),
-    percent = sum(deciles == 10, na.rm = TRUE) / n()
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
     percent = first(percent),
@@ -151,8 +151,8 @@ northern_ireland_ltla_summary_metrics <-
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "No. of Super Data Zones in the Local Authority that are in the 10% most lonely nationally: ", round(number),
-        "<br>", "Percentage of all Super Data Zones in the Local Authority that are in the 10% most lonely nationally: ", round(percent * 100, 1), "%"
+        "<br>", "No. of Super Data Zones in the Local Authority that are in the 20% most lonely nationally: ", round(number),
+        "<br>", "Percentage of all Super Data Zones in the Local Authority that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
       )
     )
   )
