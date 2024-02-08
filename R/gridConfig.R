@@ -25,7 +25,10 @@ grid_config <- new_gridlayout(
     "auto    blank1  blank13         blank7           demographics_note         demographics_note         blank8          blank17                  blank2",
     "auto    blank1  demographics    demographics     demographics              demographics              demographics    help_button_demographics blank2",
     "auto    blank1  blank14         blank9           demographics_descriptions demographics_descriptions blank10         blank18                  blank2",
-    "auto    blank1  blank14         blank9           footer                    footer                    blank10         blank18                  blank2"
+    "auto    blank1  blank14         blank9           footer                    footer                    blank10         blank18                  blank2",
+    "auto    blank1  blank14         blank9           hi_title                  hi_title                  blank10         blank18                  blank2",
+    "auto    blank1  blank14         blank9           hi_note                   hi_note                   blank10         blank18                  blank2",
+    "auto    blank1  blank14         blank9           hi_people                 hi_places                 hi_lives        blank18                  blank2"
   )
 )
 

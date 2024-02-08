@@ -1,12 +1,5 @@
 server <- function(input, output, session) {
   
-  # Debugging - check if rlock file being used
-  if (file.exists("renv.lock")) {
-    print("renv.lock file found. Using renv for package management.\n")
-  } else {
-    print("renv.lock file not found. Ensure that renv is configured for this project.\n")
-  }
-  
   # Set an empty global reactive values list to be passed between modules
   selected <- reactiveValues(areas = vector(), geography = vector())
 

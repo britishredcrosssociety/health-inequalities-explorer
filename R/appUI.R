@@ -105,6 +105,46 @@ ui <- function() {
       indicatorDescriptionsUI("summaryDescriptions")
     ) |>
       tagAppendAttributes(class = "collapsed"),
+    
+    # ---- Health Index ----
+    grid_card(
+      area = "hi_title",
+      has_border = FALSE,
+      tags$h4(tags$b("Health Index"))
+    ),
+    grid_card(
+      area = "hi_note",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "Clusters of points have similar values. See the help button for more
+        info."
+      )
+    ),
+    grid_card(
+      area = "hi_people",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "people text."
+      )
+    ),
+    grid_card(
+      area = "hi_places",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "places text."
+      )
+    ),
+    grid_card(
+      area = "hi_lives",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "lives text"
+      )
+    ),
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data
