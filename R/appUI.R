@@ -122,29 +122,26 @@ ui <- function() {
       )
     ),
     grid_card(
-      area = "hi_people",
+      area = "hi_plot",
       has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "people text."
-      )
+      #jitterPlotUI("healthindexPlot")
+      tags$p("hi jitter plot here")
+
     ),
-    grid_card(
-      area = "hi_places",
-      has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "places text."
-      )
-    ),
-    grid_card(
-      area = "hi_lives",
-      has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "lives text"
-      )
-    ),
+    grid_nested(
+      "hi_domain",
+      title = "HI Domains",
+      layout = c(
+
+                "people  places lives"
+      ),
+      grid_card("people", tags$p("people plot")),
+      grid_card("places", tags$p("places plot")),
+      grid_card("lives", tags$p("lives plot")
+                )
+    
+  ),
+
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data

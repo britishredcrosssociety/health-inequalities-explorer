@@ -14,12 +14,19 @@ ltla <-
 england_ltla_hi_outcomes <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_people_domain_score) |>
-  mutate(rank = round(rank(number))) |>
-  mutate(variable = "Health Outcomes\n domain rank") |>
-  relocate(variable, .after = ltla21_code) |>
+  #mutate(variable = "Health Outcomes\n domain rank") |>
+  #relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
+
+mean(as.numeric(england_ltla_hi_outcomes$number))
+  
+  
+  
+  
+  mutate(rank = round(rank(number))) |>
+  
   relocate(area_name) |>
   mutate(label = paste0(
     "<b>", area_name, "</b>",
