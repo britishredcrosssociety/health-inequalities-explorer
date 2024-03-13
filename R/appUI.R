@@ -130,14 +130,28 @@ ui <- function() {
     grid_nested(
       "hi_domain",
       layout = c("hi_domain_title hi_domain_title hi_domain_title",
+                 "people_title places_title lives_title",
                 "people_domain  places_domain lives_domain",
                 "people_subdomain  places_subdomain lives_subdomain"
       ),
-      grid_card("hi_domain_title", tags$h5("Health Index Domains and Sub-Domains"),
+      # Overall title
+      grid_card("hi_domain_title", tags$h5(tags$b("Health Index Domains and Sub-Domains")),
                 has_border = FALSE),
-      grid_card("people_domain", tags$p("people bar plot")),
-      grid_card("places_domain", tags$p("places bar plot")),
-      grid_card("lives_domain", tags$p("lives bar plot")),
+      # Domain titles
+      grid_card("people_title", tags$h6(tags$b("Health Outcomes")),
+                has_border = FALSE),
+      grid_card("places_title", tags$h6(tags$b("Preventable Risk Factors")),
+                has_border = FALSE),
+      grid_card("lives_title", tags$h6(tags$b("Social Determinants of Health")),
+                has_border = FALSE),
+      # Domain plots
+      grid_card("people_domain",
+                barPlotUI("hioutcomesPlot"), has_border = FALSE),
+      grid_card("places_domain", 
+                barPlotUI("hiriskfactorsPlot"), has_border = FALSE),
+      grid_card("lives_domain", 
+                barPlotUI("hisocialdeterminantsPlot"), has_border = FALSE),
+      # Sub-domain tables
       grid_card("people_subdomain", tags$p("people subdomain table")),
       grid_card("places_subdomain", tags$p("places subdomain table")),
       grid_card("lives_subdomain", tags$p("lives subdomain table"))
