@@ -12,6 +12,12 @@ table_prep <- function(data, selected_areas) {
   # If selected_areas is NULL then this will just return "variable" and "National Mean"
   data <- data[, c("variable", "National Mean", selected_areas)]
   
+  data[, c("National Mean", selected_areas)] <- round(data[, c("National Mean", selected_areas)], 0)
+  
+  # data <- data |> 
+  #   tidyr::pivot_longer(cols = -variable) |> 
+  #   tidyr::pivot_wider(names_from = "variable", values_from = "value")
+  
   # data$area_name <- string_wrap(data$area_name)
   # 
   # data$selected <- ifelse(data$area_name %in% string_wrap(selected_areas), data$area_name, "not selected")
@@ -209,11 +215,8 @@ table_prep <- function(data, selected_areas) {
 
 # ---- Show table for selected areas (or just national mean if no areas have been selected) ----
 table_selected <- function(data, selected_areas) {
-  indicator_count <- length(unique(data$variable))
-  
   formattable(
     data,
     list()
   )
-  
 }
