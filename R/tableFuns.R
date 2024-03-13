@@ -1,7 +1,9 @@
 # ---- Prepare selected data ----
 table_prep <- function(data, selected_areas) {
-  # If selected_areas is NULL then this will just return "variable" and "National Mean"
-  data <- data[, c("variable", "National Mean", selected_areas)]
+  names(data)[1] <- "Sub-domain"
+  
+  # If selected_areas is NULL then this will just return "Sub-domain" and "National Mean"
+  data <- data[, c("Sub-domain", "National Mean", selected_areas)]
   
   data[, c("National Mean", selected_areas)] <- round(data[, c("National Mean", selected_areas)], 0)
   
