@@ -88,9 +88,9 @@ tableTest <- function() {
   
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = c("Tower Hamlets", "Ashford"), geography = "england_ltla_shp"
     )
-    tableServer("test", selected, type = "health_index")
+    tableServer("test", selected, type = "people_subdomain")
   }
   
   shinyApp(ui, server)
