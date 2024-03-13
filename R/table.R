@@ -12,8 +12,8 @@ tableServer <- function(id, selected, type) {
       if (selected$geography == "england_ltla_shp") {
         switch(type,
                "people_subdomain" = england_ltla_hi_outcomes_sub,
-               "places_subdomain" = england_ltla_hi_risk_factors_sub,
-               "lives_subdomain" = england_ltla_hi_social_determinants_sub,
+               "places_subdomain" = england_ltla_hi_social_determinants_sub,
+               "lives_subdomain" = england_ltla_hi_risk_factors_sub,
                stop("No data selected", call. = FALSE)
         )
       } # else if (selected$geography == "england_icb_shp") {

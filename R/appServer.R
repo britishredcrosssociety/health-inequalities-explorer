@@ -17,6 +17,8 @@ server <- function(input, output, session) {
   
   # Health Index subdomains
   tableServer("peopleSubdomainTable", selected, "people_subdomain")
+  tableServer("placesSubdomainTable", selected, "places_subdomain")
+  tableServer("livesSubdomainTable", selected, "lives_subdomain")
 
   # Indicator descriptions
   indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")

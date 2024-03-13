@@ -138,9 +138,22 @@ ui <- function() {
       grid_card("people_domain", tags$p("people bar plot")),
       grid_card("places_domain", tags$p("places bar plot")),
       grid_card("lives_domain", tags$p("lives bar plot")),
-      grid_card("people_subdomain", scrollable = TRUE, tableUI("peopleSubdomainTable")),  # tags$p("people subdomain table")),
-      grid_card("places_subdomain", tags$p("places subdomain table")),
-      grid_card("lives_subdomain", tags$p("lives subdomain table"))
+      
+      grid_card(
+        "people_subdomain",
+        scrollable = TRUE, 
+        tableUI("peopleSubdomainTable")
+      ),
+      grid_card(
+        "places_subdomain", 
+        scrollable = TRUE, 
+        tableUI("placesSubdomainTable")
+      ),
+      grid_card(
+        "lives_subdomain", 
+        scrollable = TRUE, 
+        tableUI("livesSubdomainTable")
+      )
     
   ),
 
