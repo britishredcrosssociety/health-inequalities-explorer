@@ -14,7 +14,7 @@ ltla <-
 england_ltla_hi_outcomes <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_people_domain_score) |>
-  mutate(variable = "Health Outcomes\n domain rank") |>
+  mutate(variable = "Healthy People (Health Outcomes) Score") |>
   relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -36,7 +36,7 @@ england_ltla_hi_outcomes <- england_health_index |>
 england_ltla_hi_risk_factors <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_lives_domain_score) |>
-  mutate(variable = "Preventable Risk Factors\n domain rank") |>
+  mutate(variable = "Healthy Lives (Preventable Risk Factors) Score") |>
   relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -58,7 +58,7 @@ england_ltla_hi_risk_factors <- england_health_index |>
 england_ltla_hi_social_determinants <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_places_domain_score) |>
-  mutate(variable = "Social Determinants of Health\n domain rank") |>
+  mutate(variable = "Healthy Places (Social Determinants of Health) Score") |>
   relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
