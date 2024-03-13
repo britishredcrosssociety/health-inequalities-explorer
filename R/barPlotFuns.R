@@ -21,7 +21,7 @@ bar_plot_prep <- function(data, selected_areas) {
 # ---- ggplotly fun ----
 ggplotly_default_bar <- function(plot, data) {
   number_areas <- length(data$area_name)
-  pixel <- if_else(number_areas == 1, 200, 60)
+  pixel <- ifelse(number_areas == 1, 200, 60)
 
   ggplotly(
     plot,

@@ -130,6 +130,7 @@ ui <- function() {
     grid_nested(
       "hi_domain",
       layout = c("hi_domain_title hi_domain_title hi_domain_title",
+                 "hi_text hi_text hi_text",
                  "people_title places_title lives_title",
                 "people_domain  places_domain lives_domain",
                 "people_subdomain  places_subdomain lives_subdomain"
@@ -137,6 +138,25 @@ ui <- function() {
       # Overall title
       grid_card("hi_domain_title", tags$h5(tags$b("Health Index Domains and Sub-Domains")),
                 has_border = FALSE),
+      # Explanatory text
+      grid_card(
+        area = "hi_text",
+        has_border = FALSE,
+        tags$p(
+          "The ONS Health Index score can be broken down into three areas of health, 
+          known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
+          Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
+          that represent overarching topics related to their respective domain. 
+          The ONS has scored each domain and subdomain. Higher scores indicate better health. 
+          The minumum score across domains is 70 and the maximum value is 130. Scores of 100
+          represent the health of England in 2015. Please see",
+          tags$a(
+            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
+            target = "_blank",
+            "here"
+          ),
+          " for more information about the ONS Health Index."
+        )),
       # Domain titles
       grid_card("people_title", tags$h6(tags$b("Health Outcomes")),
                 has_border = FALSE),
