@@ -14,19 +14,16 @@ ltla <-
 england_ltla_hi_outcomes <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_people_domain_score) |>
-  #mutate(variable = "Health Outcomes\n domain rank") |>
-  #relocate(variable, .after = ltla21_code) |>
+  mutate(variable = "Health Outcomes\n domain rank") |>
+  relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
-
-mean(as.numeric(england_ltla_hi_outcomes$number))
-  
-  
-  
-  
+  bind_rows(data.frame(
+    number = mean(as.numeric(england_ltla_hi_outcomes$number)),
+    area_name = "National Mean"
+  )) |>
   mutate(rank = round(rank(number))) |>
-  
   relocate(area_name) |>
   mutate(label = paste0(
     "<b>", area_name, "</b>",
@@ -39,12 +36,16 @@ mean(as.numeric(england_ltla_hi_outcomes$number))
 england_ltla_hi_risk_factors <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_lives_domain_score) |>
-  mutate(rank = round(rank(number))) |>
   mutate(variable = "Preventable Risk Factors\n domain rank") |>
   relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
+  bind_rows(data.frame(
+    number = mean(as.numeric(england_ltla_hi_risk_factors$number)),
+    area_name = "National Mean"
+  )) |>
+  mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
   mutate(label = paste0(
     "<b>", area_name, "</b>",
@@ -57,12 +58,16 @@ england_ltla_hi_risk_factors <- england_health_index |>
 england_ltla_hi_social_determinants <- england_health_index |>
   filter(year == 2021) |>
   select(ltla21_code, number = healthy_places_domain_score) |>
-  mutate(rank = round(rank(number))) |>
   mutate(variable = "Social Determinants of Health\n domain rank") |>
   relocate(variable, .after = ltla21_code) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
+  bind_rows(data.frame(
+    number = mean(as.numeric(england_ltla_hi_social_determinants$number)),
+    area_name = "National mean"
+  )) |>
+  mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
   mutate(label = paste0(
     "<b>", area_name, "</b>",

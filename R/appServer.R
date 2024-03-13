@@ -13,6 +13,8 @@ server <- function(input, output, session) {
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("demographicsPlot", selected, "demographics")
+  jitterPlotServer("healthindexPlot", selected, "health_index")
+  
 
   # Indicator descriptions
   indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")

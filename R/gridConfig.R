@@ -28,7 +28,7 @@ grid_config <- new_gridlayout(
     "auto    blank1  blank14         blank9           footer                    footer                    blank10         blank18                  blank2",
     "auto    blank1  blank14         blank9           hi_title                  hi_title                  blank10         blank18                  blank2",
     "auto    blank1  blank14         blank9           hi_note                   hi_note                   blank10         blank18                  blank2",
-    "auto    blank1  hi_plot         hi_plot          hi_plot                   hi_plot                   hi_plot         hi_plot                 blank2",
+    "200px    blank1  hi_plot         hi_plot          hi_plot                   hi_plot                   hi_plot         hi_plot                 blank2",
     "auto    blank1  hi_domain       hi_domain           hi_domain                hi_domain                hi_domain        hi_domain            blank2"
     
 

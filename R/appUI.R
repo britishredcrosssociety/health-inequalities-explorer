@@ -124,8 +124,10 @@ ui <- function() {
     grid_card(
       area = "hi_plot",
       has_border = FALSE,
-      #jitterPlotUI("healthindexPlot")
-      tags$p("hi jitter plot here")
+      collapsible = FALSE,
+      scrollable = FALSE,
+      jitterPlotUI("healthindexPlot"),
+      tags$p("Health jitter plot here")
 
     ),
     grid_nested(
