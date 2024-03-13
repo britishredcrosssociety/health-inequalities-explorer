@@ -15,6 +15,8 @@ server <- function(input, output, session) {
   jitterPlotServer("demographicsPlot", selected, "demographics")
   jitterPlotServer("healthindexPlot", selected, "health_index")
   
+  # Health Index subdomains
+  tableServer("peopleSubdomainTable", selected, "people_subdomain")
 
   # Indicator descriptions
   indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")
