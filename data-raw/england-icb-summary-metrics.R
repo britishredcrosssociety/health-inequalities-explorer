@@ -46,25 +46,6 @@ imd <- imd_england_lsoa |>
   mutate(variable = "Deprivation", .after = icb22_code) |>
   select(-top_10, -n, -freq, -total_number_lsoas)
 
-# ---- ONS Health Index ----
-# Higher score = better health
-# Higher rank (calculated here) = better health
-# Source: https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland
-url <- "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland/current/healthindexscoresintegratedcaresystemsengland.xlsx"
-
-raw <- download_file(
-  url,
-  ".xlsx"
-)
-
-health_index_raw <- read_excel(raw, sheet = "Table_2_Index_scores", skip = 2)
-
-health_index <- health_index_raw |>
-  select(icb22_code = `Area Code`, number = `2021`) |>
-  mutate(number = rank(number)) |>
-  mutate(percent = NA) |>
-  mutate(variable = "ONS Health \nIndex rank") |>
-  relocate(variable, .after = icb22_code)
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
@@ -239,7 +220,6 @@ loneliness <- loneliness_lsoa |>
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   depahri,
   loneliness
 ) |>
@@ -260,7 +240,6 @@ icb_summary_metrics_england_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -305,11 +284,6 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
         "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
-      ),
-      variable == "ONS Health \nIndex rank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",
