@@ -1,3 +1,4 @@
+library(formattable)
 library(ggplot2)
 library(gridlayout)
 library(leaflet)
