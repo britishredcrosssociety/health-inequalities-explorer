@@ -105,6 +105,57 @@ ui <- function() {
       indicatorDescriptionsUI("summaryDescriptions")
     ) |>
       tagAppendAttributes(class = "collapsed"),
+    
+    # ---- Health Index ----
+    grid_card(
+      area = "hi_title",
+      has_border = FALSE,
+      tags$h4(tags$b("Health Index"))
+    ),
+    grid_card(
+      area = "hi_note",
+      has_border = FALSE,
+      tags$p(
+        tags$span(class = "note-banner", "NOTE"),
+        "Clusters of points have similar values. See the help button for more
+        info.")
+    ),
+    grid_card(
+      area = "hi_plot",
+      has_border = FALSE,
+      collapsible = FALSE,
+      scrollable = FALSE,
+      jitterPlotUI("healthindexPlot")
+    ),
+    grid_nested(
+      "hi_domain",
+      layout = c("hi_domain_title hi_domain_title hi_domain_title",
+                "people_domain  places_domain lives_domain",
+                "people_subdomain  places_subdomain lives_subdomain"
+      ),
+      grid_card("hi_domain_title", tags$h5("Health Index Domains and Sub-Domains"),
+                has_border = FALSE),
+      grid_card("people_domain", tags$p("people bar plot")),
+      grid_card("places_domain", tags$p("places bar plot")),
+      grid_card("lives_domain", tags$p("lives bar plot")),
+      
+      grid_card(
+        "people_subdomain",
+        scrollable = TRUE, 
+        tableUI("peopleSubdomainTable")
+      ),
+      grid_card(
+        "places_subdomain", 
+        scrollable = TRUE, 
+        tableUI("placesSubdomainTable")
+      ),
+      grid_card(
+        "lives_subdomain", 
+        scrollable = TRUE, 
+        tableUI("livesSubdomainTable")
+      )
+    
+  ),
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data

@@ -28,6 +28,7 @@ selectAreasServer <- function(id, selected) {
     observeEvent(input$selectAreas,
       {
         selected$areas <- input$selectAreas
+        print(selected$areas)
       },
       ignoreNULL = FALSE
     )
@@ -58,4 +59,4 @@ selectAreasTest <- function() {
 }
 
 # Examples
-# selectAreasTest()
+selectAreasTest()

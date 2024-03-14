@@ -1,12 +1,5 @@
 server <- function(input, output, session) {
   
-  # Debugging - check if rlock file being used
-  if (file.exists("renv.lock")) {
-    print("renv.lock file found. Using renv for package management.\n")
-  } else {
-    print("renv.lock file not found. Ensure that renv is configured for this project.\n")
-  }
-  
   # Set an empty global reactive values list to be passed between modules
   selected <- reactiveValues(areas = vector(), geography = vector())
 
@@ -20,6 +13,12 @@ server <- function(input, output, session) {
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("demographicsPlot", selected, "demographics")
+  jitterPlotServer("healthindexPlot", selected, "health_index")
+  
+  # Health Index subdomains
+  tableServer("peopleSubdomainTable", selected, "people_subdomain")
+  tableServer("placesSubdomainTable", selected, "places_subdomain")
+  tableServer("livesSubdomainTable", selected, "lives_subdomain")
 
   # Indicator descriptions
   indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")
