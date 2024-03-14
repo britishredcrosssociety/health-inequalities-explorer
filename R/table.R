@@ -89,6 +89,8 @@ tableTest <- function() {
   server <- function(input, output, session) {
     selected <- reactiveValues(
       areas = c("Tower Hamlets", "Ashford"), geography = "england_ltla_shp"
+      #areas = vector(), geography = "england_ltla_shp"
+      
     )
     tableServer("test", selected, type = "people_subdomain")
   }

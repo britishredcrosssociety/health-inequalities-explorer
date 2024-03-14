@@ -9,11 +9,13 @@ server <- function(input, output, session) {
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
 
-  # Plots
+  # Jitter Plots
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("demographicsPlot", selected, "demographics")
   jitterPlotServer("healthindexPlot", selected, "health_index")
+  
+  # Health Index domain plots
   barPlotServer("hioutcomesPlot", selected, "hi_outcomes")
   barPlotServer("hiriskfactorsPlot", selected, "hi_risk_factors")
   barPlotServer("hisocialdeterminantsPlot", selected, "hi_social_determinants")

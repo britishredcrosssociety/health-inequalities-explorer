@@ -7,7 +7,16 @@ table_prep <- function(data, selected_areas) {
   
   data[, c("National Mean", selected_areas)] <- round(data[, c("National Mean", selected_areas)], 0)
   
+  # Define formatter for setting font size
+  set_font_size <- formatter("span", style = "font-size:10px")
+
+  # Set font size for column names
+  data[, c("Sub-domain", "National Mean")] <- lapply(data[, c("Sub-domain", "National Mean")], set_font_size)
+  names(data) <- set_font_size(names(data))
+  
+
   return(data)
+  #return(formattable(data))
 }
 
 # ---- Show table for selected areas (or just national mean if no areas have been selected) ----
@@ -25,7 +34,8 @@ table_selected <- function(data, selected_areas) {
                     padding = "0 4px", 
                     `border-radius` = "4px",
                     color = ifelse(x == min(x, na.rm = TRUE), "white", NA),
-                    `background-color` = ifelse(x == min(x, na.rm = TRUE), "#ee2a24", NA)
+                    `background-color` = ifelse(x == min(x, na.rm = TRUE), "#ee2a24", NA),
+                    `font-size` = "10px"
                   ))
       })
     )

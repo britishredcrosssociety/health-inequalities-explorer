@@ -172,7 +172,8 @@ ui <- function() {
       grid_card("lives_domain", 
                 barPlotUI("hisocialdeterminantsPlot"), has_border = FALSE),
       # Sub-domain tables
-      grid_card("people_subdomain", tags$p("people subdomain table")),
+      grid_card("people_subdomain", 
+                tableUI("peopleSubdomainTable"), has_border = FALSE),
       grid_card("places_subdomain", tags$p("places subdomain table")),
       grid_card("lives_subdomain", tags$p("lives subdomain table"))
     
