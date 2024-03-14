@@ -20,6 +20,7 @@ bar_plot_prep <- function(data, selected_areas) {
 
 # ---- ggplotly fun ----
 ggplotly_default_bar <- function(plot, data) {
+  # Set Height of plot to be a factor of the number of areas selected
   number_areas <- length(data$area_name)
   pixel <- ifelse(number_areas == 1, 200, 60)
 
@@ -54,6 +55,7 @@ ggplotly_default_bar <- function(plot, data) {
 }
 
 # ---- Plot while waiting for selection ----
+# To plot national mean as default
 bar_plot_null <- function(data) {
   plot <-
     data |>

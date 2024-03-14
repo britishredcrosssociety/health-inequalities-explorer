@@ -49,7 +49,7 @@ barPlotTest <- function() {
   
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_icb_shp"
+      areas = c("Newham", "Ashford", "Lewisham", "Tower Hamlets", "York"), geography = "england_ltla_shp"
     )
     barPlotServer("test", selected, type = "hi_risk_factors")
   }
@@ -58,4 +58,4 @@ barPlotTest <- function() {
 }
 
 # Examples
-barPlotTest()
+#barPlotTest()
