@@ -22,7 +22,7 @@ jitter_plot_prep <- function(data, selected_areas) {
 ggplotly_default <- function(plot, indicator_count) {
   ggplotly(
     plot,
-    height = indicator_count * 160,
+    height = ifelse(indicator_count == 1, 230, indicator_count* 160),
     width = 1000,
     tooltip = c("text")
   ) |>
