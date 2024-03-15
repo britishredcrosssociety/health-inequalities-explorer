@@ -26,9 +26,24 @@ ui <- function() {
       has_border = FALSE,
       class = "intro",
       tags$p(
-        tags$span(class = "phase-banner", "ALPHA"),
-        "This is a new service - new data will be added soon."
+        style = "color: #1d70b8",
+        tags$i("New Updates:")
       ),
+      tags$p(
+        style = "color: #1d70b8",
+        tags$ul(
+          tags$li(
+            tags$i(
+              "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities"
+            )
+          )
+        )
+      ),
+      tags$p(
+        tags$span(class = "phase-banner", "ALPHA"),
+        "This is a new service - new data and features are being added."
+      ),
+     
       tags$h4(
         tags$b(
           "Use this interactive tool to explore health statistics and
@@ -36,6 +51,7 @@ ui <- function() {
         )
       )
     ),
+    
     grid_card(
       area = "user_guide",
       has_border = FALSE,
@@ -45,6 +61,7 @@ ui <- function() {
         tags$button(class = "guide-button", "SEE QUICK USER GUIDE")
       )
     ),
+
 
     # ---- Selection ----
     grid_card(
@@ -123,8 +140,6 @@ ui <- function() {
     grid_card(
       area = "hi_plot",
       has_border = FALSE,
-      collapsible = FALSE,
-      scrollable = FALSE,
       jitterPlotUI("healthindexPlot")
     ),
     grid_nested(
