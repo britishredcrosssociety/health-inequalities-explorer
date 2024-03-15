@@ -43,7 +43,6 @@ ui <- function() {
         tags$span(class = "phase-banner", "ALPHA"),
         "This is a new service - new data and features are being added."
       ),
-     
       tags$h4(
         tags$b(
           "Use this interactive tool to explore health statistics and
@@ -51,7 +50,6 @@ ui <- function() {
         )
       )
     ),
-    
     grid_card(
       area = "user_guide",
       has_border = FALSE,
@@ -122,7 +120,7 @@ ui <- function() {
       indicatorDescriptionsUI("summaryDescriptions")
     ) |>
       tagAppendAttributes(class = "collapsed"),
-    
+
     # ---- Health Index ----
     grid_card(
       area = "hi_title",
@@ -135,7 +133,8 @@ ui <- function() {
       tags$p(
         tags$span(class = "note-banner", "NOTE"),
         "Clusters of points have similar values. See the help button for more
-        info.")
+        info."
+      )
     ),
     grid_card(
       area = "hi_plot",
@@ -144,36 +143,39 @@ ui <- function() {
     ),
     grid_nested(
       "hi_domain",
-      layout = c("hi_domain_title hi_domain_title hi_domain_title",
-                 "hi_text hi_text hi_text",
-                 "hi_text_detail hi_text_detail hi_text_detail",
-                 "people_title places_title lives_title",
-                "people_domain  places_domain lives_domain",
-                "peoplesub_title placessub_title livessub_title",
-                "people_subdomain  places_subdomain lives_subdomain"
+      layout = c(
+        "hi_domain_title hi_domain_title hi_domain_title",
+        "hi_text hi_text hi_text",
+        "hi_text_detail hi_text_detail hi_text_detail",
+        "people_title places_title lives_title",
+        "people_domain  places_domain lives_domain",
+        "peoplesub_title placessub_title livessub_title",
+        "people_subdomain  places_subdomain lives_subdomain"
       ),
       # Overall title
-      grid_card("hi_domain_title", 
-                tags$h5(tags$b("Health Index Domains and Sub-Domains")),
-                has_border = FALSE),
+      grid_card("hi_domain_title",
+        tags$h5(tags$b("Health Index Domains and Sub-Domains")),
+        has_border = FALSE
+      ),
       # Explanatory text
       grid_card(
         area = "hi_text",
         has_border = FALSE,
         collapsible = TRUE,
         tags$p(
-          "The ONS Health Index score can be broken down into three areas of health, 
+          "The ONS Health Index score can be broken down into three areas of health,
           known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
           Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
           that represent overarching topics related to their respective domain."
-          )),
+        )
+      ),
       grid_card(
         area = "hi_text_detail",
         has_border = FALSE,
         collapsible = TRUE,
         title = title_collapsible("Show more detail on the scores"),
         tags$p(
-          "The ONS has scored each domain and subdomain. Higher scores indicate better health. 
+          "The ONS has scored each domain and subdomain. Higher scores indicate better health.
           The minumum score across domains is 70 and the maximum score is 130. Scores of 100
           represent the health of England in 2015. Scores higher than 100 indicate better
           health than England 2015. Please see",
@@ -183,38 +185,61 @@ ui <- function() {
             "here"
           ),
           " for more information about the ONS Health Index."
-        )) |>
-          tagAppendAttributes(
-            class = "collapsed"),
+        )
+      ) |>
+        tagAppendAttributes(
+          class = "collapsed"
+        ),
       # Domain titles
       grid_card("people_title", tags$h6(tags$b("Health Outcomes Domain")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       grid_card("places_title", tags$h6(tags$b("Preventable Risk Factors Domain")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       grid_card("lives_title", tags$h6(tags$b("Social Determinants of Health Domain")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       # Domain plots
       grid_card("people_domain",
-                barPlotUI("hioutcomesPlot"), has_border = FALSE),
-      grid_card("places_domain", 
-                barPlotUI("hiriskfactorsPlot"), has_border = FALSE),
-      grid_card("lives_domain", 
-                barPlotUI("hisocialdeterminantsPlot"), has_border = FALSE),
+        barPlotUI("hioutcomesPlot"),
+        has_border = FALSE
+      ),
+      grid_card("places_domain",
+        barPlotUI("hiriskfactorsPlot"),
+        has_border = FALSE
+      ),
+      grid_card("lives_domain",
+        barPlotUI("hisocialdeterminantsPlot"),
+        has_border = FALSE
+      ),
       # Sub-titles
       grid_card("peoplesub_title", tags$h6(tags$b("Health Outcomes Sub-Domains")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       grid_card("placessub_title", tags$h6(tags$b("Preventable Risk Factors Sub-Domains")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       grid_card("livessub_title", tags$h6(tags$b("Social Determinants of Health Sub-Domains")),
-                has_border = FALSE),
+        has_border = FALSE
+      ),
       # Sub-domain tables
-      grid_card("people_subdomain", 
-                tableUI("peopleSubdomainTable"), has_border = FALSE, scrollable = TRUE),
-      grid_card("places_subdomain", 
-                tableUI("placesSubdomainTable"), has_border = FALSE, scrollable = TRUE),
+      grid_card("people_subdomain",
+        tableUI("peopleSubdomainTable"),
+        has_border = FALSE, scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+      ),
+      grid_card("places_subdomain",
+        tableUI("placesSubdomainTable"),
+        has_border = FALSE, scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+      ),
       grid_card("lives_subdomain",
-                tableUI("livesSubdomainTable"), has_border = FALSE, scrollable = TRUE)
-  ),
+        tableUI("livesSubdomainTable"),
+        has_border = FALSE, scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+      )
+    ),
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data
@@ -271,7 +296,7 @@ ui <- function() {
         condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
         indicatorDescriptionsUI("secondaryCareDescriptions")
       )
-      )|>
+    ) |>
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
@@ -310,11 +335,12 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Footer ----
-  grid_card(
-    area = "placeholder",
-    has_border = FALSE,
-    tags$p(
-      "  ")
+    grid_card(
+      area = "placeholder",
+      has_border = FALSE,
+      tags$p(
+        "  "
+      )
     ),
     grid_card(
       area = "footer",
