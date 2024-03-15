@@ -44,6 +44,7 @@ jitterPlotServer <- function(id, selected, type) {
           "summary_metrics" = northern_ireland_ltla_summary_metrics,
           "secondary_care" = northern_ireland_ltla_secondary_care,
           "demographics" = northern_ireland_ltla_demographics,
+          "health_index" = northern_ireland_ltla_health_index,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "northern_ireland_hsct_shp") {
@@ -51,6 +52,7 @@ jitterPlotServer <- function(id, selected, type) {
           "summary_metrics" = northern_ireland_hsct_summary_metrics,
           "secondary_care" = northern_ireland_hsct_secondary_care,
           "demographics" = northern_ireland_hsct_demographics,
+          "health_index" = northern_ireland_hsct_health_index,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "wales_ltla_shp") {

@@ -23,11 +23,11 @@ lookup_sdz_ltla <- lookup_dz21_sdz21_dea14_lgd14 |>
 # ---- Aggregate Local Authorities measures ----
 # Metrics where rank is used: get maximum LGD rank for each trust
 # Higher rank (calculated here) = worse health
-imd_health <-
+imd <-
   northern_ireland_ltla_summary_metrics |>
   select(lad_name = area_name, variable, number) |>
   filter(variable %in%
-    c("Index of Multiple \nDeprivation rank", "Health Index \nrank")) |>
+    c("Index of Multiple \nDeprivation rank")) |>
   left_join(lookup_northern_ireland_ltla_hsct) |>
   group_by(trust_name, variable) |>
   summarise(max_rank = max(number)) |>
@@ -76,7 +76,7 @@ loneliness <-
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
-  imd_health,
+  imd,
   lba,
   loneliness
 ) |>
@@ -95,7 +95,6 @@ hsct_summary_metrics_northern_ireland_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(number),
     )
   ) |>
@@ -132,11 +131,6 @@ northern_ireland_hsct_summary_metrics <-
         "<br>",
         "<br>", "No. of left-behind smaller areas (SOA's) in the Health and Social Care Trust: ", round(number),
         "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Health and Social Care Trust: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",

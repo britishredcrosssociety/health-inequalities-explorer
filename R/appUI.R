@@ -30,9 +30,9 @@ ui <- function() {
         tags$i("New Updates:")
       ),
       tags$p(
-        style = "color: #1d70b8",
         tags$ul(
           tags$li(
+            style = "color: #1d70b8",
             tags$i(
               "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities"
             )
