@@ -16,57 +16,16 @@ tableServer <- function(id, selected, type) {
                "lives_subdomain" = england_ltla_hi_risk_factors_sub,
                stop("No data selected", call. = FALSE)
         )
-      } # else if (selected$geography == "england_icb_shp") {
-      #   switch(type,
-      #          "summary_metrics" = england_icb_summary_metrics,
-      #          "secondary_care" = england_icb_secondary_care,
-      #          "demographics" = england_icb_demographics,
-      #          "health_index" = england_icb_health_index,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "scotland_ltla_shp") {
-      #   switch(type,
-      #          "summary_metrics" = scotland_ltla_summary_metrics,
-      #          "secondary_care" = scotland_ltla_secondary_care,
-      #          "demographics" = scotland_ltla_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "scotland_hb_shp") {
-      #   switch(type,
-      #          "summary_metrics" = scotland_hb_summary_metrics,
-      #          "secondary_care" = scotland_hb_secondary_care,
-      #          "demographics" = scotland_hb_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "northern_ireland_ltla_shp") {
-      #   switch(type,
-      #          "summary_metrics" = northern_ireland_ltla_summary_metrics,
-      #          "secondary_care" = northern_ireland_ltla_secondary_care,
-      #          "demographics" = northern_ireland_ltla_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "northern_ireland_hsct_shp") {
-      #   switch(type,
-      #          "summary_metrics" = northern_ireland_hsct_summary_metrics,
-      #          "secondary_care" = northern_ireland_hsct_secondary_care,
-      #          "demographics" = northern_ireland_hsct_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "wales_ltla_shp") {
-      #   switch(type,
-      #          "summary_metrics" = wales_ltla_summary_metrics,
-      #          "demographics" = wales_ltla_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # } else if (selected$geography == "wales_lhb_shp") {
-      #   switch(type,
-      #          "summary_metrics" = wales_lhb_summary_metrics,
-      #          "secondary_care" = wales_lhb_secondary_care,
-      #          "demographics" = wales_lhb_demographics,
-      #          stop("No data selected", call. = FALSE)
-      #   )
-      # }
-    })
+      }else if (selected$geography == "england_icb_shp" ||
+                      selected$geography == "scotland_ltla_shp" ||
+                      selected$geography == "scotland_hb_shp" ||
+                      selected$geography == "northern_ireland_ltla_shp" ||
+                      selected$geography == "northern_ireland_hsct_shp" ||
+                      selected$geography == "wales_ltla_shp" ||
+                      selected$geography == "wales_lhb_shp") {
+        stop("Data not available yet", call. = FALSE)
+      }
+      })
     
     output$table <- renderFormattable({
       # if (is.null(selected$areas)) {

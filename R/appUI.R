@@ -143,6 +143,7 @@ ui <- function() {
     ),
     grid_nested(
       "hi_domain",
+      class = "nested-grid",
       layout = c(
         "hi_domain_title hi_domain_title hi_domain_title",
         "hi_text hi_text hi_text",
@@ -154,25 +155,34 @@ ui <- function() {
       ),
       # Overall title
       grid_card("hi_domain_title",
-        tags$h5(tags$b("Health Index Domains and Sub-Domains")),
-        has_border = FALSE
+        has_border = FALSE,
+        conditionalPanel(
+          condition =  "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h5(tags$b("Health Index Domains and Sub-Domains")),
+        )
       ),
       # Explanatory text
       grid_card(
         area = "hi_text",
         has_border = FALSE,
         collapsible = TRUE,
+        conditionalPanel(condition =  "input['geography-selectGeography'] == 'england_ltla_shp'",
         tags$p(
           "The ONS Health Index score can be broken down into three areas of health,
           known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
           Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
           that represent overarching topics related to their respective domain."
         )
-      ),
+      )),
+      conditionalPanel(
+        condition =  "input['geography-selectGeography'] != 'england_ltla_shp'",
+        tags$p("Health Index Domains not available yet."
+        )),
       grid_card(
         area = "hi_text_detail",
         has_border = FALSE,
         collapsible = TRUE,
+        conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
         title = title_collapsible("Show more detail on the scores"),
         tags$p(
           "The ONS has scored each domain and subdomain. Higher scores indicate better health.
@@ -186,58 +196,85 @@ ui <- function() {
           ),
           " for more information about the ONS Health Index."
         )
-      ) |>
+      ) ) |>
         tagAppendAttributes(
           class = "collapsed"
         ),
       # Domain titles
-      grid_card("people_title", tags$h6(tags$b("Health Outcomes Domain")),
-        has_border = FALSE
-      ),
-      grid_card("places_title", tags$h6(tags$b("Preventable Risk Factors Domain")),
-        has_border = FALSE
-      ),
-      grid_card("lives_title", tags$h6(tags$b("Social Determinants of Health Domain")),
-        has_border = FALSE
-      ),
+      grid_card("people_title", 
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                tags$h6(tags$b("Health Outcomes Domain"))
+      )),
+      grid_card("places_title", 
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                tags$h6(tags$b("Preventable Risk Factors Domain"))
+      )),
+      grid_card("lives_title",
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                tags$h6(tags$b("Social Determinants of Health Domain"))
+       
+      )),
       # Domain plots
       grid_card("people_domain",
-        barPlotUI("hioutcomesPlot"),
-        has_border = FALSE
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        barPlotUI("hioutcomesPlot"))
       ),
       grid_card("places_domain",
-        barPlotUI("hiriskfactorsPlot"),
-        has_border = FALSE
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        barPlotUI("hiriskfactorsPlot"))
       ),
       grid_card("lives_domain",
-        barPlotUI("hisocialdeterminantsPlot"),
-        has_border = FALSE
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        barPlotUI("hisocialdeterminantsPlot"))
       ),
       # Sub-titles
-      grid_card("peoplesub_title", tags$h6(tags$b("Health Outcomes Sub-Domains")),
-        has_border = FALSE
+      grid_card("peoplesub_title", 
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 tags$h6(tags$b("Health Outcomes Sub-Domains")))
       ),
-      grid_card("placessub_title", tags$h6(tags$b("Preventable Risk Factors Sub-Domains")),
-        has_border = FALSE
+      grid_card("placessub_title", 
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 tags$h6(tags$b("Preventable Risk Factors Sub-Domains")))
       ),
-      grid_card("livessub_title", tags$h6(tags$b("Social Determinants of Health Sub-Domains")),
-        has_border = FALSE
+      grid_card("livessub_title", 
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 tags$h6(tags$b("Social Determinants of Health Sub-Domains")))
       ),
       # Sub-domain tables
       grid_card("people_subdomain",
-        tableUI("peopleSubdomainTable"),
-        has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
-      ),
+                has_border = FALSE, 
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 tableUI("peopleSubdomainTable"),
+                                 style = "overflow-x: auto; overflow-y: hidden;",# only enable horizontal scroll
+                                 scrollable = TRUE
+                                 
+                                 
+        
+      )),
       grid_card("places_subdomain",
+                has_border = FALSE, 
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 
         tableUI("placesSubdomainTable"),
-        has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+        scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;") # only enable horizontal scroll
       ),
       grid_card("lives_subdomain",
+                has_border = FALSE,
+                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+                                 
         tableUI("livesSubdomainTable"),
         has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+        style = "overflow-x: auto; overflow-y: hidden;" )# only enable horizontal scroll
       )
     ),
 

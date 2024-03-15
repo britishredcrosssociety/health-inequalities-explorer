@@ -52,21 +52,6 @@ lba <-
   select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- Health Index Score ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
-# Index version
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/scotland/index-unweighted-all-indicators.csv"
-)
-
-health_index <- health_index_raw |>
-  select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = ltla21_code)
-
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
 # Extent is the proportion of the local population that live in areas 
@@ -110,7 +95,6 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index, 
   depahri,
   loneliness
 ) |>
@@ -131,7 +115,6 @@ ltla_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -167,11 +150,6 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
         "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",

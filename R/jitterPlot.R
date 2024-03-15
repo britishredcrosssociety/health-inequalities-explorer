@@ -30,6 +30,7 @@ jitterPlotServer <- function(id, selected, type) {
           "summary_metrics" = scotland_ltla_summary_metrics,
           "secondary_care" = scotland_ltla_secondary_care,
           "demographics" = scotland_ltla_demographics,
+          "health_index" = scotland_ltla_health_index,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "scotland_hb_shp") {
@@ -37,6 +38,7 @@ jitterPlotServer <- function(id, selected, type) {
           "summary_metrics" = scotland_hb_summary_metrics,
           "secondary_care" = scotland_hb_secondary_care,
           "demographics" = scotland_hb_demographics,
+          "health_index" = scotland_hb_health_index,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "northern_ireland_ltla_shp") {
