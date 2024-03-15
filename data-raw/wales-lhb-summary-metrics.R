@@ -40,28 +40,6 @@ imd <-
   mutate(variable = "Deprivation", .after = lhb20_code) |>
   select(-top_10, -n, -freq, -total_number_lsoas)
 
-# ---- health ----
-# An official Health Index for Wales does not exists. Use the BRC Resilience
-# Index version
-# Source: https://github.com/britishredcrosssociety/resilience-index
-
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
-
-resilience_index_raw <- read_csv(url)
-
-health_index <- resilience_index_raw |>
-  rename(ltla21_code = lad_code) |>
-  left_join(lookup_ltla21_lhb22) |>
-  select(lhb22_code, score = healthy_people_domain_score) |>
-  group_by(lhb22_code) |>
-  summarise(score = sum(score)) |>
-  mutate(number = rank(score)) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  select(lhb20_code = lhb22_code, variable, number, percent)
-
 # ---- % Left-behind areas ----
 lba <-
   cni_wales_msoa11 |>
@@ -182,7 +160,6 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   depahri,
   loneliness
 ) |>
@@ -203,7 +180,6 @@ lhb_summary_metrics_wales_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -240,11 +216,6 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of left-behind LSOAs in the LHB: ", round(number),
         "<br>", "Percentage of LSOAs in the LHB that are left-behind: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",

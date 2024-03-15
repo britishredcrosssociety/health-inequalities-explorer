@@ -61,6 +61,7 @@ jitterPlotServer <- function(id, selected, type) {
         switch(type,
           "summary_metrics" = wales_ltla_summary_metrics,
           "demographics" = wales_ltla_demographics,
+          "health_index" = wales_ltla_health_index,
           stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "wales_lhb_shp") {
@@ -68,6 +69,7 @@ jitterPlotServer <- function(id, selected, type) {
           "summary_metrics" = wales_lhb_summary_metrics,
           "secondary_care" = wales_lhb_secondary_care,
           "demographics" = wales_lhb_demographics,
+          "health_index" = wales_lhb_health_index,
           stop("No data selected", call. = FALSE)
         )
       }

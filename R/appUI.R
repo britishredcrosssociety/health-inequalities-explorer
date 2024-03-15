@@ -143,7 +143,6 @@ ui <- function() {
     ),
     grid_nested(
       "hi_domain",
-      class = "nested-grid",
       layout = c(
         "hi_domain_title hi_domain_title hi_domain_title",
         "hi_text hi_text hi_text",
@@ -156,34 +155,33 @@ ui <- function() {
       # Overall title
       grid_card("hi_domain_title",
         has_border = FALSE,
-        conditionalPanel(
-          condition =  "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h5(tags$b("Health Index Domains and Sub-Domains")),
-        )
+          tags$h5(tags$b("Health Index Domains and Sub-Domains"))
+        
       ),
       # Explanatory text
       grid_card(
         area = "hi_text",
         has_border = FALSE,
         collapsible = TRUE,
-        conditionalPanel(condition =  "input['geography-selectGeography'] == 'england_ltla_shp'",
         tags$p(
           "The ONS Health Index score can be broken down into three areas of health,
           known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
           Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
           that represent overarching topics related to their respective domain."
-        )
+        
       )),
       conditionalPanel(
         condition =  "input['geography-selectGeography'] != 'england_ltla_shp'",
-        tags$p("Health Index Domains not available yet."
-        )),
+        style = "color: #1d70b8",
+        tags$p(tags$b("Health Index Domains not available yet."
+        ))),
       grid_card(
         area = "hi_text_detail",
         has_border = FALSE,
-        collapsible = TRUE,
-        conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+      
         title = title_collapsible("Show more detail on the scores"),
+        collapsible = TRUE,
+        
         tags$p(
           "The ONS has scored each domain and subdomain. Higher scores indicate better health.
           The minumum score across domains is 70 and the maximum score is 130. Scores of 100
@@ -196,9 +194,10 @@ ui <- function() {
           ),
           " for more information about the ONS Health Index."
         )
-      ) ) |>
+      )  |>
         tagAppendAttributes(
-          class = "collapsed"
+          class = "collapsed",
+          
         ),
       # Domain titles
       grid_card("people_title", 
