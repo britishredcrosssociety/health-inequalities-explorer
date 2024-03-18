@@ -193,7 +193,7 @@ ui <- function() {
           that represent overarching topics related to their respective domain."
         ),
         tags$p(
-          "Click the help button on the right for help interpreting the scores."
+          "Click the help (?) button above for information on interpreting the scores."
         )
       ),
 
