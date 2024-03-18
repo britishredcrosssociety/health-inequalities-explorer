@@ -63,6 +63,14 @@ ui <- function() {
 
     # ---- Selection ----
     grid_card(
+      area = "select_region",
+      has_border = TRUE,
+      scrollable = FALSE,
+      class = "select-box",
+      tags$h4("Select a nation/region"),
+      selectRegionUI("region")
+    ),
+    grid_card(
       area = "select_geography",
       has_border = TRUE,
       scrollable = FALSE,
