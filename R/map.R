@@ -43,11 +43,14 @@ mapServer <- function(id, selected) {
             options = providerTileOptions(minZoom = 6)
           ) |>
           setMaxBounds(-12, 49, 3.0, 61)
+        
+        map_data <- data.frame()
+        if(selected$geography != "") map_data <- get(selected$geography)
 
         # Add polygon layers
         base_map |>
           addPolygons(
-            data = get(selected$geography),
+            data = map_data,
             layerId = ~area_name,
             group = "base",
             label = ~area_name,
@@ -65,7 +68,7 @@ mapServer <- function(id, selected) {
             )
           ) |>
           addPolygons(
-            data = get(selected$geography),
+            data = map_data,
             layerId = ~area_code,
             # Create number of groups equal to the length of the number of areas
             # Match group names to layerId above so that group visibility can
@@ -85,7 +88,7 @@ mapServer <- function(id, selected) {
               bringToFront = TRUE
             )
           ) |>
-          hideGroup(get(selected$geography)$area_name)
+          hideGroup(map_data$area_name)
       })
 
     # - Interactivity logic -

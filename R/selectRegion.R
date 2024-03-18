@@ -18,6 +18,7 @@ selectRegionUI <- function(id) {
         "South East" = "england_southeast"
       )
     ),
+    selected = "England",
     multiple = FALSE
   )
 }

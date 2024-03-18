@@ -16,11 +16,14 @@ selectAreasUI <- function(id) {
 selectAreasServer <- function(id, selected) {
   moduleServer(id, function(input, output, session) {
     observeEvent(selected$geography, {
+      area_choices <- NULL
+      if(selected$geography != "") area_choices <- sort(unique(get(selected$geography)$area_name))
+      
       # Render server side to minimise user load
       updateSelectizeInput(
         session,
         "selectAreas",
-        choices = sort(unique(get(selected$geography)$area_name)),
+        choices = area_choices,
         server = TRUE
       )
     })
