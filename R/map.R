@@ -18,6 +18,16 @@ mapServer <- function(id, selected) {
         54.78
       } else if (grepl("^wales_", selected$geography)) {
         52.13
+      } else if (grepl("brc_central_shp", selected$geography)) {
+        52.6
+      } else if (grepl("brc_london_shp", selected$geography)) {
+        51.509
+      } else if (grepl("brc_north_shp", selected$geography)) {
+        53
+      } else if (grepl("brc_south_shp", selected$geography)) {
+        51
+      } else if (grepl("brc_southeast_shp", selected$geography)) {
+        51.18
       }
     })
 
@@ -30,14 +40,30 @@ mapServer <- function(id, selected) {
         -6.5
       } else if (grepl("^wales_", selected$geography)) {
         -3.78
+      } else if (grepl("brc_central_shp", selected$geography)) {
+        -0.66
+      } else if (grepl("brc_london_shp", selected$geography)) {
+        -0.12
+      } else if (grepl("brc_north_shp", selected$geography)) {
+        -1.03
+      } else if (grepl("brc_south_shp", selected$geography)) {
+        -3
+      } else if (grepl("brc_southeast_shp", selected$geography)) {
+        0.55
       }
+    })
+    
+    zoom <- reactive({
+      if (grepl("brc_london_shp", selected$geography)) {9}
+      else if (grepl("brc_southeast_shp", selected$geography)) {7}
+      else {6}
     })
 
     output$map <-
       renderLeaflet({
         # Create base map
         base_map <- leaflet() |>
-          setView(lat = latitude(), lng = longitude(), zoom = 6) |>
+          setView(lat = latitude(), lng = longitude(), zoom = zoom()) |>
           addProviderTiles(
             providers$CartoDB.Positron,
             options = providerTileOptions(minZoom = 6)
