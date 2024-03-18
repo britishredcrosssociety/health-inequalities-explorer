@@ -23,7 +23,7 @@ tableServer <- function(id, selected, type) {
                       selected$geography == "northern_ireland_hsct_shp" ||
                       selected$geography == "wales_ltla_shp" ||
                       selected$geography == "wales_lhb_shp") {
-        stop("Data not available yet", call. = FALSE)
+        stop("Domain data only currently available for England LTLA.", call. = FALSE)
       }
       })
     

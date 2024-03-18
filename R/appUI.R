@@ -170,11 +170,7 @@ ui <- function() {
           that represent overarching topics related to their respective domain."
         
       )),
-      conditionalPanel(
-        condition =  "input['geography-selectGeography'] != 'england_ltla_shp'",
-        style = "color: #1d70b8",
-        tags$p(tags$b("Health Index Domains not available yet."
-        ))),
+     
       grid_card(
         area = "hi_text_detail",
         has_border = FALSE,
@@ -251,30 +247,22 @@ ui <- function() {
       # Sub-domain tables
       grid_card("people_subdomain",
                 has_border = FALSE, 
-                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-                                 tableUI("peopleSubdomainTable"),
-                                 style = "overflow-x: auto; overflow-y: hidden;",# only enable horizontal scroll
-                                 scrollable = TRUE
-                                 
-                                 
-        
-      )),
+                scrollable = TRUE,
+                style = "overflow-x: auto; overflow-y: hidden;",# only enable horizontal scroll
+                tableUI("peopleSubdomainTable")
+                                 ),
       grid_card("places_subdomain",
                 has_border = FALSE, 
-                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-                                 
-        tableUI("placesSubdomainTable"),
-        scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;") # only enable horizontal scroll
+                tableUI("placesSubdomainTable"),
+                scrollable = TRUE,
+                style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
       ),
       grid_card("lives_subdomain",
-                has_border = FALSE,
-                conditionalPanel(condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-                                 
+
         tableUI("livesSubdomainTable"),
         has_border = FALSE, scrollable = TRUE,
         style = "overflow-x: auto; overflow-y: hidden;" )# only enable horizontal scroll
-      )
+      
     ),
 
     # ---- Secondary care ----
