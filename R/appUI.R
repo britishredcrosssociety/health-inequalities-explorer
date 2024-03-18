@@ -34,7 +34,7 @@ ui <- function() {
           tags$li(
             style = "color: #1d70b8",
             tags$i(
-              "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities"
+              "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities; BRC Regional filters added"
             )
           )
         )
@@ -163,7 +163,9 @@ ui <- function() {
         "people_domain  places_domain lives_domain",
         "peoplesub_title placessub_title livessub_title",
         "people_subdomain  places_subdomain lives_subdomain",
+        "subdomain_text subdomain_text subdomain_text",
         "hi_source hi_source hi_source"
+        
       ),
       # Link to ONS HI page
       grid_card(
@@ -280,6 +282,22 @@ ui <- function() {
           tags$h6(tags$b("Social Determinants of Health Sub-Domains"))
         )
       ),
+      # Sub-domain explnatory text
+      grid_card(
+        area = "subdomain_text",
+        has_border = FALSE,
+        tags$p(
+          "Each subdomain contains a number of indicators that measure a particular aspect of health.
+    Low numbers mean worse health and high numbers mean better health. Boxes in ",
+          tags$span(
+            "red",
+            style = "color: white; background-color: #ee2a24; padding: 0 4px; border-radius: 4px;"
+          ),
+          " represent the area's worst performing indicator by subdomain."
+        )
+      ),
+      
+      
       # Sub-domain tables
       grid_card("people_subdomain",
         has_border = FALSE,

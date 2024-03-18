@@ -21,11 +21,31 @@ helpButtonHIServer <- function(id) {
         tags$h5("What is the minimum and maximum score?"),
         tags$p(
           "The minimum score across domains is 70 and the maximum score is 130."
+        ),
+        tags$h5("How are sub-domain scores calculated?"),
+        tags$p(
+          "Each sub-domain consists of a number of indicators. For example, 
+          the sub-domain - difficulties in daily life - takes the combined score of two indicators:"
+        ),
+        tags$ul(
+          tags$li("The percentage of working-age adults (aged 16 to 64 years) 
+              who are disabled under the Equality Act or work-limiting disabled; and"),
+          tags$li("The number of emergency hospital admissions for a fractured neck 
+              or femur in people aged 65 years and over, per 100k people, age-standardised")
+        ),
+        tags$p(
+          "Click ",
+          tags$a(
+            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions", 
+            "here"
+          ),
+          " for more information on the underlying indicators per sub-domain."
         )
       ))
     })
   })
 }
+
 
 
 helpButtonHITest <- function() {
