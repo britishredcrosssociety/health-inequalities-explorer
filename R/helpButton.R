@@ -24,12 +24,12 @@ helpButtonServer <- function(id) {
         ),
         tags$h5("Why do clusters of points have similar values?"),
         tags$p(
-          "Some data sets contain multiple areas scoring the same value. To 
+          "Some data sets contain multiple areas scoring the same value. To
           prevent these points being stacked on top of each other, random noise
           is added to their position. This means that some points that appear
           better/worse than others may actually perform identically. Always
           check the original values by hovering over points. Alternative
-          plotting techniques to prevent this from happening are being 
+          plotting techniques to prevent this from happening are being
           explored."
         ),
         tags$h5("How do I download a plot?"),

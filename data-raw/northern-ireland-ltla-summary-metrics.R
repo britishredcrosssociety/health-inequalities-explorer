@@ -29,22 +29,6 @@ imd <-
   ) |>
   mutate(percent = NA, .after = number)
 
-# ---- ONS Health Index ----
-# An official Health Index for Northern Ireland does not exists.
-# Use the BRC Resilience Index version
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/northern-ireland/index-unweighted-all-indicators.csv"
-)
-
-health_index <-
-  health_index_raw |>
-  select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = ltla21_code)
-
 # ---- % Left-behind areas ----
 # Come from the community needs index (loaded from the IMD package)
 # Higher number/percent = more left-behind
@@ -72,7 +56,7 @@ loneliness <-
   group_by(ltla21_code) |>
   mutate(
     number = sum(deciles %in% c(9, 10), na.rm = TRUE),
-    percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
     percent = first(percent),
@@ -85,7 +69,6 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   loneliness
 ) |>
   left_join(ltla) |>
@@ -105,7 +88,6 @@ ltla_summary_metrics_northern_ireland_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(number)
     )
   ) |>
@@ -142,11 +124,6 @@ northern_ireland_ltla_summary_metrics <-
         "<br>",
         "<br>", "No. of left-behind smaller areas (SOA's) in the Local Authority: ", round(number),
         "<br>", "Percentage of all left-behind smaller areas (SOA's) in the Local Authority: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",

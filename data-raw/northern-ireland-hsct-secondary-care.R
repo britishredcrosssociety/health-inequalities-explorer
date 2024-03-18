@@ -33,8 +33,10 @@ rtt_label <- paste("Referral to treatment \nwaiting times \n(", min_date_rtt, " 
 
 rtt <- rtt |>
   group_by(trust18_name, date) |>
-  mutate(waits_over_18_weeks = sum(waits_over_18_weeks),
-            total_waits = sum(total_waits)) |>
+  mutate(
+    waits_over_18_weeks = sum(waits_over_18_weeks),
+    total_waits = sum(total_waits)
+  ) |>
   mutate(percent = waits_over_18_weeks / total_waits) |>
   group_by(trust18_name) |>
   summarise(
@@ -63,7 +65,7 @@ max_date_beds <- max(available_beds$date) |>
   format("%B %Y")
 min_date_beds <- max(available_beds$date) %m-% months(2) |>
   format("%B %Y")
-beds_label <-  paste("Bed availablity \n(", min_date_beds, " - ", max_date_beds, " average)", sep = "")
+beds_label <- paste("Bed availablity \n(", min_date_beds, " - ", max_date_beds, " average)", sep = "")
 
 available_beds <- available_beds |>
   group_by(trust18_name) |>

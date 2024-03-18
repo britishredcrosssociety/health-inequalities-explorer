@@ -25,8 +25,8 @@ lookup_england_lsoa_ltla <-
   filter(str_detect(ltla22_code, "^E"))
 
 population_lsoa <-
-  population20_lsoa11 |> 
-  select(lsoa11_code, total_population) |> 
+  population20_lsoa11 |>
+  select(lsoa11_code, total_population) |>
   filter(str_detect(lsoa11_code, "^E"))
 
 # ---- IMD score ----
@@ -64,57 +64,27 @@ lba <-
   select(ltla21_code = ltla22_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- ONS Health Index score ----
-# Higher score = better health
-# Higher rank (calculated here) = better health
-health_index_2021 <- england_health_index |>
-  filter(year == "2021") |>
-  select(ltla21_code, health_index_score = overall_score)
-
-# Data is missing for two ltla's
-#   - Map Iscles of Scilly to Cornwall
-#   - Map City of London to Hackney
-cornwall_score <-
-  health_index_2021 |>
-  filter(ltla21_code == "E06000052") |>
-  pull(health_index_score)
-
-hackney_score <-
-  health_index_2021 |>
-  filter(ltla21_code == "E09000012") |>
-  pull(health_index_score)
-
-health_index_missing_added <-
-  health_index_2021 |>
-  add_row(ltla21_code = "E06000053", health_index_score = cornwall_score) |>
-  add_row(ltla21_code = "E09000001", health_index_score = hackney_score)
-
-health_index <-
-  health_index_missing_added |>
-  mutate(number = rank(health_index_score)) |>
-  mutate(percent = NA) |>
-  mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) |>
-  select(-health_index_score)
 
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
-# Extent is the proportion of the local population that live in areas 
+# Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <- 
-  england_lsoa_depahri |> 
-  left_join(lookup_england_lsoa_ltla) |> 
-  distinct(lsoa11_code, depahri_score_national, ltla21_code = ltla22_code) |> 
+depahri_lsoa <-
+  england_lsoa_depahri |>
+  left_join(lookup_england_lsoa_ltla) |>
+  distinct(lsoa11_code, depahri_score_national, ltla21_code = ltla22_code) |>
   left_join(population_lsoa)
 
 depahri <-
-  calculate_extent(depahri_lsoa, 
-                   depahri_score_national, 
-                   ltla21_code, 
-                   total_population, 
-                   weight_high_scores = TRUE) |> 
-  mutate(number = rank(extent))|>
+  calculate_extent(depahri_lsoa,
+    depahri_score_national,
+    ltla21_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare \n (Physical and Digital)",
@@ -126,21 +96,21 @@ depahri <-
 # Higher percentage / number = more lonely
 # Used mean weighted by population size to aggregate to ltla from lsoa
 
-loneliness_lsoa <- 
-  england_cls_loneliness_lsoa |> 
-  left_join(lookup_england_lsoa_ltla, by = "lsoa21_code") |> 
-  distinct(lsoa11_code, perc, ltla21_code = ltla22_code) |> 
-  left_join(population_lsoa, by ="lsoa11_code")
+loneliness_lsoa <-
+  england_cls_loneliness_lsoa |>
+  left_join(lookup_england_lsoa_ltla, by = "lsoa21_code") |>
+  distinct(lsoa11_code, perc, ltla21_code = ltla22_code) |>
+  left_join(population_lsoa, by = "lsoa11_code")
 
 loneliness <- loneliness_lsoa |>
   group_by(ltla21_code) |>
   summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
-    mutate(
-      variable = "Loneliness",
-      .after = ltla21_code
-    ) |>
-  mutate(percent = percent/100) |>
-    mutate(number = NA, .before = percent)
+  mutate(
+    variable = "Loneliness",
+    .after = ltla21_code
+  ) |>
+  mutate(percent = percent / 100) |>
+  mutate(number = NA, .before = percent)
 
 # loneliness <-
 #   calculate_extent(loneliness_lsoa,
@@ -159,7 +129,6 @@ loneliness <- loneliness_lsoa |>
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   depahri,
   loneliness
 ) |>
@@ -180,7 +149,6 @@ ltla_summary_metrics_england_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "ONS Health \nIndex rank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent),
     )
@@ -225,11 +193,6 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
         "<br>", "No. of left-behind LSOA's in the area: ", round(number),
         "<br>", "Percentage of all LSOA's that are left-behind: ", round(percent * 100, 1), "%"
       ),
-      variable == "ONS Health \nIndex rank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
@@ -238,7 +201,7 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent*100), "%"
+        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent * 100), "%"
       )
     )
   )

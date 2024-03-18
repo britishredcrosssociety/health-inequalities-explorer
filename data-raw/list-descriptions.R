@@ -111,7 +111,7 @@ list_descriptions <-
     "depahri", "summary_metrics", "DEPAHRI", "England, Scotland, Wales", tags$p(
       "The Digital Exclusion and Physical Access to Healthcare Risk Index
       (DEPAHRI) indicates the overall difficulty of accessing healthcare
-      services. It includes measures of broadband connectivity, demography, 
+      services. It includes measures of broadband connectivity, demography,
       deprivation and road distances to healthcare services. More information available ",
       tags$a(
         href = "https://github.com/humaniverse/DEPAHRI",
@@ -131,10 +131,10 @@ list_descriptions <-
       )
     ),
     "loneliness_excl_eng", "summary_metrics", "Loneliness", "Scotland, Wales, Northern Ireland", tags$p(
-      "Loneliness scores for Scotland, Wales and Northern Ireland indicate 
-      loneliness risk levels. It is calculated from GP prescriptions for 
-      conditions related to loneliness: Alzheimer's disease, depression, 
-      hypertension, insomnia, addiction, social anxiety, diabetes and 
+      "Loneliness scores for Scotland, Wales and Northern Ireland indicate
+      loneliness risk levels. It is calculated from GP prescriptions for
+      conditions related to loneliness: Alzheimer's disease, depression,
+      hypertension, insomnia, addiction, social anxiety, diabetes and
       cardiovascular disease. It is based on an approach developed by the Office
       for National Statistics, available ",
       tags$a(
@@ -158,16 +158,16 @@ list_descriptions <-
       )
     ),
     "aande_eng", "secondary_care", "A&E waits over four hours", "England", tags$p(
-        "Accident and emergency attendances (A&E) show the number of patients 
-        for all A&E types, including Minor Injury Units and Walk-in Centres, 
-        that are discharged, admitted or transferred after over four hours of arrival. 
+      "Accident and emergency attendances (A&E) show the number of patients
+        for all A&E types, including Minor Injury Units and Walk-in Centres,
+        that are discharged, admitted or transferred after over four hours of arrival.
         For a more detailed breakdown, see",
-        tags$a(
-          href = "https://www.england.nhs.uk/statistics/statistical-work-areas/ae-waiting-times-and-activity/ae-attendances-and-emergency-admissions-2023-24/",
-          target = "_blank",
-          "here."
-        )
-      ),
+      tags$a(
+        href = "https://www.england.nhs.uk/statistics/statistical-work-areas/ae-waiting-times-and-activity/ae-attendances-and-emergency-admissions-2023-24/",
+        target = "_blank",
+        "here."
+      )
+    ),
     "iapt", "secondary_care", "IAPT", "England", tags$p(
       "The Improving Access to Psychological Therapies (IAPT) programme offers
         talking therapies for mental health problems. To address both access to

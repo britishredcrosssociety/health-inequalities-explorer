@@ -1,5 +1,4 @@
 server <- function(input, output, session) {
-  
   # Set an empty global reactive values list to be passed between modules
   selected <- reactiveValues(areas = vector(), geography = vector())
 
@@ -9,12 +8,17 @@ server <- function(input, output, session) {
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
 
-  # Plots
+  # Jitter Plots
   jitterPlotServer("summaryPlot", selected, "summary_metrics")
   jitterPlotServer("secondaryCarePlot", selected, "secondary_care")
   jitterPlotServer("demographicsPlot", selected, "demographics")
   jitterPlotServer("healthindexPlot", selected, "health_index")
-  
+
+  # Health Index domain plots
+  barPlotServer("hioutcomesPlot", selected, "hi_outcomes")
+  barPlotServer("hiriskfactorsPlot", selected, "hi_risk_factors")
+  barPlotServer("hisocialdeterminantsPlot", selected, "hi_social_determinants")
+
   # Health Index subdomains
   tableServer("peopleSubdomainTable", selected, "people_subdomain")
   tableServer("placesSubdomainTable", selected, "places_subdomain")
@@ -29,6 +33,8 @@ server <- function(input, output, session) {
   helpButtonServer("help_summary")
   helpButtonServer("help_secondary")
   helpButtonServer("help_demographics")
+  helpButtonServer("help_health_index")
+  helpButtonHIServer("help_hi_domains")
 
   # Debug
   # observe({

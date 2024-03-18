@@ -341,4 +341,3 @@ england_ltla_secondary_care <- england_ltla_secondary_care_polarised |>
   )
 
 usethis::use_data(england_ltla_secondary_care, overwrite = TRUE)
-

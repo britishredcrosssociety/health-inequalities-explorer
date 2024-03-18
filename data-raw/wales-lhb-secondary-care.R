@@ -20,8 +20,8 @@ min_date_rtt <- min(rtt_raw$date) |>
 max_date_rtt <- max(rtt_raw$date) |>
   format("%B %Y")
 rtt_label <- paste("Referral to treatment \nwaiting times \n(",
-                      min_date_rtt, " - ", max_date_rtt, " average)",
-                      sep = ""
+  min_date_rtt, " - ", max_date_rtt, " average)",
+  sep = ""
 )
 
 rtt <- rtt_raw |>
@@ -31,7 +31,7 @@ rtt <- rtt_raw |>
     total = mean(total_waits)
   ) |>
   mutate(
-    percent = number/total,
+    percent = number / total,
     variable = rtt_label,
   ) |>
   relocate(variable, .before = number) |>
@@ -52,8 +52,8 @@ min_date_bed <- min(available_beds_raw$date) |>
 max_date_bed <- max(available_beds_raw$date) |>
   format("%B %Y")
 bed_label <- paste("Bed availability\n(",
-                   min_date_bed, " - ", max_date_bed, " average)",
-                   sep = ""
+  min_date_bed, " - ", max_date_bed, " average)",
+  sep = ""
 )
 
 available_beds <- available_beds_raw |>
@@ -73,7 +73,7 @@ available_beds <- available_beds_raw |>
     percent = percent_available
   )
 
- # ---- Combine & rename (pretty printing) ----
+# ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   rtt,
   available_beds

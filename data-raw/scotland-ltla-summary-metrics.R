@@ -20,8 +20,8 @@ lookup_dz_ltla <- lookup_dz11_iz11_ltla20 |>
   distinct()
 
 population_dz <-
-  population20_dz11 |> 
-  filter(sex == "All") |> 
+  population20_dz11 |>
+  filter(sex == "All") |>
   select(dz11_code, total_population)
 
 # ---- IMD score ----
@@ -52,40 +52,26 @@ lba <-
   select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- Health Index Score ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
-# Index version
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/scotland/index-unweighted-all-indicators.csv"
-)
-
-health_index <- health_index_raw |>
-  select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = ltla21_code)
-
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
-# Extent is the proportion of the local population that live in areas 
+# Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <- 
-  scotland_lsoa_depahri |> 
-  left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |> 
-  select(lsoa11_code, depahri_score_national, ltla21_code) |> 
+depahri_lsoa <-
+  scotland_lsoa_depahri |>
+  left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |>
+  select(lsoa11_code, depahri_score_national, ltla21_code) |>
   left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
 
 depahri <-
-  calculate_extent(depahri_lsoa, 
-                   depahri_score_national, 
-                   ltla21_code, 
-                   total_population, 
-                   weight_high_scores = TRUE) |> 
-  mutate(number = rank(extent))|>
+  calculate_extent(depahri_lsoa,
+    depahri_score_national,
+    ltla21_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare \n (Physical and Digital)",
@@ -100,17 +86,20 @@ loneliness <-
   left_join(lookup_dz_ltla) |>
   select(dz11_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
-  mutate(number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
-         percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()) |>
-  summarise(percent = first(percent),
-            number = first(number)) |>
+  mutate(
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
+  ) |>
+  summarise(
+    percent = first(percent),
+    number = first(number)
+  ) |>
   mutate(variable = "Loneliness", .after = ltla21_code)
 
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index, 
   depahri,
   loneliness
 ) |>
@@ -131,7 +120,6 @@ ltla_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -168,11 +156,6 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
         "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
         "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
       ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
@@ -188,4 +171,3 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
   )
 
 usethis::use_data(scotland_ltla_summary_metrics, overwrite = TRUE)
-

@@ -55,8 +55,8 @@ health_index <-
   health_index_missing_added |>
   mutate(number = rank(health_index_score)) |>
   mutate(percent = NA) |>
-  mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) |>
-  select(-health_index_score)
+  mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) 
+  #select(-health_index_score)
 
 
 # ---- Rename (pretty printing) ----
@@ -93,7 +93,8 @@ england_ltla_health_index <- ltla_health_index_england_scaled |>
     label = paste0(
       "<b>", area_name, "</b>",
       "<br>",
-      "<br>", "Health Index rank: ", round(number)
+      "<br>", "Health Index rank: ", round(number),
+      "<br>", "Health Index score: ", round(health_index_score)
     )
   )
 

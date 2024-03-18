@@ -1,19 +1,19 @@
-tableUI <- function(id) {
-  formattableOutput(
-    NS(id, "table"),
+barPlotUI <- function(id) {
+  plotlyOutput(
+    NS(id, "plot"),
     height = "100%"
   )
 }
 
-tableServer <- function(id, selected, type) {
+barPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
       if (selected$geography == "england_ltla_shp") {
         switch(type,
-          "people_subdomain" = england_ltla_hi_outcomes_sub,
-          "places_subdomain" = england_ltla_hi_social_determinants_sub,
-          "lives_subdomain" = england_ltla_hi_risk_factors_sub,
+          "hi_outcomes" = england_ltla_hi_outcomes,
+          "hi_risk_factors" = england_ltla_hi_risk_factors,
+          "hi_social_determinants" = england_ltla_hi_social_determinants,
           stop("No data selected", call. = FALSE)
         )
       }
@@ -24,41 +24,46 @@ tableServer <- function(id, selected, type) {
       #   selected$geography == "northern_ireland_hsct_shp" ||
       #   selected$geography == "wales_ltla_shp" ||
       #   selected$geography == "wales_lhb_shp") {
-      #   stop("Domain data only currently available for England LTLA.", call. = FALSE)
+      #   stop("No data selected", call. = FALSE)
       # }
     })
 
-    output$table <- renderFormattable({
-      # if (is.null(selected$areas)) {
-      #   table_null(data = dataset())
-      # } else {
+
+    output$plot <- renderPlotly({
       if (selected$geography == "england_ltla_shp") {
-        table_prep(data = dataset(), selected_areas = selected$areas) |>
-          table_selected(
+        if (is.null(selected$areas)) {
+          bar_plot_mean_only(
+            data = dataset(), 
+            selected_geography = selected$geography
+          )
+        } else {
+          bar_plot_selected(
+            data = dataset(),
             selected_areas = selected$areas
           )
+        }
       } else {
-        table_null()
+        # Empty plot
+        
       }
     })
   })
 }
 
-tableTest <- function() {
+barPlotTest <- function() {
   ui <- fluidPage(
-    tableUI("test")
+    barPlotUI("test")
   )
 
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = c("Tower Hamlets", "Ashford"), geography = "england_ltla_shp"
-      # areas = vector(), geography = "england_ltla_shp"
+      areas = c("Redcar and Cleveland", "Lewisham"), geography = "england_ltla_shp"
     )
-    tableServer("test", selected, type = "people_subdomain")
+    barPlotServer("test", selected, type = "hi_risk_factors")
   }
 
   shinyApp(ui, server)
 }
 
 # Examples
-tableTest()
+# barPlotTest()

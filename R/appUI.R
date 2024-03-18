@@ -26,8 +26,22 @@ ui <- function() {
       has_border = FALSE,
       class = "intro",
       tags$p(
+        style = "color: #1d70b8",
+        tags$i("New Updates:")
+      ),
+      tags$p(
+        tags$ul(
+          tags$li(
+            style = "color: #1d70b8",
+            tags$i(
+              "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities"
+            )
+          )
+        )
+      ),
+      tags$p(
         tags$span(class = "phase-banner", "ALPHA"),
-        "This is a new service - new data will be added soon."
+        "This is a new service - new data and features are being added."
       ),
       tags$h4(
         tags$b(
@@ -45,6 +59,7 @@ ui <- function() {
         tags$button(class = "guide-button", "SEE QUICK USER GUIDE")
       )
     ),
+
 
     # ---- Selection ----
     grid_card(
@@ -105,7 +120,7 @@ ui <- function() {
       indicatorDescriptionsUI("summaryDescriptions")
     ) |>
       tagAppendAttributes(class = "collapsed"),
-    
+
     # ---- Health Index ----
     grid_card(
       area = "hi_title",
@@ -118,44 +133,168 @@ ui <- function() {
       tags$p(
         tags$span(class = "note-banner", "NOTE"),
         "Clusters of points have similar values. See the help button for more
-        info.")
+        info."
+      )
     ),
     grid_card(
       area = "hi_plot",
       has_border = FALSE,
-      collapsible = FALSE,
-      scrollable = FALSE,
       jitterPlotUI("healthindexPlot")
+    ),
+    grid_card(
+      area = "help_button_health_index",
+      has_border = FALSE,
+      helpButtonUI("help_health_index")
     ),
     grid_nested(
       "hi_domain",
-      layout = c("hi_domain_title hi_domain_title hi_domain_title",
-                "people_domain  places_domain lives_domain",
-                "people_subdomain  places_subdomain lives_subdomain"
+      layout = c(
+        "hi_domain_title help_hi_domains help_hi_domains",
+        "hi_text hi_text hi_text",
+        "people_title places_title lives_title",
+        "people_domain  places_domain lives_domain",
+        "peoplesub_title placessub_title livessub_title",
+        "people_subdomain  places_subdomain lives_subdomain",
+        "hi_source hi_source hi_source"
       ),
-      grid_card("hi_domain_title", tags$h5("Health Index Domains and Sub-Domains"),
-                has_border = FALSE),
-      grid_card("people_domain", tags$p("people bar plot")),
-      grid_card("places_domain", tags$p("places bar plot")),
-      grid_card("lives_domain", tags$p("lives bar plot")),
-      
+      # Link to ONS HI page
       grid_card(
-        "people_subdomain",
-        scrollable = TRUE, 
-        tableUI("peopleSubdomainTable")
+        area = "hi_source",
+        has_border = FALSE,
+        tags$p(
+          "For more information on the ONS Health Index, its underlying methodology and indicators, please see",
+          tags$a(
+            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
+            target = "_blank",
+            "here."
+          )
+        )
+      ),
+      # Overall title
+      grid_card("hi_domain_title",
+        has_border = FALSE,
+        tags$h6(tags$b("Health Index Domains and Sub-Domains"))
       ),
       grid_card(
-        "places_subdomain", 
-        scrollable = TRUE, 
-        tableUI("placesSubdomainTable")
+        area = "help_hi_domains",
+        has_border = FALSE,
+        helpButtonHIUI("help_hi_domains")
       ),
+
+      # Explanatory text
       grid_card(
-        "lives_subdomain", 
-        scrollable = TRUE, 
-        tableUI("livesSubdomainTable")
+        area = "hi_text",
+        has_border = FALSE,
+        collapsible = TRUE,
+        tags$p(
+          "The ONS Health Index score can be broken down into three areas of health,
+          known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
+          Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
+          that represent overarching topics related to their respective domain."
+        ),
+        tags$p(
+          "Click the help (?) button above for information on interpreting the scores."
+        )
+      ),
+
+      # Domain titles
+      grid_card("people_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Health Outcomes Domain"))
+        )
+      ),
+      grid_card("lives_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Preventable Risk Factors Domain"))
+        )
+      ),
+      grid_card("places_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Social Determinants of Health Domain"))
+        )
+      ),
+      # Domain plots
+      grid_card("people_domain",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          barPlotUI("hioutcomesPlot")
+        )
+      ),
+      grid_card("lives_domain",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          barPlotUI("hiriskfactorsPlot")
+        )
+      ),
+      grid_card("places_domain",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          barPlotUI("hisocialdeterminantsPlot")
+        )
+      ),
+      # Sub-titles
+      grid_card("peoplesub_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Health Outcomes Sub-Domains"))
+        )
+      ),
+      grid_card("livessub_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Preventable Risk Factors Sub-Domains"))
+        )
+      ),
+      grid_card("placessub_title",
+        has_border = FALSE,
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tags$h6(tags$b("Social Determinants of Health Sub-Domains"))
+        )
+      ),
+      # Sub-domain tables
+      grid_card("people_subdomain",
+        has_border = FALSE,
+        scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("peopleSubdomainTable")
+        )
+      ),
+      grid_card("lives_subdomain",
+        has_border = FALSE, scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;",
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("livesSubdomainTable")
+        )
+      ), # only enable horizontal scroll
+      grid_card("places_subdomain",
+        has_border = FALSE,
+        scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("placesSubdomainTable")
+        )
       )
-    
-  ),
+    ),
+
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data
@@ -212,7 +351,7 @@ ui <- function() {
         condition = "input['geography-selectGeography'] != 'wales_ltla_shp'",
         indicatorDescriptionsUI("secondaryCareDescriptions")
       )
-      )|>
+    ) |>
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Demographics ----
@@ -251,6 +390,13 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Footer ----
+    grid_card(
+      area = "placeholder",
+      has_border = FALSE,
+      tags$p(
+        "  "
+      )
+    ),
     grid_card(
       area = "footer",
       has_border = FALSE,

@@ -58,19 +58,6 @@ lba <-
   select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- Health Index Score ----
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
-
-health_index_raw <- read_csv(url)
-
-health_index <- health_index_raw |>
-  select(ltla21_code = lad_code, number = healthy_people_domain_rank) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = ltla21_code)
-
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
 # Extent is the proportion of the local population that live in areas
@@ -151,7 +138,7 @@ loneliness <-
   select(ltla21_code = ltla22_code, lsoa11_code, deciles) |>
   group_by(ltla21_code) |>
   mutate(
-    number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
     percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
@@ -164,7 +151,6 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   depahri,
   loneliness
 ) |>
@@ -184,7 +170,6 @@ ltla_summary_metrics_wales_scaled <- metrics_joined |>
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -221,11 +206,6 @@ wales_ltla_summary_metrics <- wales_ltla_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of left-behind smaller areas (MSOA's) in the Local Authority: ", round(number),
         "<br>", "Percentage of all left-behind smaller areas (MSOA's) in the Local Authority: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",

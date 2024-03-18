@@ -21,8 +21,8 @@ lookup_ltla_hb <- lookup_dz11_ltla19_hb19 |>
   distinct(ltla19_code, hb19_code)
 
 population_dz <-
-  population20_dz11 |> 
-  filter(sex == "All") |> 
+  population20_dz11 |>
+  filter(sex == "All") |>
   select(dz11_code, total_population)
 
 # ---- IMD ----
@@ -59,47 +59,26 @@ lba <-
   select(hb19_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = hb19_code)
 
-# ---- Health Index Score ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
-# Index version
-
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/scotland/index-unweighted-all-indicators.csv"
-)
-
-# Strategy: combine scores and rank
-health_index <- health_index_raw |>
-  select(ltla19_code = lad_code, score = health_inequalities_composite_score) |>
-  left_join(lookup_ltla_hb) |>
-  group_by(hb19_code) |>
-  summarise(score = sum(score)) |>
-  mutate(number = rank(score)) |>
-  mutate(percent = NA) |>
-  mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = hb19_code) |>
-  select(-score)
-
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to HB level using calculate_extent
-# Extent is the proportion of the local population that live in areas 
+# Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <- 
-  scotland_lsoa_depahri |> 
-  left_join(lookup_dz_hb, by = c("lsoa11_code" = "dz11_code")) |> 
-  select(lsoa11_code, depahri_score_national, hb19_code) |> 
+depahri_lsoa <-
+  scotland_lsoa_depahri |>
+  left_join(lookup_dz_hb, by = c("lsoa11_code" = "dz11_code")) |>
+  select(lsoa11_code, depahri_score_national, hb19_code) |>
   left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
 
 depahri <-
-  calculate_extent(depahri_lsoa, 
-                   depahri_score_national, 
-                   hb19_code, 
-                   total_population, 
-                   weight_high_scores = TRUE) |> 
-  mutate(number = rank(extent))|>
+  calculate_extent(depahri_lsoa,
+    depahri_score_national,
+    hb19_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare \n (Physical and Digital)",
@@ -115,10 +94,14 @@ loneliness <-
   left_join(lookup_dz_hb) |>
   select(dz11_code, hb19_code, deciles) |>
   group_by(hb19_code) |>
-  mutate(number = sum(deciles %in% c(9, 10), na.rm = TRUE),
-         percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()) |>
-  summarise(percent = first(percent),
-            number = first(number)) |>
+  mutate(
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
+  ) |>
+  summarise(
+    percent = first(percent),
+    number = first(number)
+  ) |>
   mutate(variable = "Loneliness", .after = hb19_code)
 
 
@@ -126,7 +109,6 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  health_index,
   depahri,
   loneliness
 ) |>
@@ -147,7 +129,6 @@ hb_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Health Index \nrank" ~ scale_1_1(number),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
@@ -184,11 +165,6 @@ scotland_hb_summary_metrics <- scotland_hb_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of left-behind Intermediate Zones in the Health Board: ", round(number),
         "<br>", "Percentage of left-behind Intermediate Zones in the Health Board: ", round(percent * 100, 1), "%"
-      ),
-      variable == "Health Index \nrank" ~ paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
       ),
       variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
         "<b>", area_name, "</b>",
