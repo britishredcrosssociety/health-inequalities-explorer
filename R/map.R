@@ -23,7 +23,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_london_shp", selected$geography)) {
         51.509
       } else if (grepl("brc_north_shp", selected$geography)) {
-        53
+        54
       } else if (grepl("brc_south_shp", selected$geography)) {
         51
       } else if (grepl("brc_southeast_shp", selected$geography)) {
@@ -45,7 +45,7 @@ mapServer <- function(id, selected) {
       } else if (grepl("brc_london_shp", selected$geography)) {
         -0.12
       } else if (grepl("brc_north_shp", selected$geography)) {
-        -1.03
+        -1.94
       } else if (grepl("brc_south_shp", selected$geography)) {
         -3
       } else if (grepl("brc_southeast_shp", selected$geography)) {
@@ -70,51 +70,55 @@ mapServer <- function(id, selected) {
           ) |>
           setMaxBounds(-12, 49, 3.0, 61)
         
-        map_data <- data.frame()
-        if(selected$geography != "") map_data <- get(selected$geography)
+        # Populate the map; return the blank base_map if selected$geography is blank
+        if(selected$geography != "") {
+          map_data <- get(selected$geography)
 
-        # Add polygon layers
-        base_map |>
-          addPolygons(
-            data = map_data,
-            layerId = ~area_name,
-            group = "base",
-            label = ~area_name,
-            weight = 0.7,
-            opacity = 0.5,
-            color = "#5C747A",
-            dashArray = "0.1",
-            fillOpacity = 0.2,
-            highlight = highlightOptions(
-              weight = 5,
+          # Add polygon layers
+          base_map |>
+            addPolygons(
+              data = map_data,
+              layerId = ~area_name,
+              group = "base",
+              label = ~area_name,
+              weight = 0.7,
+              opacity = 0.5,
               color = "#5C747A",
-              dashArray = "",
+              dashArray = "0.1",
               fillOpacity = 0.2,
-              bringToFront = TRUE
-            )
-          ) |>
-          addPolygons(
-            data = map_data,
-            layerId = ~area_code,
-            # Create number of groups equal to the length of the number of areas
-            # Match group names to layerId above so that group visibility can
-            # be toggled on/off
-            group = ~area_name,
-            label = ~area_name,
-            weight = 0.7,
-            opacity = 0.5,
-            color = "#193351",
-            dashArray = "0.1",
-            fillOpacity = 0.4,
-            highlight = highlightOptions(
-              weight = 5,
+              highlight = highlightOptions(
+                weight = 5,
+                color = "#5C747A",
+                dashArray = "",
+                fillOpacity = 0.2,
+                bringToFront = TRUE
+              )
+            ) |>
+            addPolygons(
+              data = map_data,
+              layerId = ~area_code,
+              # Create number of groups equal to the length of the number of areas
+              # Match group names to layerId above so that group visibility can
+              # be toggled on/off
+              group = ~area_name,
+              label = ~area_name,
+              weight = 0.7,
+              opacity = 0.5,
               color = "#193351",
-              dashArray = "",
+              dashArray = "0.1",
               fillOpacity = 0.4,
-              bringToFront = TRUE
-            )
-          ) |>
-          hideGroup(map_data$area_name)
+              highlight = highlightOptions(
+                weight = 5,
+                color = "#193351",
+                dashArray = "",
+                fillOpacity = 0.4,
+                bringToFront = TRUE
+              )
+            ) |>
+            hideGroup(map_data$area_name)
+        } else {
+          base_map
+        }
       })
 
     # - Interactivity logic -
