@@ -35,12 +35,12 @@ ggplotly_default_bar <- function(plot, number_areas) {
 }
 
 # ---- Plot while waiting for selection ----
-# To plot national mean as default
+# To plot England Average as default
 bar_plot_mean_only <- function(data, selected_geography) {
   number_areas <- 1
   
   # if (selected_geography == "england_ltla_shp") {
-  data <- data |> filter(area_name %in% c("National Mean"))
+  data <- data |> filter(area_name %in% c("England Average"))
   number_areas <- length(data$area_name)
   # }
   
@@ -80,7 +80,7 @@ bar_plot_mean_only <- function(data, selected_geography) {
 bar_plot_selected <- function(data, selected_areas) {
   data <- 
     data |>
-    filter(area_name %in% c(selected_areas, "National Mean"))
+    filter(area_name %in% c(selected_areas, "England Average"))
   
   plot <-
     data |>

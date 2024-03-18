@@ -21,8 +21,8 @@ england_ltla_hi_outcomes_sub <- england_health_index_subdomains |>
   relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
   pivot_wider(names_from = area_name, values_from = value) |>
-  mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
-  relocate(`National Mean`, .after = variable)
+  mutate(`England Average` = rowMeans(across(-c(variable)))) |>
+  relocate(`England Average`, .after = variable)
 
 # --- Healthy Lives / Preventable Risk Factors ----
 england_ltla_hi_risk_factors_sub <- england_health_index_subdomains |>
@@ -34,8 +34,8 @@ england_ltla_hi_risk_factors_sub <- england_health_index_subdomains |>
   relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
   pivot_wider(names_from = area_name, values_from = value) |>
-  mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
-  relocate(`National Mean`, .after = variable)
+  mutate(`England Average` = rowMeans(across(-c(variable)))) |>
+  relocate(`England Average`, .after = variable)
 
 # --- Healthy Places / Access to green space ----
 england_ltla_hi_social_determinants_sub <- england_health_index_subdomains |>
@@ -47,13 +47,13 @@ england_ltla_hi_social_determinants_sub <- england_health_index_subdomains |>
   relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
   pivot_wider(names_from = area_name, values_from = value) |>
-  mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
-  relocate(`National Mean`, .after = variable)
+  mutate(`England Average` = rowMeans(across(-c(variable)))) |>
+  relocate(`England Average`, .after = variable)
 
 # ---- Check distributions ----
 check_distribution <- function(data) {
   data |>
-    pivot_longer(-c(variable, `National Mean`), names_to = "area_name", values_to = "value") |>
+    pivot_longer(-c(variable, `England Average`), names_to = "area_name", values_to = "value") |>
     ggplot(aes(x = value, y = variable)) +
     geom_density_ridges(scale = 4) +
     scale_y_discrete(expand = c(0, 0)) + # will generally have to set the `expand` option
