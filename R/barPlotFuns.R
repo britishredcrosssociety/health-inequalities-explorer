@@ -39,10 +39,10 @@ ggplotly_default_bar <- function(plot, number_areas) {
 bar_plot_mean_only <- function(data, selected_geography) {
   number_areas <- 1
   
-  if (selected_geography == "england_ltla_shp") {
-    data <- data |> filter(area_name %in% c("National Mean"))
-    number_areas <- length(data$area_name)
-  }
+  # if (selected_geography == "england_ltla_shp") {
+  data <- data |> filter(area_name %in% c("National Mean"))
+  number_areas <- length(data$area_name)
+  # }
   
   plot <-
     data |>

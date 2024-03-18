@@ -18,6 +18,16 @@ mapServer <- function(id, selected) {
         54.78
       } else if (grepl("^wales_", selected$geography)) {
         52.13
+      } else if (grepl("brc_central_shp", selected$geography)) {
+        52.6
+      } else if (grepl("brc_london_shp", selected$geography)) {
+        51.509
+      } else if (grepl("brc_north_shp", selected$geography)) {
+        54
+      } else if (grepl("brc_south_shp", selected$geography)) {
+        51
+      } else if (grepl("brc_southeast_shp", selected$geography)) {
+        51.18
       }
     })
 
@@ -30,62 +40,85 @@ mapServer <- function(id, selected) {
         -6.5
       } else if (grepl("^wales_", selected$geography)) {
         -3.78
+      } else if (grepl("brc_central_shp", selected$geography)) {
+        -0.66
+      } else if (grepl("brc_london_shp", selected$geography)) {
+        -0.12
+      } else if (grepl("brc_north_shp", selected$geography)) {
+        -1.94
+      } else if (grepl("brc_south_shp", selected$geography)) {
+        -3
+      } else if (grepl("brc_southeast_shp", selected$geography)) {
+        0.55
       }
+    })
+    
+    zoom <- reactive({
+      if (grepl("brc_london_shp", selected$geography)) {9}
+      else if (grepl("brc_southeast_shp", selected$geography)) {7}
+      else {6}
     })
 
     output$map <-
       renderLeaflet({
         # Create base map
         base_map <- leaflet() |>
-          setView(lat = latitude(), lng = longitude(), zoom = 6) |>
+          setView(lat = latitude(), lng = longitude(), zoom = zoom()) |>
           addProviderTiles(
             providers$CartoDB.Positron,
             options = providerTileOptions(minZoom = 6)
           ) |>
           setMaxBounds(-12, 49, 3.0, 61)
+        
+        # Populate the map; return the blank base_map if selected$geography is blank
+        if(selected$geography != "") {
+          map_data <- get(selected$geography)
 
-        # Add polygon layers
-        base_map |>
-          addPolygons(
-            data = get(selected$geography),
-            layerId = ~area_name,
-            group = "base",
-            label = ~area_name,
-            weight = 0.7,
-            opacity = 0.5,
-            color = "#5C747A",
-            dashArray = "0.1",
-            fillOpacity = 0.2,
-            highlight = highlightOptions(
-              weight = 5,
+          # Add polygon layers
+          base_map |>
+            addPolygons(
+              data = map_data,
+              layerId = ~area_name,
+              group = "base",
+              label = ~area_name,
+              weight = 0.7,
+              opacity = 0.5,
               color = "#5C747A",
-              dashArray = "",
+              dashArray = "0.1",
               fillOpacity = 0.2,
-              bringToFront = TRUE
-            )
-          ) |>
-          addPolygons(
-            data = get(selected$geography),
-            layerId = ~area_code,
-            # Create number of groups equal to the length of the number of areas
-            # Match group names to layerId above so that group visibility can
-            # be toggled on/off
-            group = ~area_name,
-            label = ~area_name,
-            weight = 0.7,
-            opacity = 0.5,
-            color = "#193351",
-            dashArray = "0.1",
-            fillOpacity = 0.4,
-            highlight = highlightOptions(
-              weight = 5,
+              highlight = highlightOptions(
+                weight = 5,
+                color = "#5C747A",
+                dashArray = "",
+                fillOpacity = 0.2,
+                bringToFront = TRUE
+              )
+            ) |>
+            addPolygons(
+              data = map_data,
+              layerId = ~area_code,
+              # Create number of groups equal to the length of the number of areas
+              # Match group names to layerId above so that group visibility can
+              # be toggled on/off
+              group = ~area_name,
+              label = ~area_name,
+              weight = 0.7,
+              opacity = 0.5,
               color = "#193351",
-              dashArray = "",
+              dashArray = "0.1",
               fillOpacity = 0.4,
-              bringToFront = TRUE
-            )
-          ) |>
-          hideGroup(get(selected$geography)$area_name)
+              highlight = highlightOptions(
+                weight = 5,
+                color = "#193351",
+                dashArray = "",
+                fillOpacity = 0.4,
+                bringToFront = TRUE
+              )
+            ) |>
+            hideGroup(map_data$area_name)
+        } else {
+          base_map
+        }
       })
 
     # - Interactivity logic -

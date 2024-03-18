@@ -1,9 +1,10 @@
 server <- function(input, output, session) {
   # Set an empty global reactive values list to be passed between modules
-  selected <- reactiveValues(areas = vector(), geography = vector())
+  selected <- reactiveValues(areas = vector(), geography = vector(), region = vector())
 
   # Call module server functions
   # Selections
+  selectRegionServer("region", selected)
   selectGeographyServer("geography", selected)
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
