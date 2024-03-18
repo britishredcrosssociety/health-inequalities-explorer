@@ -2,14 +2,31 @@
 ggplotly_default_bar <- function(plot, number_areas) {
   # Set Height of plot to be a factor of the number of areas selected
   # number_areas <- length(data$area_name)
-  pixel <- ifelse(number_areas == 1, 200, 60)
 
+  pixel <- ifelse(number_areas == 2,100,
+                    ifelse(number_areas == 1, 200, 60))
+  y_offset <- ifelse(number_areas <2, 0.5, 0.6)
+  
   ggplotly(
     plot,
     height = number_areas * pixel,
     width = 300,
     tooltip = c("text")
-  ) |>
+  ) |> 
+    add_annotations(
+      x = 85,
+      y = number_areas + y_offset, 
+      text = "◄ Worse than mean",
+      showarrow = FALSE,
+      font = list(size = 8) 
+    ) |>
+    add_annotations(
+      x = 120,
+      y = number_areas + y_offset, 
+      text = "Better than mean ►",
+      showarrow = FALSE,
+      font = list(size = 8) 
+    ) |>
     config(
       displayModeBar = TRUE,
       displaylogo = FALSE,
@@ -35,12 +52,12 @@ ggplotly_default_bar <- function(plot, number_areas) {
 }
 
 # ---- Plot while waiting for selection ----
-# To plot national mean as default
+# To plot England Average as default
 bar_plot_mean_only <- function(data, selected_geography) {
   number_areas <- 1
   
   # if (selected_geography == "england_ltla_shp") {
-  data <- data |> filter(area_name %in% c("National Mean"))
+  data <- data |> filter(area_name %in% c("England Average"))
   number_areas <- length(data$area_name)
   # }
   
@@ -80,7 +97,7 @@ bar_plot_mean_only <- function(data, selected_geography) {
 bar_plot_selected <- function(data, selected_areas) {
   data <- 
     data |>
-    filter(area_name %in% c(selected_areas, "National Mean"))
+    filter(area_name %in% c(selected_areas, "England Average"))
   
   plot <-
     data |>

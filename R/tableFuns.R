@@ -2,16 +2,16 @@
 table_prep <- function(data, selected_areas) {
   names(data)[1] <- "Sub-domain"
 
-  # If selected_areas is NULL then this will just return "Sub-domain" and "National Mean"
-  data <- data[, c("Sub-domain", "National Mean", selected_areas)]
+  # If selected_areas is NULL then this will just return "Sub-domain" and "England Average"
+  data <- data[, c("Sub-domain", "England Average", selected_areas)]
 
-  data[, c("National Mean", selected_areas)] <- round(data[, c("National Mean", selected_areas)], 0)
+  data[, c("England Average", selected_areas)] <- round(data[, c("England Average", selected_areas)], 0)
 
   # Define formatter for setting font size
   set_font_size <- formatter("span", style = "font-size:10px")
 
   # Set font size for column names
-  data[, c("Sub-domain", "National Mean")] <- lapply(data[, c("Sub-domain", "National Mean")], set_font_size)
+  data[, c("Sub-domain", "England Average")] <- lapply(data[, c("Sub-domain", "England Average")], set_font_size)
   names(data) <- set_font_size(names(data))
 
 
@@ -19,7 +19,7 @@ table_prep <- function(data, selected_areas) {
   # return(formattable(data))
 }
 
-# ---- Show table for selected areas (or just national mean if no areas have been selected) ----
+# ---- Show table for selected areas (or just England Average if no areas have been selected) ----
 table_selected <- function(data, selected_areas) {
   if (ncol(data) >= 3) {
     # User has selected at least one area; highlight the minimum values for each sub-domain in the selected areas
@@ -41,7 +41,7 @@ table_selected <- function(data, selected_areas) {
       })
     )
   } else {
-    # User hasn't selected any areas; just show the sub-domains and the national mean
+    # User hasn't selected any areas; just show the sub-domains and the England Average
     formattable(
       data
     )

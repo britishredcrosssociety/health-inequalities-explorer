@@ -21,7 +21,7 @@ england_ltla_hi_outcomes <- england_health_index |>
   rename(area_name = ltla21_name) |>
   bind_rows(data.frame(
     number = mean(as.numeric(england_ltla_hi_outcomes$number)),
-    area_name = "National Mean"
+    area_name = "England Average"
   )) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
@@ -43,7 +43,7 @@ england_ltla_hi_risk_factors <- england_health_index |>
   rename(area_name = ltla21_name) |>
   bind_rows(data.frame(
     number = mean(as.numeric(england_ltla_hi_risk_factors$number)),
-    area_name = "National Mean"
+    area_name = "England Average"
   )) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
@@ -65,7 +65,7 @@ england_ltla_hi_social_determinants <- england_health_index |>
   rename(area_name = ltla21_name) |>
   bind_rows(data.frame(
     number = mean(as.numeric(england_ltla_hi_social_determinants$number)),
-    area_name = "National Mean"
+    area_name = "England Average"
   )) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
