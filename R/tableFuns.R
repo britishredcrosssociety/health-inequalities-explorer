@@ -47,3 +47,8 @@ table_selected <- function(data, selected_areas) {
     )
   }
 }
+
+# ---- Blank table ----
+table_null <- function() {
+  formattable(data.frame(`Subdomain` = "No data available"))
+}

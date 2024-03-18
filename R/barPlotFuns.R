@@ -1,7 +1,7 @@
 # ---- ggplotly fun ----
-ggplotly_default_bar <- function(plot, data) {
+ggplotly_default_bar <- function(plot, number_areas) {
   # Set Height of plot to be a factor of the number of areas selected
-  number_areas <- length(data$area_name)
+  # number_areas <- length(data$area_name)
   pixel <- ifelse(number_areas == 1, 200, 60)
 
   ggplotly(
@@ -36,10 +36,16 @@ ggplotly_default_bar <- function(plot, data) {
 
 # ---- Plot while waiting for selection ----
 # To plot national mean as default
-bar_plot_null <- function(data) {
+bar_plot_mean_only <- function(data, selected_geography) {
+  number_areas <- 1
+  
+  if (selected_geography == "england_ltla_shp") {
+    data <- data |> filter(area_name %in% c("National Mean"))
+    number_areas <- length(data$area_name)
+  }
+  
   plot <-
     data |>
-    filter(area_name %in% c("National Mean")) |>
     ggplot(
       aes(
         x = number,
@@ -62,9 +68,8 @@ bar_plot_null <- function(data) {
       axis.text.y = element_blank(),
       axis.ticks.y = element_blank()
     )
-
-  ggplotly_default_bar(plot, data = data |>
-    filter(area_name %in% c("National Mean")))
+  
+  ggplotly_default_bar(plot, number_areas)
 }
 
 # Example usage:
@@ -73,9 +78,12 @@ bar_plot_null <- function(data) {
 
 # ---- Plot selected areas ----
 bar_plot_selected <- function(data, selected_areas) {
+  data <- 
+    data |>
+    filter(area_name %in% c(selected_areas, "National Mean"))
+  
   plot <-
     data |>
-    filter(area_name %in% c(selected_areas, "National Mean")) |>
     ggplot() +
     aes(
       x = number,
@@ -103,9 +111,10 @@ bar_plot_selected <- function(data, selected_areas) {
       axis.ticks.y = element_blank(),
       legend.position = "none"
     )
+  
+  number_areas <- length(data$area_name)
 
-  ggplotly_default_bar(plot, data = data |>
-    filter(area_name %in% c(selected_areas, "National Mean")))
+  ggplotly_default_bar(plot, number_areas)
 }
 
 

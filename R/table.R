@@ -16,26 +16,30 @@ tableServer <- function(id, selected, type) {
           "lives_subdomain" = england_ltla_hi_risk_factors_sub,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "england_icb_shp" ||
-        selected$geography == "scotland_ltla_shp" ||
-        selected$geography == "scotland_hb_shp" ||
-        selected$geography == "northern_ireland_ltla_shp" ||
-        selected$geography == "northern_ireland_hsct_shp" ||
-        selected$geography == "wales_ltla_shp" ||
-        selected$geography == "wales_lhb_shp") {
-        stop("Domain data only currently available for England LTLA.", call. = FALSE)
       }
+      # } else if (selected$geography == "england_icb_shp" ||
+      #   selected$geography == "scotland_ltla_shp" ||
+      #   selected$geography == "scotland_hb_shp" ||
+      #   selected$geography == "northern_ireland_ltla_shp" ||
+      #   selected$geography == "northern_ireland_hsct_shp" ||
+      #   selected$geography == "wales_ltla_shp" ||
+      #   selected$geography == "wales_lhb_shp") {
+      #   stop("Domain data only currently available for England LTLA.", call. = FALSE)
+      # }
     })
 
     output$table <- renderFormattable({
       # if (is.null(selected$areas)) {
       #   table_null(data = dataset())
       # } else {
-      table_prep(data = dataset(), selected_areas = selected$areas) |>
-        table_selected(
-          selected_areas = selected$areas
-        )
-      # }
+      if (selected$geography == "england_ltla_shp") {
+        table_prep(data = dataset(), selected_areas = selected$areas) |>
+          table_selected(
+            selected_areas = selected$areas
+          )
+      } else {
+        table_null()
+      }
     })
   })
 }

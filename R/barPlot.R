@@ -16,26 +16,35 @@ barPlotServer <- function(id, selected, type) {
           "hi_social_determinants" = england_ltla_hi_social_determinants,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "england_icb_shp" ||
-        selected$geography == "scotland_ltla_shp" ||
-        selected$geography == "scotland_hb_shp" ||
-        selected$geography == "northern_ireland_ltla_shp" ||
-        selected$geography == "northern_ireland_hsct_shp" ||
-        selected$geography == "wales_ltla_shp" ||
-        selected$geography == "wales_lhb_shp") {
-        stop("No data selected", call. = FALSE)
       }
+      # } else if (selected$geography == "england_icb_shp" ||
+      #   selected$geography == "scotland_ltla_shp" ||
+      #   selected$geography == "scotland_hb_shp" ||
+      #   selected$geography == "northern_ireland_ltla_shp" ||
+      #   selected$geography == "northern_ireland_hsct_shp" ||
+      #   selected$geography == "wales_ltla_shp" ||
+      #   selected$geography == "wales_lhb_shp") {
+      #   stop("No data selected", call. = FALSE)
+      # }
     })
 
 
     output$plot <- renderPlotly({
-      if (is.null(selected$areas)) {
-        bar_plot_null(data = dataset())
+      if (selected$geography == "england_ltla_shp") {
+        if (is.null(selected$areas)) {
+          bar_plot_mean_only(
+            data = dataset(), 
+            selected_geography = selected$geography
+          )
+        } else {
+          bar_plot_selected(
+            data = dataset(),
+            selected_areas = selected$areas
+          )
+        }
       } else {
-        bar_plot_selected(
-          data = dataset(),
-          selected_areas = selected$areas
-        )
+        # Empty plot
+        
       }
     })
   })

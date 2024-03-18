@@ -268,18 +268,30 @@ ui <- function() {
         has_border = FALSE,
         scrollable = TRUE,
         style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
-        tableUI("peopleSubdomainTable")
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("peopleSubdomainTable")
+        )
       ),
       grid_card("lives_subdomain",
-        tableUI("livesSubdomainTable"),
         has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;"
+        style = "overflow-x: auto; overflow-y: hidden;",
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("livesSubdomainTable")
+        )
       ), # only enable horizontal scroll
       grid_card("places_subdomain",
         has_border = FALSE,
-        tableUI("placesSubdomainTable"),
         scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
+        style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
+        
+        conditionalPanel(
+          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          tableUI("placesSubdomainTable")
+        )
       )
     ),
 
