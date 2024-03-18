@@ -27,15 +27,15 @@ ui <- function() {
       class = "intro",
       tags$p(
         style = "color: #1d70b8",
-        tags$i("New Updates:")
-      ),
-      tags$p(
+        tags$b("Recent updates (March 2024):"),
         tags$ul(
           tags$li(
             style = "color: #1d70b8",
-            tags$i(
-              "March 2024: ONS Health Index Domains and Sub-domains added for England Local Authorities; BRC Regional filters added"
-            )
+            "Added ONS Health Index Domains and Sub-domains for England's Local Authorities."
+          ),
+          tags$li(
+            style = "color: #1d70b8",
+            "Added filter for British Red Cross regions."
           )
         )
       ),
