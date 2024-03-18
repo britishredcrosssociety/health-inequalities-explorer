@@ -34,6 +34,7 @@ server <- function(input, output, session) {
   helpButtonServer("help_summary")
   helpButtonServer("help_secondary")
   helpButtonServer("help_demographics")
+  helpButtonServer("help_health_index")
 
   # Debug
   # observe({

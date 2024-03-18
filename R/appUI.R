@@ -141,6 +141,12 @@ ui <- function() {
       has_border = FALSE,
       jitterPlotUI("healthindexPlot")
     ),
+    grid_card(
+      area = "help_button_health_index",
+      has_border = FALSE,
+      helpButtonUI("help_health_index")
+      
+    ),
     grid_nested(
       "hi_domain",
       layout = c(
