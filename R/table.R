@@ -7,9 +7,11 @@ tableUI <- function(id) {
 
 tableServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
+    valid_geographies <- c("england_ltla_shp", "brc_central_shp", "brc_london_shp", "brc_north_shp", "brc_south_shp", "brc_southeast_shp")
+    
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      if (selected$geography == "england_ltla_shp") {
+      if (selected$geography %in% valid_geographies) {
         switch(type,
           "people_subdomain" = england_ltla_hi_outcomes_sub,
           "places_subdomain" = england_ltla_hi_social_determinants_sub,
@@ -32,7 +34,7 @@ tableServer <- function(id, selected, type) {
       # if (is.null(selected$areas)) {
       #   table_null(data = dataset())
       # } else {
-      if (selected$geography == "england_ltla_shp") {
+      if (selected$geography %in% valid_geographies) {
         table_prep(data = dataset(), selected_areas = selected$areas) |>
           table_selected(
             selected_areas = selected$areas
