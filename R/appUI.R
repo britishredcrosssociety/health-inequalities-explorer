@@ -197,8 +197,6 @@ ui <- function() {
         )
       ),
 
-
-
       # Domain titles
       grid_card("people_title",
         has_border = FALSE,
@@ -207,14 +205,14 @@ ui <- function() {
           tags$h6(tags$b("Health Outcomes Domain"))
         )
       ),
-      grid_card("places_title",
+      grid_card("lives_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Preventable Risk Factors Domain"))
         )
       ),
-      grid_card("lives_title",
+      grid_card("places_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
@@ -229,14 +227,14 @@ ui <- function() {
           barPlotUI("hioutcomesPlot")
         )
       ),
-      grid_card("places_domain",
+      grid_card("lives_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           barPlotUI("hiriskfactorsPlot")
         )
       ),
-      grid_card("lives_domain",
+      grid_card("places_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
@@ -251,14 +249,14 @@ ui <- function() {
           tags$h6(tags$b("Health Outcomes Sub-Domains"))
         )
       ),
-      grid_card("placessub_title",
+      grid_card("livessub_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Preventable Risk Factors Sub-Domains"))
         )
       ),
-      grid_card("livessub_title",
+      grid_card("placessub_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
@@ -272,17 +270,17 @@ ui <- function() {
         style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
         tableUI("peopleSubdomainTable")
       ),
+      grid_card("lives_subdomain",
+        tableUI("livesSubdomainTable"),
+        has_border = FALSE, scrollable = TRUE,
+        style = "overflow-x: auto; overflow-y: hidden;"
+      ), # only enable horizontal scroll
       grid_card("places_subdomain",
         has_border = FALSE,
         tableUI("placesSubdomainTable"),
         scrollable = TRUE,
         style = "overflow-x: auto; overflow-y: hidden;" # only enable horizontal scroll
-      ),
-      grid_card("lives_subdomain",
-        tableUI("livesSubdomainTable"),
-        has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;"
-      ) # only enable horizontal scroll
+      )
     ),
 
 
