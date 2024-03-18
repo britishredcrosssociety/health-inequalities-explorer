@@ -9,5 +9,5 @@
 }
 
 .onUnload <- function(libname, pkgname) {
-   shiny::removeResourcePath("www")
+  shiny::removeResourcePath("www")
 }

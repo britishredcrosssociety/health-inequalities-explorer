@@ -20,8 +20,8 @@ lookup_dz_ltla <- lookup_dz11_iz11_ltla20 |>
   distinct()
 
 population_dz <-
-  population20_dz11 |> 
-  filter(sex == "All") |> 
+  population20_dz11 |>
+  filter(sex == "All") |>
   select(dz11_code, total_population)
 
 # ---- IMD score ----
@@ -54,23 +54,24 @@ lba <-
 
 # ---- DEPAHRI score ----
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
-# Extent is the proportion of the local population that live in areas 
+# Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <- 
-  scotland_lsoa_depahri |> 
-  left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |> 
-  select(lsoa11_code, depahri_score_national, ltla21_code) |> 
+depahri_lsoa <-
+  scotland_lsoa_depahri |>
+  left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |>
+  select(lsoa11_code, depahri_score_national, ltla21_code) |>
   left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
 
 depahri <-
-  calculate_extent(depahri_lsoa, 
-                   depahri_score_national, 
-                   ltla21_code, 
-                   total_population, 
-                   weight_high_scores = TRUE) |> 
-  mutate(number = rank(extent))|>
+  calculate_extent(depahri_lsoa,
+    depahri_score_national,
+    ltla21_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare \n (Physical and Digital)",
@@ -85,10 +86,14 @@ loneliness <-
   left_join(lookup_dz_ltla) |>
   select(dz11_code, ltla21_code, deciles) |>
   group_by(ltla21_code) |>
-  mutate(number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
-         percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()) |>
-  summarise(percent = first(percent),
-            number = first(number)) |>
+  mutate(
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
+  ) |>
+  summarise(
+    percent = first(percent),
+    number = first(number)
+  ) |>
   mutate(variable = "Loneliness", .after = ltla21_code)
 
 # ---- Combine & reanme (pretty printing) ----
@@ -166,4 +171,3 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
   )
 
 usethis::use_data(scotland_ltla_summary_metrics, overwrite = TRUE)
-

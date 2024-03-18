@@ -27,18 +27,18 @@ delayed_discharge_monthly <- scotland_delayed_discharge_ltla |>
   drop_na() |>
   filter(ltla_code != "S92000003") |>
   filter(date >= max(date) %m-% months(2)) # Last quarter
-  
+
 # Create dynamic labels
 min_date_delayed <- min(delayed_discharge_monthly$date) |>
   format("%B %Y")
 max_date_delayed <- max(delayed_discharge_monthly$date) |>
   format("%B %Y")
 delayed_label <- paste("Delayed discharges \n(",
-                      min_date_delayed, " - ", max_date_delayed, " average)",
-                      sep = ""
+  min_date_delayed, " - ", max_date_delayed, " average)",
+  sep = ""
 )
- 
-delayed_discharge_monthly <- delayed_discharge_monthly |> 
+
+delayed_discharge_monthly <- delayed_discharge_monthly |>
   filter(age_group == "18-74" | age_group == "75plus") |>
   filter(delay_reason == "All Delay Reasons") |>
   rename(ltla21_code = ltla_code) |>

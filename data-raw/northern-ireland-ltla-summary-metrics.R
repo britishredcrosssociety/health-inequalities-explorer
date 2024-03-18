@@ -56,7 +56,7 @@ loneliness <-
   group_by(ltla21_code) |>
   mutate(
     number = sum(deciles %in% c(9, 10), na.rm = TRUE),
-    percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
     percent = first(percent),

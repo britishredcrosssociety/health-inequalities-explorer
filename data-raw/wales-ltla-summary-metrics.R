@@ -138,7 +138,7 @@ loneliness <-
   select(ltla21_code = ltla22_code, lsoa11_code, deciles) |>
   group_by(ltla21_code) |>
   mutate(
-    number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
     percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(

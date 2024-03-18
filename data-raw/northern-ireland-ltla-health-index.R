@@ -46,8 +46,7 @@ ltla_health_index_northern_ireland_scaled <-
   metrics_joined |>
   mutate(
     scaled_1_1 = scale_1_1(number),
-    
-  ) 
+  )
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
@@ -70,10 +69,10 @@ northern_ireland_ltla_health_index <-
   northern_ireland_health_index_polarised |>
   mutate(
     label = paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      )
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Health Index rank: ", round(number)
+    )
   )
 
 usethis::use_data(northern_ireland_ltla_health_index, overwrite = TRUE)

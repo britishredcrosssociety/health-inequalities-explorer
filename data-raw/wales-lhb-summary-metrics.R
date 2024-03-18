@@ -147,8 +147,8 @@ loneliness <-
   select(ltla21_code, lhb20_code, deciles) |>
   group_by(lhb20_code) |>
   mutate(
-    number = sum(deciles  %in% c(9, 10), na.rm = TRUE),
-    percent = sum(deciles  %in% c(9, 10), na.rm = TRUE) / n()
+    number = sum(deciles %in% c(9, 10), na.rm = TRUE),
+    percent = sum(deciles %in% c(9, 10), na.rm = TRUE) / n()
   ) |>
   summarise(
     number = first(number),

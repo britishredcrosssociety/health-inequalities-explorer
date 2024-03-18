@@ -11,22 +11,22 @@ tableServer <- function(id, selected, type) {
     dataset <- reactive({
       if (selected$geography == "england_ltla_shp") {
         switch(type,
-               "people_subdomain" = england_ltla_hi_outcomes_sub,
-               "places_subdomain" = england_ltla_hi_social_determinants_sub,
-               "lives_subdomain" = england_ltla_hi_risk_factors_sub,
-               stop("No data selected", call. = FALSE)
+          "people_subdomain" = england_ltla_hi_outcomes_sub,
+          "places_subdomain" = england_ltla_hi_social_determinants_sub,
+          "lives_subdomain" = england_ltla_hi_risk_factors_sub,
+          stop("No data selected", call. = FALSE)
         )
-      }else if (selected$geography == "england_icb_shp" ||
-                      selected$geography == "scotland_ltla_shp" ||
-                      selected$geography == "scotland_hb_shp" ||
-                      selected$geography == "northern_ireland_ltla_shp" ||
-                      selected$geography == "northern_ireland_hsct_shp" ||
-                      selected$geography == "wales_ltla_shp" ||
-                      selected$geography == "wales_lhb_shp") {
+      } else if (selected$geography == "england_icb_shp" ||
+        selected$geography == "scotland_ltla_shp" ||
+        selected$geography == "scotland_hb_shp" ||
+        selected$geography == "northern_ireland_ltla_shp" ||
+        selected$geography == "northern_ireland_hsct_shp" ||
+        selected$geography == "wales_ltla_shp" ||
+        selected$geography == "wales_lhb_shp") {
         stop("Domain data only currently available for England LTLA.", call. = FALSE)
       }
-      })
-    
+    })
+
     output$table <- renderFormattable({
       # if (is.null(selected$areas)) {
       #   table_null(data = dataset())
@@ -44,16 +44,15 @@ tableTest <- function() {
   ui <- fluidPage(
     tableUI("test")
   )
-  
+
   server <- function(input, output, session) {
     selected <- reactiveValues(
       areas = c("Tower Hamlets", "Ashford"), geography = "england_ltla_shp"
-      #areas = vector(), geography = "england_ltla_shp"
-      
+      # areas = vector(), geography = "england_ltla_shp"
     )
     tableServer("test", selected, type = "people_subdomain")
   }
-  
+
   shinyApp(ui, server)
 }
 

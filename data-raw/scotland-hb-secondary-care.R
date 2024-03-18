@@ -71,7 +71,7 @@ available_beds <- available_beds |>
 # Higher = worse
 delayed_discharge_monthly <- scotland_delayed_discharge_hb |>
   filter(hb_code != "S92000003") |>
-  filter(date >= max(date) %m-% months(2))  # Last quarter
+  filter(date >= max(date) %m-% months(2)) # Last quarter
 
 # Create dynamic label
 min_date_delayed <- max(delayed_discharge_monthly$date) %m-% months(2) |>

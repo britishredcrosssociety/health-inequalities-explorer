@@ -57,4 +57,4 @@ barPlotTest <- function() {
 }
 
 # Examples
-#barPlotTest()
+# barPlotTest()

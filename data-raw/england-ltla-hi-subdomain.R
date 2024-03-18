@@ -1,5 +1,5 @@
 library(tidyverse)
-#library(janitor)
+# library(janitor)
 library(geographr)
 library(sf)
 library(healthyr)
@@ -18,9 +18,9 @@ england_ltla_hi_outcomes_sub <- england_health_index_subdomains |>
   left_join(ltla) |>
   select(-ltla21_code, ) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name)|>
+  relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
-  pivot_wider(names_from = area_name, values_from = value) |> 
+  pivot_wider(names_from = area_name, values_from = value) |>
   mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
   relocate(`National Mean`, .after = variable)
 
@@ -31,9 +31,9 @@ england_ltla_hi_risk_factors_sub <- england_health_index_subdomains |>
   left_join(ltla) |>
   select(-ltla21_code, ) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name)|>
+  relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
-  pivot_wider(names_from = area_name, values_from = value) |> 
+  pivot_wider(names_from = area_name, values_from = value) |>
   mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
   relocate(`National Mean`, .after = variable)
 
@@ -44,9 +44,9 @@ england_ltla_hi_social_determinants_sub <- england_health_index_subdomains |>
   left_join(ltla) |>
   select(-ltla21_code, ) |>
   rename(area_name = ltla21_name) |>
-  relocate(area_name)|>
+  relocate(area_name) |>
   pivot_longer(cols = -area_name, names_to = "variable") |>
-  pivot_wider(names_from = area_name, values_from = value) |> 
+  pivot_wider(names_from = area_name, values_from = value) |>
   mutate(`National Mean` = rowMeans(across(-c(variable)))) |>
   relocate(`National Mean`, .after = variable)
 

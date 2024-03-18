@@ -51,8 +51,7 @@ scale_1_1 <- function(x) {
 hsct_health_index_northern_ireland_scaled <-
   metrics_joined |>
   group_by(variable) |>
-  mutate( scaled_1_1 = scale_1_1(number)
-  ) |>
+  mutate(scaled_1_1 = scale_1_1(number)) |>
   ungroup()
 
 # ---- Align indicator polarity ----
@@ -75,11 +74,11 @@ northern_ireland_hsct_health_index_polarised |>
 northern_ireland_hsct_health_index <-
   northern_ireland_hsct_health_index_polarised |>
   mutate(
-    label =  paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      )
+    label = paste0(
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Health Index rank: ", round(number)
     )
+  )
 
 usethis::use_data(northern_ireland_hsct_health_index, overwrite = TRUE)

@@ -58,8 +58,7 @@ lhb_health_index_wales_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = scale_1_1(number)
-      
-  ) 
+  )
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
@@ -80,11 +79,10 @@ wales_lhb_health_index_polarised |>
 wales_lhb_health_index <- wales_lhb_health_index_polarised |>
   mutate(
     label = paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      )
-    
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Health Index rank: ", round(number)
+    )
   )
 
 usethis::use_data(wales_lhb_health_index, overwrite = TRUE)

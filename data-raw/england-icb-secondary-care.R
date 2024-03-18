@@ -28,10 +28,10 @@ bed_occupancy_trust <-
   ) |>
   pivot_longer(cols = !c(nhs_trust22_code, date)) |>
   mutate(type = if_else(str_detect(name, "_occupied$"),
-                        "occupied",
-                        "available"
+    "occupied",
+    "available"
   )) |>
-  mutate(date = my(date)) |> 
+  mutate(date = my(date)) |>
   filter(date >= max(date) %m-% months(2)) # Last quarter
 
 # Create dynamic label

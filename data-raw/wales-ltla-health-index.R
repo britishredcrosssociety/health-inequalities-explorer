@@ -53,7 +53,8 @@ scale_1_1 <- function(x) {
 ltla_health_index_wales_scaled <- metrics_joined |>
   group_by(variable) |>
   mutate(
-    scaled_1_1 =  scale_1_1(number))
+    scaled_1_1 = scale_1_1(number)
+  )
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
@@ -75,10 +76,9 @@ wales_ltla_health_index_polarised |>
 wales_ltla_health_index <- wales_ltla_health_index_polarised |>
   mutate(
     label = paste0(
-        "<b>", area_name, "</b>",
-        "<br>",
-        "<br>", "Health Index rank: ", round(number)
-      
+      "<b>", area_name, "</b>",
+      "<br>",
+      "<br>", "Health Index rank: ", round(number)
     )
   )
 
