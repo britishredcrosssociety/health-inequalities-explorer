@@ -209,21 +209,24 @@ ui <- function() {
       grid_card("people_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Health Outcomes Domain"))
         )
       ),
       grid_card("lives_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Preventable Risk Factors Domain"))
         )
       ),
       grid_card("places_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Social Determinants of Health Domain"))
         )
       ),
@@ -231,21 +234,24 @@ ui <- function() {
       grid_card("people_domain",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           barPlotUI("hioutcomesPlot")
         )
       ),
       grid_card("lives_domain",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           barPlotUI("hiriskfactorsPlot")
         )
       ),
       grid_card("places_domain",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           barPlotUI("hisocialdeterminantsPlot")
         )
       ),
@@ -253,21 +259,24 @@ ui <- function() {
       grid_card("peoplesub_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Health Outcomes Sub-Domains"))
         )
       ),
       grid_card("livessub_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Preventable Risk Factors Sub-Domains"))
         )
       ),
       grid_card("placessub_title",
         has_border = FALSE,
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tags$h6(tags$b("Social Determinants of Health Sub-Domains"))
         )
       ),
@@ -278,7 +287,8 @@ ui <- function() {
         style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
         
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tableUI("peopleSubdomainTable")
         )
       ),
@@ -287,7 +297,8 @@ ui <- function() {
         style = "overflow-x: auto; overflow-y: hidden;",
         
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tableUI("livesSubdomainTable")
         )
       ), # only enable horizontal scroll
@@ -297,7 +308,8 @@ ui <- function() {
         style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
         
         conditionalPanel(
-          condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+          condition = "['england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
           tableUI("placesSubdomainTable")
         )
       )
