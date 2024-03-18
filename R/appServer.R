@@ -4,6 +4,7 @@ server <- function(input, output, session) {
 
   # Call module server functions
   # Selections
+  selectRegionServer("region", selected)
   selectGeographyServer("geography", selected)
   selectAreasServer("areas", selected)
   mapServer("leafletMap", selected)
