@@ -18,15 +18,15 @@ mapServer <- function(id, selected) {
         54.78
       } else if (grepl("^wales_", selected$geography)) {
         52.13
-      } else if (grepl("brc_central_shp", selected$geography)) {
+      } else if (grepl("brc_central_", selected$geography)) {
         52.6
-      } else if (grepl("brc_london_shp", selected$geography)) {
+      } else if (grepl("brc_london_", selected$geography)) {
         51.509
-      } else if (grepl("brc_north_shp", selected$geography)) {
+      } else if (grepl("brc_north_", selected$geography)) {
         54
-      } else if (grepl("brc_south_shp", selected$geography)) {
+      } else if (grepl("brc_south_", selected$geography)) {
         51
-      } else if (grepl("brc_southeast_shp", selected$geography)) {
+      } else if (grepl("brc_southeast_", selected$geography)) {
         51.18
       }
     })
@@ -40,22 +40,22 @@ mapServer <- function(id, selected) {
         -6.5
       } else if (grepl("^wales_", selected$geography)) {
         -3.78
-      } else if (grepl("brc_central_shp", selected$geography)) {
+      } else if (grepl("brc_central_", selected$geography)) {
         -0.66
-      } else if (grepl("brc_london_shp", selected$geography)) {
+      } else if (grepl("brc_london_", selected$geography)) {
         -0.12
-      } else if (grepl("brc_north_shp", selected$geography)) {
+      } else if (grepl("brc_north_", selected$geography)) {
         -1.94
-      } else if (grepl("brc_south_shp", selected$geography)) {
+      } else if (grepl("brc_south_", selected$geography)) {
         -3
-      } else if (grepl("brc_southeast_shp", selected$geography)) {
+      } else if (grepl("brc_southeast_", selected$geography)) {
         0.55
       }
     })
     
     zoom <- reactive({
-      if (grepl("brc_london_shp", selected$geography)) {9}
-      else if (grepl("brc_southeast_shp", selected$geography)) {7}
+      if (grepl("brc_london_", selected$geography)) {9}
+      else if (grepl("brc_southeast_", selected$geography)) {7}
       else {6}
     })
 
