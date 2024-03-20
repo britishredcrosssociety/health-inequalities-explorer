@@ -18,11 +18,11 @@ selectGeographyServer <- function(id, selected) {
         "scotland" = c("Local Authorities" = "scotland_ltla_shp", "Health Boards" = "scotland_hb_shp"),
         "wales" = c("Local Authorities" = "wales_ltla_shp", "Local Health Boards" = "wales_lhb_shp"),
         
-        "england_central" = c("Local Authorities" = "brc_central_shp"),
-        "england_london" =  c("Local Authorities" = "brc_london_shp"),
-        "england_north" = c("Local Authorities" = "brc_north_shp"),
-        "england_south" =  c("Local Authorities" = "brc_south_shp"),
-        "england_southeast" =  c("Local Authorities" = "brc_southeast_shp")
+        "england_central" = c("Local Authorities" = "brc_central_shp", "Integrated Care Boards" = "brc_central_icb_shp"),
+        "england_london" =  c("Local Authorities" = "brc_london_shp", "Integrated Care Boards" = "brc_london_icb_shp"),
+        "england_north" = c("Local Authorities" = "brc_north_shp", "Integrated Care Boards" = "brc_north_icb_shp"),
+        "england_south" =  c("Local Authorities" = "brc_south_shp", "Integrated Care Boards" = "brc_south_icb_shp"),
+        "england_southeast" =  c("Local Authorities" = "brc_southeast_shp", "Integrated Care Boards" = "brc_southeast_icb_shp")
       )
       
       # Debug

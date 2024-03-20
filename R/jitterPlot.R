@@ -82,12 +82,28 @@ jitterPlotServer <- function(id, selected, type) {
                "health_index" = england_ltla_health_index |> filter(area_name %in% brc_central_shp$area_name),
                stop("No data selected", call. = FALSE)
         )
+      } else if (selected$geography == "brc_central_icb_shp") {
+        switch(type,
+               "summary_metrics" = england_icb_summary_metrics |> filter(area_name %in% brc_central_icb_shp$area_name),
+               "secondary_care" = england_icb_secondary_care |> filter(area_name %in% brc_central_icb_shp$area_name),
+               "demographics" = england_icb_demographics |> filter(area_name %in% brc_central_icb_shp$area_name),
+               "health_index" = england_icb_health_index |> filter(area_name %in% brc_central_icb_shp$area_name),
+               stop("No data selected", call. = FALSE)
+        )
       } else if (selected$geography == "brc_london_shp") {
         switch(type,
                "summary_metrics" = england_ltla_summary_metrics |> filter(area_name %in% brc_london_shp$area_name),
                "secondary_care" = england_ltla_secondary_care |> filter(area_name %in% brc_london_shp$area_name),
                "demographics" = england_ltla_demographics |> filter(area_name %in% brc_london_shp$area_name),
                "health_index" = england_ltla_health_index |> filter(area_name %in% brc_london_shp$area_name),
+               stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_london_icb_shp") {
+        switch(type,
+               "summary_metrics" = england_icb_summary_metrics |> filter(area_name %in% brc_london_icb_shp$area_name),
+               "secondary_care" = england_icb_secondary_care |> filter(area_name %in% brc_london_icb_shp$area_name),
+               "demographics" = england_icb_demographics |> filter(area_name %in% brc_london_icb_shp$area_name),
+               "health_index" = england_icb_health_index |> filter(area_name %in% brc_london_icb_shp$area_name),
                stop("No data selected", call. = FALSE)
         )
       } else if (selected$geography == "brc_north_shp") {
@@ -98,6 +114,14 @@ jitterPlotServer <- function(id, selected, type) {
                "health_index" = england_ltla_health_index |> filter(area_name %in% brc_north_shp$area_name),
                stop("No data selected", call. = FALSE)
         )
+      } else if (selected$geography == "brc_north_icb_shp") {
+        switch(type,
+               "summary_metrics" = england_icb_summary_metrics |> filter(area_name %in% brc_north_icb_shp$area_name),
+               "secondary_care" = england_icb_secondary_care |> filter(area_name %in% brc_north_icb_shp$area_name),
+               "demographics" = england_icb_demographics |> filter(area_name %in% brc_north_icb_shp$area_name),
+               "health_index" = england_icb_health_index |> filter(area_name %in% brc_north_icb_shp$area_name),
+               stop("No data selected", call. = FALSE)
+        )
       } else if (selected$geography == "brc_south_shp") {
         switch(type,
                "summary_metrics" = england_ltla_summary_metrics |> filter(area_name %in% brc_south_shp$area_name),
@@ -106,12 +130,28 @@ jitterPlotServer <- function(id, selected, type) {
                "health_index" = england_ltla_health_index |> filter(area_name %in% brc_south_shp$area_name),
                stop("No data selected", call. = FALSE)
         )
+      } else if (selected$geography == "brc_south_icb_shp") {
+        switch(type,
+               "summary_metrics" = england_icb_summary_metrics |> filter(area_name %in% brc_south_icb_shp$area_name),
+               "secondary_care" = england_icb_secondary_care |> filter(area_name %in% brc_south_icb_shp$area_name),
+               "demographics" = england_icb_demographics |> filter(area_name %in% brc_south_icb_shp$area_name),
+               "health_index" = england_icb_health_index |> filter(area_name %in% brc_south_icb_shp$area_name),
+               stop("No data selected", call. = FALSE)
+        )
       } else if (selected$geography == "brc_southeast_shp") {
         switch(type,
                "summary_metrics" = england_ltla_summary_metrics |> filter(area_name %in% brc_southeast_shp$area_name),
                "secondary_care" = england_ltla_secondary_care |> filter(area_name %in% brc_southeast_shp$area_name),
                "demographics" = england_ltla_demographics |> filter(area_name %in% brc_southeast_shp$area_name),
                "health_index" = england_ltla_health_index |> filter(area_name %in% brc_southeast_shp$area_name),
+               stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "brc_southeast_icb_shp") {
+        switch(type,
+               "summary_metrics" = england_icb_summary_metrics |> filter(area_name %in% brc_southeast_icb_shp$area_name),
+               "secondary_care" = england_icb_secondary_care |> filter(area_name %in% brc_southeast_icb_shp$area_name),
+               "demographics" = england_icb_demographics |> filter(area_name %in% brc_southeast_icb_shp$area_name),
+               "health_index" = england_icb_health_index |> filter(area_name %in% brc_southeast_icb_shp$area_name),
                stop("No data selected", call. = FALSE)
         )
       }
