@@ -33,15 +33,13 @@ rtt_label <- paste("Referral to treatment \nwaiting times \n(", min_date_rtt, " 
 
 rtt <- rtt |>
   group_by(trust18_name, date) |>
-  mutate(
+  summarise(
     waits_over_18_weeks = sum(waits_over_18_weeks),
     total_waits = sum(total_waits)
   ) |>
-  mutate(percent = waits_over_18_weeks / total_waits) |>
-  group_by(trust18_name) |>
-  summarise(
-    number = sum(waits_over_18_weeks),
-    percent = mean(percent, na.rm = FALSE)
+  mutate(percent = waits_over_18_weeks / sum(total_waits, na.rm = TRUE)) |>
+  rename(
+    number = waits_over_18_weeks,
   ) |>
   mutate(
     variable = rtt_label,
@@ -130,8 +128,8 @@ northern_ireland_hsct_secondary_care <- secondary_care_polarised |>
         paste0(
           "<b>", area_name, "</b>",
           "<br>",
-          "<br>", "No. waiting times over 18 weeks: ", round(number),
-          "<br>", "Percentage of waiting times over 18 weeks: ", round(percent * 100, 1),
+          "<br>", "No. people waiting over 18 weeks to start treatment: ", round(number),
+          "<br>", "Percentage of people waiting over 18 weeks: ", round(percent * 100, 1),
           "%"
         ),
       variable == beds_label ~ paste0(
