@@ -52,21 +52,22 @@ lba <-
   select(ltla21_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-# ---- DEPAHRI score ----
+# ---- DEPAHRI score - digital only ----
+# Isolate digital access from DEPAHRI
 # Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
 # Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <-
+deri_lsoa <-
   scotland_lsoa_depahri |>
   left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |>
-  select(lsoa11_code, depahri_score_national, ltla21_code) |>
+  select(lsoa11_code, deri_score_national, ltla21_code) |>
   left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
 
-depahri <-
-  calculate_extent(depahri_lsoa,
-    depahri_score_national,
+deri <-
+  calculate_extent(deri_lsoa,
+    deri_score_national,
     ltla21_code,
     total_population,
     weight_high_scores = TRUE
@@ -74,10 +75,43 @@ depahri <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Access to Healthcare \n (Physical and Digital)",
+    variable = "Digital Access to Healthcare",
     .after = ltla21_code
   ) |>
   mutate(percent = NA, .after = number)
+
+# ---- DEPHARI - physical only ----
+# Isolate physical access to healthcare from DEPAHRI
+# Score made up of equal weighting of demography, deprivation and physical access
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+physical_lsoa <-
+  scotland_lsoa_depahri |>
+  mutate(
+    physical_score =
+      demography_comp_national * 0.33 +
+        deprivation_comp_national * 0.33 +
+        health_access_comp_national * 0.33
+  ) |>
+  left_join(lookup_dz_ltla, by = c("lsoa11_code" = "dz11_code")) |>
+  select(lsoa11_code, physical_score, ltla21_code) |>
+  left_join(population_dz, by = c("lsoa11_code" = "dz11_code"))
+
+physical_access <-
+  calculate_extent(physical_lsoa,
+    physical_score,
+    ltla21_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
+  select(-extent) |>
+  mutate(
+    variable = "Physical Access to Healthcare",
+    .after = ltla21_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
 
 # ---- Loneliness----
 # Decile 1 = least lonely
@@ -100,7 +134,8 @@ loneliness <-
 metrics_joined <- bind_rows(
   imd,
   lba,
-  depahri,
+  deri,
+  physical_access,
   loneliness
 ) |>
   left_join(ltla) |>
@@ -120,7 +155,8 @@ ltla_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Digital Access to Healthcare" ~ scale_1_1(number),
+      variable == "Physical Access to Healthcare" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
@@ -156,10 +192,15 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
         "<br>", "No. of left-behind Intermediate Zones in the Local Authority: ", round(number),
         "<br>", "Percentage of all left-behind Intermediate Zones in the Local Authority: ", round(percent * 100, 1), "%"
       ),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+      variable == "Digital Access to Healthcare" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "DEPAHRI rank: ", round(number)
+        "<br>", "Digital Access to Healthcare rank: ", round(number)
+      ),
+      variable == "Physical Access to Healthcare" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Physical Access to Healthcare rank: ", round(number)
       ),
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",
