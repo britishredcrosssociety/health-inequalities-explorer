@@ -27,7 +27,17 @@ ui <- function() {
       class = "intro",
       tags$p(
         style = "color: #1d70b8",
-        tags$b("Recent updates (March 2024):"),
+        tags$b("Recent updates (June 2024):"),
+        tags$ul(
+          tags$li(
+            style = "color: #1d70b8",
+            "Access to healthcare indicators broken down to physical and digital access"
+          )
+        )
+      ),
+      tags$p(
+        style = "color: #1d70b8",
+        tags$b("March 2024:"),
         tags$ul(
           tags$li(
             style = "color: #1d70b8",

@@ -64,22 +64,21 @@ lba <-
   select(ltla21_code = ltla22_code, number = n, percent) |>
   mutate(variable = "Left-behind areas", .after = ltla21_code)
 
-
-# ---- DEPAHRI score ----
-# Data is at LSOA level: need to aggregate to LTLA level using calculate_extent
+# ---- DEPHARI - digital only ----
+# Isolate digital access to healthcare from DEPAHRI
 # Extent is the proportion of the local population that live in areas
 # classified as among the most deprived (here at risk) in the higher geography
 # Higher score = higher risk of exclusion
 # Higher rank (calculated here) = higher risk of exclusion
-depahri_lsoa <-
+deri_lsoa <-
   england_lsoa_depahri |>
   left_join(lookup_england_lsoa_ltla) |>
-  distinct(lsoa11_code, depahri_score_national, ltla21_code = ltla22_code) |>
+  distinct(lsoa11_code, deri_score_national, ltla21_code = ltla22_code) |>
   left_join(population_lsoa)
 
-depahri <-
-  calculate_extent(depahri_lsoa,
-    depahri_score_national,
+deri <-
+  calculate_extent(deri_lsoa,
+    deri_score_national,
     ltla21_code,
     total_population,
     weight_high_scores = TRUE
@@ -87,10 +86,43 @@ depahri <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Access to Healthcare \n (Physical and Digital)",
+    variable = "Access to Healthcare - Digital",
     .after = ltla21_code
   ) |>
   mutate(percent = NA, .after = number)
+
+# ---- DEPHARI - physical only ----
+# Isolate physical access to healthcare from DEPAHRI
+# Score made up of equal weighting of demography, deprivation and physical access
+# Higher score = higher risk of exclusion
+# Higher rank (calculated here) = higher risk of exclusion
+physical_lsoa <-
+  england_lsoa_depahri |>
+  mutate(
+    physical_score =
+      demography_comp_national * 0.33 +
+        deprivation_comp_national * 0.33 +
+        health_access_comp_national * 0.33
+  ) |>
+  left_join(lookup_england_lsoa_ltla) |>
+  distinct(lsoa11_code, physical_score, ltla21_code = ltla22_code) |>
+  left_join(population_lsoa)
+
+physical_access <-
+  calculate_extent(physical_lsoa,
+    physical_score,
+    ltla21_code,
+    total_population,
+    weight_high_scores = TRUE
+  ) |>
+  mutate(number = rank(extent)) |>
+  select(-extent) |>
+  mutate(
+    variable = "Access to Healthcare - Physical",
+    .after = ltla21_code
+  ) |>
+  mutate(percent = NA, .after = number)
+
 
 # ---- Loneliness score ----
 # Higher percentage / number = more lonely
@@ -129,7 +161,8 @@ loneliness <- loneliness_lsoa |>
 metrics_joined <- bind_rows(
   imd,
   lba,
-  depahri,
+  deri,
+  physical_access,
   loneliness
 ) |>
   left_join(ltla) |>
@@ -149,7 +182,8 @@ ltla_summary_metrics_england_scaled <-
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent),
     )
   ) |>
@@ -163,7 +197,8 @@ england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
     scaled_1_1 = case_when(
       variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
       variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
@@ -193,10 +228,15 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
         "<br>", "No. of left-behind LSOA's in the area: ", round(number),
         "<br>", "Percentage of all LSOA's that are left-behind: ", round(percent * 100, 1), "%"
       ),
-      variable == "Access to Healthcare \n (Physical and Digital)" ~ paste0(
+      variable == "Access to Healthcare - Digital" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
-        "<br>", "DEPAHRI rank: ", round(number)
+        "<br>", "Digital Access to Healthcare rank: ", round(number)
+      ),
+      variable == "Access to Healthcare - Physical" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Physical Access to Healthcare rank: ", round(number)
       ),
       variable == "Loneliness" ~ paste0(
         "<b>", area_name, "</b>",

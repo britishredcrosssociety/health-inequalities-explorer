@@ -108,11 +108,11 @@ list_descriptions <-
         "here."
       )
     ),
-    "depahri", "summary_metrics", "DEPAHRI", "England, Scotland, Wales", tags$p(
-      "The Digital Exclusion and Physical Access to Healthcare Risk Index
-      (DEPAHRI) indicates the overall difficulty of accessing healthcare
-      services. It includes measures of broadband connectivity, demography,
-      deprivation and road distances to healthcare services. More information available ",
+    "depahri", "summary_metrics", "Access to Healthcare", "England, Scotland, Wales", tags$p(
+      "Access to Healthcare indicates the overall difficulty of accessing healthcare
+      services. Digital access includes measures of broadband connectivity, demography and
+      deprivation. Physical access includes measures of  road distances to GPs and hospitals,
+      demography and deprivation. More information available ",
       tags$a(
         href = "https://github.com/humaniverse/DEPAHRI",
         target = "_blank",
