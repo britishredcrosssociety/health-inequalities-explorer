@@ -80,7 +80,7 @@ deri <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Digital Access to Healthcare",
+    variable = "Access to Healthcare - Digital",
     .after = lhb20_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -112,7 +112,7 @@ physical_access <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Physical Access to Healthcare",
+    variable = "Access to Healthcare - Physical",
     .after = lhb20_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -205,8 +205,8 @@ lhb_summary_metrics_wales_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Digital Access to Healthcare" ~ scale_1_1(number),
-      variable == "Physical Access to Healthcare" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
@@ -243,12 +243,12 @@ wales_lhb_summary_metrics <- wales_lhb_summary_metrics_polarised |>
         "<br>", "No. of left-behind LSOAs in the LHB: ", round(number),
         "<br>", "Percentage of LSOAs in the LHB that are left-behind: ", round(percent * 100, 1), "%"
       ),
-      variable == "Digital Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Digital" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Digital Access to Healthcare rank: ", round(number)
       ),
-      variable == "Physical Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Physical" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Physical Access to Healthcare rank: ", round(number)

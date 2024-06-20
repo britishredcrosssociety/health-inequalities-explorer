@@ -81,7 +81,7 @@ deri <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Digital Access to Healthcare",
+    variable = "Access to Healthcare - Digital",
     .after = hb19_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -113,7 +113,7 @@ physical_access <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Physical Access to Healthcare",
+    variable = "Access to Healthcare - Physical",
     .after = hb19_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -162,8 +162,8 @@ hb_summary_metrics_scotland_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Digital Access to Healthcare" ~ scale_1_1(number),
-      variable == "Physical Access to Healthcare" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
@@ -200,12 +200,12 @@ scotland_hb_summary_metrics <- scotland_hb_summary_metrics_polarised |>
         "<br>", "No. of left-behind Intermediate Zones in the Health Board: ", round(number),
         "<br>", "Percentage of left-behind Intermediate Zones in the Health Board: ", round(percent * 100, 1), "%"
       ),
-      variable == "Digital Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Digital" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Digital Access to Healthcare rank: ", round(number)
       ),
-      variable == "Physical Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Physical" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Physical Access to Healthcare rank: ", round(number)

@@ -142,7 +142,7 @@ deri <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Digital Access to Healthcare",
+    variable = "Access to Healthcare - Digital",
     .after = icb22_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -175,7 +175,7 @@ physical_access <-
   mutate(number = rank(extent)) |>
   select(-extent) |>
   mutate(
-    variable = "Physical Access to Healthcare",
+    variable = "Access to Healthcare - Physical",
     .after = icb22_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -274,8 +274,8 @@ icb_summary_metrics_england_scaled <-
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scale_1_1(percent),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Digital Access to Healthcare" ~ scale_1_1(number),
-      variable == "Physical Access to Healthcare" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
+      variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent)
     )
   ) |>
@@ -289,8 +289,8 @@ england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
     scaled_1_1 = case_when(
       variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
-      variable == "Digital Access to Healthcare" ~ scaled_1_1 * -1,
-      variable == "Physical Access to Healthcare" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
       variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
     )
@@ -321,12 +321,12 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
         "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
         "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
       ),
-      variable == "Digital Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Digital" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Digital Access to Healthcare rank: ", round(number)
       ),
-      variable == "Physical Access to Healthcare" ~ paste0(
+      variable == "Access to Healthcare - Physical" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Physical Access to Healthcare rank: ", round(number)
