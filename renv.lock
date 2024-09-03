@@ -327,14 +327,14 @@
     },
     "cli": {
       "Package": "cli",
-      "Version": "3.6.2",
+      "Version": "3.6.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "1216ac65ac55ec0058a6f75d7ca0fd52"
+      "Hash": "b21916dd77a27642b447374a5d30ecf3"
     },
     "clipr": {
       "Package": "clipr",
@@ -1143,12 +1143,12 @@
       "RemoteRepo": "healthyr",
       "RemoteUsername": "humaniverse",
       "RemoteRef": "HEAD",
-      "RemoteSha": "b1f57b685b3b44aa50fadb69259fa459f9aee185",
+      "RemoteSha": "37a8c7844582bf6dbbc80bf960aa176e2c3e9435",
       "Requirements": [
         "R",
         "tibble"
       ],
-      "Hash": "61c9f76be7639008e5b3b6100ae14a51"
+      "Hash": "74b4ddc9910769254a9c1a61228f7255"
     },
     "highr": {
       "Package": "highr",

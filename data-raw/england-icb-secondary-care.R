@@ -105,8 +105,14 @@ available_icb_beds <-
   summarise(available_beds = sum(available_beds, na.rm = TRUE)) |>
   ungroup()
 
+# Data for available icb_beds only goes to march 2024
+# Need to filter criteria to reside data to cover same time period
+# Check this when updating data
+england_icb_criteria_to_reside_filtered <- england_icb_criteria_to_reside |>
+  filter(date < "2024-04-01")
+
 criteria_to_reside_icb_ungrouped <-
-  england_icb_criteria_to_reside |>
+  england_icb_criteria_to_reside_filtered |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -115,6 +121,7 @@ criteria_to_reside_icb_ungrouped <-
     )
   ) |>
   left_join(available_icb_beds, by = c("icb22_code", "month")) |>
+  
   mutate(perc_not_meet_criteria = do_not_meet_criteria_to_reside / available_beds) |>
   filter(date >= max(date) %m-% months(3))
 
@@ -137,8 +144,15 @@ criteria_to_reside_icb <- criteria_to_reside_icb_ungrouped |>
   )
 
 # ---- Discharged patients ----
+# Data for available icb_beds only goes to march 2024
+# Need to filter discharged patients data to cover same time period
+# Check this when updating data
+
+england_icb_discharged_patients_filtered <- england_icb_discharged_patients |>
+  filter(date < "2024-04-01")
+
 discharged_patients_icb_ungrouped <-
-  england_icb_discharged_patients |>
+  england_icb_discharged_patients_filtered |>
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
