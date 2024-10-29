@@ -27,16 +27,17 @@ selectAreasServer <- function(id, selected) {
         server = TRUE
       )
     })
-
-    observeEvent(input$selectAreas,
-      {
-        selected$areas <- input$selectAreas
-      },
-      ignoreNULL = FALSE
-    )
-
-    # This sits in its own observer because it needs to track any changes to
-    # the global `selected$areas` reactive values, not just the selectizeInput
+    
+    # Debounce the selectAreas input to reduce updates frequency
+    debounced_areas <- debounce(reactive(input$selectAreas), 1000)
+    
+    # Update selected$areas only after the debounced input triggers
+    observeEvent(debounced_areas(), {
+      selected$areas <- debounced_areas()
+      selected$timestamp <- Sys.time() 
+    }, ignoreNULL = FALSE)
+    
+    # Observe changes to selected$areas and update selectize input
     observeEvent(selected$areas, {
       updateSelectizeInput(
         session,
@@ -47,18 +48,30 @@ selectAreasServer <- function(id, selected) {
   })
 }
 
+# Test
 selectAreasTest <- function() {
   ui <- fluidPage(
-    selectAreasUI("test")
+    selectAreasUI("test"),
+    tableOutput("selectedInfo") 
   )
+  
   server <- function(input, output, session) {
     selected <- reactiveValues(
-      areas = vector(), geography = "england_ltla_shp"
+      areas = vector(), geography = "england_ltla_shp", timestamp = NULL
     )
+    
     selectAreasServer("test", selected)
+    
+    output$selectedInfo <- renderTable({
+      data.frame(
+        Selected_Areas = paste(selected$areas, collapse = ", "),
+        Timestamp = as.character(selected$timestamp)
+      )
+    })
   }
+  
   shinyApp(ui, server)
 }
 
 # Examples
-# selectAreasTest()
+selectAreasTest()
