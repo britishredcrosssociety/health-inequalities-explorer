@@ -1,3 +1,15 @@
+# england_ltla_shp <- jsonlite::fromJSON("https://humaniverse.r-universe.dev/hiedata/data/england_ltla_shp/json")
+
+england_ltla_summary_metrics <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_ltla_summary_metrics/csv")
+england_ltla_secondary_care<- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_ltla_secondary_care/csv")
+england_ltla_demographics <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_ltla_demographics/csv")
+england_ltla_health_index <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_ltla_health_index/csv")
+
+england_icb_summary_metrics <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_icb_summary_metrics/csv")
+england_icb_secondary_care<- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_icb_secondary_care/csv")
+england_icb_demographics <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_icb_demographics/csv")
+england_icb_health_index <- read.csv("https://humaniverse.r-universe.dev/hiedata/data/england_icb_health_index/csv")
+
 jitterPlotUI <- function(id) {
   plotlyOutput(
     NS(id, "plot"),
