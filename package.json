@@ -8,6 +8,7 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
+		"@onsvisual/svelte-components": "^0.1.76",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
