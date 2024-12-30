@@ -10,10 +10,11 @@
     let data;
     let groupedData;
     let xKey = 'scaled_1_1';
-    let yKey = 'variable';
     let zKey = 'variable';
     let titleKey = 'label';
     let seriesColors = ['#000'];
+
+    const selected_areas = ["Tower Hamlets", "Adur"];
 
     const r = 3;
 
@@ -59,6 +60,7 @@
                                 xStrength={0.95}
                                 yStrength={0.075}
                                 getTitle={d => d[titleKey]}
+                                selected={selected_areas}
                             />
                             <AxisX 
                                 gridlines={true}
@@ -74,7 +76,7 @@
         {/each}
     </div>
 {/if}
-  
+
 <style>
     /*
       The wrapper div needs to have an explicit width and height in CSS.

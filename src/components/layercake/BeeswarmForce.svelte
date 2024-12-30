@@ -29,6 +29,9 @@
   
     /** @type {Function|undefined} [getTitle] — An accessor function to get the field on the data element to display as a hover label using a `<title>` tag. */
     export let getTitle = undefined;
+
+    /** @type {Array<any>} [selected] - Which areas to highlight on the chart, if any */
+    export let selected = null;
   
     $: simulation = forceSimulation(nodes)
       .force(
@@ -60,10 +63,14 @@
   
   <g class="bee-group">
     {#each simulation.nodes() as node}
+      {#if selected && selected.includes(node.area_name)}
+        <circle fill="red" stroke="red" stroke-width={strokeWidth} cx={node.x} cy={node.y} {r} />
+      {:else}
       <circle fill={$zGet(node)} {stroke} stroke-width={strokeWidth} cx={node.x} cy={node.y} {r}>
         {#if getTitle}
           <title>{getTitle(node)}</title>
         {/if}
       </circle>
+      {/if}
     {/each}
   </g>
