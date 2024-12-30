@@ -75,7 +75,11 @@
   
       <g class="tick tick-{i}" transform="translate({$xScale(tick)},{Math.max(...$yRange)})">
         {#if gridlines === true}
-          <line class="gridline" x1={halfBand} x2={halfBand} y1={-$height} y2="0" />
+          {#if tick === 0}
+            <line class="zeroline" x1={halfBand} x2={halfBand} y1={-$height} y2="0" />
+          {:else}
+            <line class="gridline" x1={halfBand} x2={halfBand} y1={-$height} y2="0" />
+          {/if}
         {/if}
         {#if tickMarks === true}
           <line
@@ -98,10 +102,14 @@
       font-size: 11px;
     }
   
-    line,
-    .tick line {
+    .gridline {
       stroke: #aaa;
       stroke-dasharray: 2;
+    }
+
+    .zeroline {
+      stroke: red;
+      stroke-width: 2;
     }
   
     .tick text {
