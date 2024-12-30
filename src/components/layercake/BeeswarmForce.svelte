@@ -6,9 +6,11 @@
     import { getContext } from 'svelte';
     import { forceSimulation, forceX, forceY, forceCollide } from 'd3-force';
   
-    const { data, xGet, height, zGet } = getContext('LayerCake');
+    const { xGet, height, zGet } = getContext('LayerCake');
+
+    export let data;
   
-    const nodes = $data.map(d => ({ ...d }));
+    const nodes = data.map(d => ({ ...d }));
   
     /** @type {Number} [r=4] - The circle radius size in pixels. */
     export let r = 4;
