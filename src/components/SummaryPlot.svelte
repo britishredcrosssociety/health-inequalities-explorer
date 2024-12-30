@@ -15,10 +15,10 @@
     let titleKey = 'label';
     let seriesColors = ['#000'];
 
-    const r = 6;
+    const r = 3;
 
     onMount(async () => {
-        const response = await fetch('https://humaniverse.r-universe.dev/hiedata/data/england_icb_summary_metrics/json');
+        const response = await fetch('https://humaniverse.r-universe.dev/hiedata/data/england_ltla_summary_metrics/json');
         data = await response.json();
 
         groupedData = Array.from(group(data, d => d.variable), ([key, values]) => ({
@@ -55,7 +55,7 @@
                             <Beeswarm
                                 data={group.values}
                                 r={width < 400 ? r / 1.25 : r}
-                                strokeWidth={5}
+                                strokeWidth={1}
                                 xStrength={0.95}
                                 yStrength={0.075}
                                 getTitle={d => d[titleKey]}
@@ -90,7 +90,7 @@
         width: 100%;
     }
     .variable-group {
-        margin-bottom: 1rem;
+        margin-bottom: 0rem;
     }
     .variable-group h3 {
         margin: 0 0 0.5rem 0;
@@ -98,7 +98,7 @@
         color: #333;
     }
     .beeswarm-container {
-        height: 80px;
+        height: 180px;
     }
     :global(.beeswarm-container .layercake-container) {
         height: 100%;
