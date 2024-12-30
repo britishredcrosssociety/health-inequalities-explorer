@@ -32,6 +32,10 @@
     {#each groupedData as group}
         <div class="variable-group">
             <h3>{group.variable}</h3>
+            <div class="labels">
+                <span class="label left">← Worse than average</span>
+                <span class="label right">Better than average →</span>
+            </div>
             <div class="chart-container">
                 <LayerCake
                     padding={{ bottom: 15 }}
@@ -72,5 +76,16 @@
     }
     .variable-group {
         margin-bottom: 2rem;
+    }
+    .labels {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        color: #666;
+    }
+    .label {
+        user-select: none;
     }
 </style>
