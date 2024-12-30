@@ -65,6 +65,7 @@
                                 ticks={[-1, -0.5, 0, 0.5, 1]}
                                 tickMarks={i === groupedData.length - 1}
                                 baseline={i === groupedData.length - 1}
+                                showText={i === groupedData.length - 1}
                             />
                         </Svg>
                     </LayerCake>

@@ -36,6 +36,9 @@
   
     /** @type {Number} [dy=12] - Any optional value passed to the `dy` attribute on the text label. */
     export let dy = 12;
+
+    /** @type {boolean} [showText=false] - Show axis text/labels */
+    export let showText = true;
   
     /**@param {Number} i
      * @param {boolean} sl */
@@ -90,9 +93,11 @@
             y2={tickGutter + tickLen}
           />
         {/if}
-        <text x={halfBand} y={tickGutter + tickLen} {dx} {dy} text-anchor={textAnchor(i, snapLabels)}
-          >{format(tick)}</text
-        >
+        {#if showText === true}
+            <text x={halfBand} y={tickGutter + tickLen} {dx} {dy} text-anchor={textAnchor(i, snapLabels)}>
+                {format(tick)}
+            </text>
+        {/if}
       </g>
     {/each}
   </g>
