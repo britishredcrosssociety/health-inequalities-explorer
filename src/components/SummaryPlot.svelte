@@ -6,6 +6,7 @@
 
     import Beeswarm from './layercake/BeeswarmForce.svelte';
     import AxisX from './layercake/AxisX.svelte';
+    import Tooltip from './layercake/Tooltip2.html.svelte';
 
     let data;
     let groupedData;
@@ -70,6 +71,10 @@
                                 showText={i === groupedData.length - 1}
                             />
                         </Svg>
+
+                        <Html>
+                            <Tooltip dataset={group.values} />
+                        </Html>
                     </LayerCake>
                 </div>
             </div>
