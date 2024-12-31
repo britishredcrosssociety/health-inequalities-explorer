@@ -2,6 +2,7 @@
     import Header from "$components/Header.svelte";
     import SummaryCharts from "$components/SummaryCharts.svelte";
     import SummaryPlot from "../components/SummaryPlot.svelte";
+    import SummaryPlot2 from "../components/SummaryPlot2.svelte";
 </script>
 
 <section>
