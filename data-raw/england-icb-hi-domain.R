@@ -56,8 +56,8 @@ england_icb_hi_risk_factors_mean <- england_icb_hi_risk_factors |>
   mutate(area_name = "England Average", .before = number) |>
   mutate(variable = "Preventable Risk Factors Score", .before = number)
 
-england_icb_hi_outcomes <- bind_rows(
-  england_icb_hi_outcomes, england_icb_hi_risk_factors_mean
+england_icb_hi_risk_factors <- bind_rows(
+  england_icb_hi_risk_factors, england_icb_hi_risk_factors_mean
 ) |>
   mutate(
     label = paste0(
