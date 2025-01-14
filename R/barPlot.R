@@ -7,15 +7,30 @@ barPlotUI <- function(id) {
 
 barPlotServer <- function(id, selected, type) {
   moduleServer(id, function(input, output, session) {
-    valid_geographies <- c("england_ltla_shp", "brc_central_shp", "brc_london_shp", "brc_north_shp", "brc_south_shp", "brc_southeast_shp")
-    
+    valid_geographies <- c(
+      "england_ltla_shp",
+      "brc_central_shp",
+      "brc_london_shp",
+      "brc_north_shp",
+      "brc_south_shp",
+      "brc_southeast_shp",
+      "england_icb_shp"
+    )
+
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      if (selected$geography %in% valid_geographies) {
+      if (selected$geography %in% c("england_ltla_shp", "brc_central_shp", "brc_london_shp", "brc_north_shp", "brc_south_shp", "brc_southeast_shp")) {
         switch(type,
           "hi_outcomes" = england_ltla_hi_outcomes,
           "hi_risk_factors" = england_ltla_hi_risk_factors,
           "hi_social_determinants" = england_ltla_hi_social_determinants,
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "england_icb_shp") {
+        switch(type,
+          "hi_outcomes" = england_icb_hi_outcomes,
+          "hi_risk_factors" = england_icb_hi_risk_factors,
+          "hi_social_determinants" = england_icb_hi_social_determinants,
           stop("No data selected", call. = FALSE)
         )
       }
@@ -26,7 +41,6 @@ barPlotServer <- function(id, selected, type) {
         if (is.null(selected$areas)) {
           bar_plot_mean_only(
             data = dataset()
-            # selected_geography = selected$geography
           )
         } else {
           bar_plot_selected(
