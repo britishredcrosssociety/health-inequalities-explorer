@@ -47,15 +47,21 @@ all_subdomains <- england_health_index_ics_subdomains |>
 
 # ---- Healthy People / Health Outcomes ----
 england_icb_hi_outcomes_sub <- all_subdomains |>
-  filter(variable %in% outcomes)
+  filter(variable %in% outcomes) |>
+  mutate(variable = str_replace_all(variable, "_", " ")) |>
+  mutate(variable = str_to_sentence(variable))
 
 # --- Healthy Lives / Preventable Risk Factors ----
 england_icb_hi_risk_factors_sub <- all_subdomains |>
-  filter(variable %in% risk_factors)
+  filter(variable %in% risk_factors) |>
+  mutate(variable = str_replace_all(variable, "_", " ")) |>
+  mutate(variable = str_to_sentence(variable))
 
 # --- Healthy Places / Access to green space ----
 england_icb_hi_social_determinants_sub <- all_subdomains |>
-  filter(variable %in% social_determinants)
+  filter(variable %in% social_determinants) |>
+  mutate(variable = str_replace_all(variable, "_", " ")) |>
+  mutate(variable = str_to_sentence(variable))
 
 # ---- Check distributions ----
 check_distribution <- function(data) {
