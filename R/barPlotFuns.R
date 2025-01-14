@@ -137,4 +137,4 @@ bar_plot_selected <- function(data, selected_areas) {
 
 
 # Testing
-# bar_plot_selected(england_ltla_hi_risk_factors, c("Kensington and Chelsea", "Redcar and Cleveland"))
+# bar_plot_selected(england_icb_hi_social_determinants, c("Lincolnshire", "Norfolk and Waveney"))
