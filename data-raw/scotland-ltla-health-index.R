@@ -3,6 +3,7 @@ library(geographr)
 library(sf)
 library(ggridges)
 library(demographr)
+library(healthindexscotland)
 
 
 ltla <- boundaries_ltla21 |>
@@ -23,26 +24,20 @@ population_dz <-
   select(dz11_code, total_population)
 
 # ---- Health Index Score ----
-# An official Health Index for Scotland does not exists. Use the BRC Resilience
-# Index version
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-health_index_raw <- read_csv(
-  "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/scotland/index-unweighted-all-indicators.csv"
-)
-
-health_index <- health_index_raw |>
-  select(ltla21_code = lad_code, number = health_inequalities_composite_rank) |>
+# Taken from healthindexscotland package
+health_index <- scotland_health_index |>
+  select(ltla21_code = ltla24_code, number = health_inequalities_rank) |>
   mutate(percent = NA) |>
   mutate(variable = "Health Index \nrank") |>
   relocate(variable, .after = ltla21_code)
 
-# ---- Combine & reanme (pretty printing) ----
+# ---- Combine & rename (pretty printing) ----
 metrics_joined <- health_index |>
   left_join(ltla) |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   relocate(area_name)
+
 
 # ---- Normalise/scale ----
 scale_1_1 <- function(x) {
@@ -57,9 +52,8 @@ ltla_health_index_scotland_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, health index, and DEPAHRI as currently higher = worse health
-scotland_ltla_health_index_polarised <- ltla_health_index_scotland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+# NOTE: No need since current healthindexscotland data follows higher = better
+scotland_ltla_health_index_polarised <- ltla_health_index_scotland_scaled
 
 # Check distributions
 scotland_ltla_health_index_polarised |>
