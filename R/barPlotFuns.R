@@ -3,29 +3,30 @@ ggplotly_default_bar <- function(plot, number_areas) {
   # Set Height of plot to be a factor of the number of areas selected
   # number_areas <- length(data$area_name)
 
-  pixel <- ifelse(number_areas == 2,100,
-                    ifelse(number_areas == 1, 200, 60))
-  y_offset <- ifelse(number_areas <2, 0.5, 0.6)
-  
+  pixel <- ifelse(number_areas == 2, 100,
+    ifelse(number_areas == 1, 200, 60)
+  )
+  y_offset <- ifelse(number_areas < 2, 0.5, 0.6)
+
   ggplotly(
     plot,
     height = number_areas * pixel,
     width = 300,
     tooltip = c("text")
-  ) |> 
+  ) |>
     add_annotations(
       x = 85,
-      y = number_areas + y_offset, 
+      y = number_areas + y_offset,
       text = "◄ Worse than mean",
       showarrow = FALSE,
-      font = list(size = 8) 
+      font = list(size = 8)
     ) |>
     add_annotations(
       x = 120,
-      y = number_areas + y_offset, 
+      y = number_areas + y_offset,
       text = "Better than mean ►",
       showarrow = FALSE,
-      font = list(size = 8) 
+      font = list(size = 8)
     ) |>
     config(
       displayModeBar = TRUE,
@@ -55,12 +56,12 @@ ggplotly_default_bar <- function(plot, number_areas) {
 # To plot England Average as default
 bar_plot_mean_only <- function(data, selected_geography) {
   number_areas <- 1
-  
+
   # if (selected_geography == "england_ltla_shp") {
   data <- data |> filter(area_name %in% c("England Average", "Scotland Average"))
   number_areas <- length(data$area_name)
   # }
-  
+
   plot <-
     data |>
     ggplot(
@@ -85,20 +86,19 @@ bar_plot_mean_only <- function(data, selected_geography) {
       axis.text.y = element_blank(),
       axis.ticks.y = element_blank()
     )
-  
+
   ggplotly_default_bar(plot, number_areas)
 }
 
 # Example usage:
-# bar_plot_null(england_ltla_hi_social_determinants)
+# bar_plot_mean_only(england_ltla_hi_social_determinants)
 
 
 # ---- Plot selected areas ----
 bar_plot_selected <- function(data, selected_areas) {
-  data <- 
+  data <-
     data |>
     filter(area_name %in% c(selected_areas, "England Average", "Scotland Average"))
-  
   plot <-
     data |>
     ggplot() +
@@ -128,7 +128,7 @@ bar_plot_selected <- function(data, selected_areas) {
       axis.ticks.y = element_blank(),
       legend.position = "none"
     )
-  
+
   number_areas <- length(data$area_name)
 
   ggplotly_default_bar(plot, number_areas)
@@ -136,4 +136,4 @@ bar_plot_selected <- function(data, selected_areas) {
 
 
 # Testing
-# bar_plot_selected(england_ltla_hi_risk_factors, c("Kensington and Chelsea", "Redcar and Cleveland"))
+# bar_plot_selected(england_icb_hi_social_determinants, c("Lincolnshire", "Norfolk and Waveney"))
