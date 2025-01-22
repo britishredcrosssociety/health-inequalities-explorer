@@ -20,6 +20,7 @@ scotland_ltla_hi_outcomes <- scotland_health_index |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   add_row(number = mean(scotland_health_index$healthy_people_score), area_name = "Scotland Average") |>
+  mutate(number = number + 100) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
   mutate(label = paste0(
@@ -38,6 +39,7 @@ scotland_ltla_hi_risk_factors <- scotland_health_index |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   add_row(number = mean(scotland_health_index$healthy_lives_score), area_name = "Scotland Average") |>
+  mutate(number = number + 100) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
   mutate(label = paste0(
@@ -56,6 +58,7 @@ scotland_ltla_hi_social_determinants <- scotland_health_index |>
   select(-ltla21_code) |>
   rename(area_name = ltla21_name) |>
   add_row(number = mean(scotland_health_index$healthy_places_score), area_name = "Scotland Average") |>
+  mutate(number = number + 100) |>
   mutate(rank = round(rank(number))) |>
   relocate(area_name) |>
   mutate(label = paste0(

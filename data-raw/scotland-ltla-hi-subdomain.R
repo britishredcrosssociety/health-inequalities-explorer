@@ -15,6 +15,7 @@ ltla <-
 
 # ---- Healthy People / Health Outcomes ----
 scotland_ltla_hi_outcomes_sub <- scotland_health_index_subdomains |>
+  mutate(across(!ltla24_code, \(x) x+100)) |>
   select(1, starts_with("people_")) |>
   rename(ltla21_code = ltla24_code) |>
   left_join(ltla) |>
@@ -31,6 +32,7 @@ scotland_ltla_hi_outcomes_sub <- scotland_health_index_subdomains |>
 
 # --- Healthy Lives / Preventable Risk Factors ----
 scotland_ltla_hi_risk_factors_sub <- scotland_health_index_subdomains |>
+  mutate(across(!ltla24_code, \(x) x+100)) |>
   select(1, starts_with("lives_")) |>
   rename(ltla21_code = ltla24_code) |>
   left_join(ltla) |>
@@ -47,6 +49,7 @@ scotland_ltla_hi_risk_factors_sub <- scotland_health_index_subdomains |>
 
 # --- Healthy Places / Access to green space ----
 scotland_ltla_hi_social_determinants_sub <- scotland_health_index_subdomains |>
+  mutate(across(!ltla24_code, \(x) x+100)) |>
   select(1, starts_with("places_")) |>
   rename(ltla21_code = ltla24_code) |>
   left_join(ltla) |>
