@@ -14,7 +14,8 @@ tableServer <- function(id, selected, type) {
       "brc_north_shp",
       "brc_south_shp",
       "brc_southeast_shp",
-      "england_icb_shp"
+      "england_icb_shp",
+      "scotland_ltla_shp"
     )
 
     # Select dataset based on geographical selection and type of data
@@ -31,6 +32,13 @@ tableServer <- function(id, selected, type) {
           "people_subdomain" = england_icb_hi_outcomes_sub,
           "places_subdomain" = england_icb_hi_social_determinants_sub,
           "lives_subdomain" = england_icb_hi_risk_factors_sub,
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "scotland_ltla_shp") {
+        switch(type,
+          "people_subdomain" = scotland_ltla_hi_outcomes_sub,
+          "places_subdomain" = scotland_ltla_hi_social_determinants_sub,
+          "lives_subdomain" = scotland_ltla_hi_risk_factors_sub,
           stop("No data selected", call. = FALSE)
         )
       }

@@ -1,17 +1,18 @@
 # ---- Prepare selected data ----
 table_prep <- function(data, selected_areas) {
   names(data)[1] <- "Sub-domain"
+  average_col <- intersect(names(data), c("England Average", "Scotland Average"))
 
   # If selected_areas is NULL then this will just return "Sub-domain" and "England Average"
-  data <- data[, c("Sub-domain", "England Average", selected_areas)]
+  data <- data[, c("Sub-domain", average_col, selected_areas)]
 
-  data[, c("England Average", selected_areas)] <- round(data[, c("England Average", selected_areas)], 0)
+  data[, c(average_col, selected_areas)] <- round(data[, c(average_col, selected_areas)], 0)
 
   # Define formatter for setting font size
   set_font_size <- formatter("span", style = "font-size:10px")
 
   # Set font size for column names
-  data[, c("Sub-domain", "England Average")] <- lapply(data[, c("Sub-domain", "England Average")], set_font_size)
+  data[, c("Sub-domain", average_col)] <- lapply(data[, c("Sub-domain", average_col)], set_font_size)
   names(data) <- set_font_size(names(data))
 
 
