@@ -42,7 +42,7 @@ available_beds <-
 
 criteria_to_reside_trust_filtered <-
   england_trust_criteria_to_reside |>
-  filter(date < "2024-04-01") |> # Filter to match dates in available beds
+  filter(date < "2025-01-01") |> # Filter to match dates in available beds
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
@@ -97,12 +97,12 @@ criteria_to_reside_ltla <-
   )
 
 # ---- Discharged patients ----
-# Data is filtered to april 2024 to match data date frame in available beds
+# Data is filtered to december 2024 to match data date frame in available beds
 # Check this when updating data
 
 discharged_patients_trust_filtered <-
   england_trust_discharged_patients |>
-  filter(date < "2024-04-01") |> # Filter to match dates in available beds
+  filter(date < "2025-01-01") |> # Filter to match dates in available beds
   mutate(
     month = str_c(
       as.character(month(date, label = TRUE, abbr = FALSE)),
