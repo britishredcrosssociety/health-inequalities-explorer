@@ -26,30 +26,6 @@ ui <- function() {
       has_border = FALSE,
       class = "intro",
       tags$p(
-        style = "color: #1d70b8",
-        tags$b("Recent updates (June 2024):"),
-        tags$ul(
-          tags$li(
-            style = "color: #1d70b8",
-            "Access to healthcare indicators broken down to physical and digital access"
-          )
-        )
-      ),
-      tags$p(
-        style = "color: #1d70b8",
-        tags$b("March 2024:"),
-        tags$ul(
-          tags$li(
-            style = "color: #1d70b8",
-            "Added ONS Health Index Domains and Sub-domains for England's Local Authorities."
-          ),
-          tags$li(
-            style = "color: #1d70b8",
-            "Added filter for British Red Cross regions."
-          )
-        )
-      ),
-      tags$p(
         tags$span(class = "phase-banner", "ALPHA"),
         "This is a new service - new data and features are being added."
       ),
