@@ -21,7 +21,7 @@ rtt <- ni_rtt_hsct |>
     waits_over_18_weeks,
     total_waits,
   ) |>
-  filter(date >= max(date) %m-% months(2)) # Last quarter
+  filter(date == "2023-09-01") # Last quarter with data for all areas. NOTE: Check when updating.
 
 # Create dynamic label
 max_date_rtt <- max(rtt$date) |>
@@ -56,7 +56,7 @@ available_beds <- ni_beds |>
     percent_available = total_available_beds /
       (total_available_beds + total_occupied_beds)
   ) |>
-  filter(date >= max(date) %m-% months(2)) # Last quarter
+  filter(date == "2023-12-31") # Last quarter with data for all areas. NOTE: Check when updating.
 
 # Create dynamic label
 max_date_beds <- max(available_beds$date) |>

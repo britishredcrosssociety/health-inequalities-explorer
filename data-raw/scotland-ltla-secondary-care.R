@@ -17,7 +17,7 @@ pop_raw <- read_csv(
 )
 
 pop_scotland <- pop_raw |>
-  filter(Year == 2021) |>
+  filter(Year == 2023) |>
   filter(Sex == "All") |>
   filter(CA != "S92000003") |>
   select(ltla21_code = CA, population = AllAges)

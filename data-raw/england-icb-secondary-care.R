@@ -105,11 +105,12 @@ available_icb_beds <-
   summarise(available_beds = sum(available_beds, na.rm = TRUE)) |>
   ungroup()
 
-# Data for available icb_beds only goes to march 2024
-# Need to filter criteria to reside data to cover same time period
+# Data for available icb_beds goes to December 2024
+# If data for available icb_beds is not available for some months -
+# need to filter criteria to reside data to cover same time period
 # Check this when updating data
 england_icb_criteria_to_reside_filtered <- england_icb_criteria_to_reside |>
-  filter(date < "2024-04-01")
+  filter(date < "2025-01-01")
 
 criteria_to_reside_icb_ungrouped <-
   england_icb_criteria_to_reside_filtered |>
@@ -144,12 +145,13 @@ criteria_to_reside_icb <- criteria_to_reside_icb_ungrouped |>
   )
 
 # ---- Discharged patients ----
-# Data for available icb_beds only goes to march 2024
-# Need to filter discharged patients data to cover same time period
+# Data for available icb_beds only goes to December 2024
+# If data for available icb_beds is not available for some months -
+# need to filter criteria to reside data to cover same time period
 # Check this when updating data
 
 england_icb_discharged_patients_filtered <- england_icb_discharged_patients |>
-  filter(date < "2024-04-01")
+  filter(date < "2025-01-01")
 
 discharged_patients_icb_ungrouped <-
   england_icb_discharged_patients_filtered |>
