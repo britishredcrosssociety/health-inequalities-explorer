@@ -59,9 +59,9 @@ ltla_health_index_wales_scaled <- metrics_joined |>
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index, DEPAHRI, loneliness as currently higher = worse health
-wales_ltla_health_index_polarised <-
-  ltla_health_index_wales_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+wales_ltla_health_index_polarised <- ltla_health_index_wales_scaled |>
+  mutate(scaled_1_1 = scaled_1_1 * -1) |>
+  mutate(number = rank(-number))
 
 # Check distributions
 wales_ltla_health_index_polarised |>
