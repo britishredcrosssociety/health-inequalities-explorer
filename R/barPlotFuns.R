@@ -71,8 +71,7 @@ bar_plot_mean_only <- function(data, selected_geography) {
         text = label
       )
     ) +
-    geom_point(size = 3, color = "black") +
-    geom_segment(aes(x = 70, xend = number, yend = area_name), color = "black") +
+    geom_point(size = 3, color = "grey") +
     geom_text(aes(x = 90, y = area_name, label = area_name), color = "black", size = 3, nudge_y = 0.2) +
     xlim(70, 130) +
     labs(
@@ -96,26 +95,48 @@ bar_plot_mean_only <- function(data, selected_geography) {
 
 # ---- Plot selected areas ----
 bar_plot_selected <- function(data, selected_areas) {
-  data <-
-    data |>
-    filter(area_name %in% c(selected_areas, "England Average", "Scotland Average", "Northern Ireland Average"))
+  data <- data |>
+    filter(area_name %in% c(selected_areas, "England Average", "Scotland Average"))
+
+  national_average <- data |>
+    filter(area_name %in% c("England Average", "Scotland Average", "Northern Ireland Average")) |>
+    pull(number)
+
+  selected_areas_data <- data |>
+    filter(!(area_name %in% c("England Average", "Scotland Average", "Northern Ireland Average")))
+
+  color_palette <- c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004")
+
+  sorted_areas <- sort(selected_areas)
+
+  area_colors <- setNames(
+    color_palette[1:length(sorted_areas)],
+    sorted_areas
+  )
+
+  plot_data <- selected_areas_data |>
+    mutate(
+      national_avg = national_average,
+      area_label = label,
+      diff_from_avg = number - national_avg
+    ) |>
+    mutate(area_name = factor(area_name, levels = area_name[order(diff_from_avg)]))
+
+  # Create the plot
   plot <-
-    data |>
+    plot_data |>
     ggplot() +
     aes(
-      x = number,
       y = area_name,
-      text = label,
       fill = area_name
     ) +
-    geom_point(size = 3) +
-    geom_segment(aes(x = 70, xend = number - 1, yend = area_name), color = "black") +
-    geom_text(aes(x = 95, y = area_name, label = area_name), color = "black", size = 3, nudge_y = 0.3) +
+    geom_point(aes(x = number), size = 3) +
+    geom_point(aes(x = national_avg), size = 3, shape = 21, fill = "grey", color = "black") +
+    geom_segment(aes(x = national_avg, xend = number, y = area_name, yend = area_name), color = "black") +
+    geom_text(aes(x = 95, label = area_name), color = "black", size = 3, nudge_y = 0.3) +
     xlim(70, 130) +
     scale_fill_manual(
-      # https://waldyrious.net/viridis-palette-generator/
-      # No. of colours = maximum number of area selections + 1
-      values = c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004"),
+      values = area_colors
     ) +
     labs(
       x = "Score", y = NULL
@@ -129,7 +150,7 @@ bar_plot_selected <- function(data, selected_areas) {
       legend.position = "none"
     )
 
-  number_areas <- length(data$area_name)
+  number_areas <- length(plot_data$area_name)
 
   ggplotly_default_bar(plot, number_areas)
 }

@@ -1,52 +1,49 @@
 # ---- Prepare selected data ----
-table_prep <- function(data, selected_areas) {
-  names(data)[1] <- "Sub-domain"
-  average_col <- intersect(names(data), c("England Average", "Scotland Average", "Northern Ireland Average"))
-
-  # If selected_areas is NULL then this will just return "Sub-domain" and "England Average"
-  data <- data[, c("Sub-domain", average_col, selected_areas)]
-
-  data[, c(average_col, selected_areas)] <- round(data[, c(average_col, selected_areas)], 0)
-
-  # Define formatter for setting font size
-  set_font_size <- formatter("span", style = "font-size:10px")
-
-  # Set font size for column names
-  data[, c("Sub-domain", average_col)] <- lapply(data[, c("Sub-domain", average_col)], set_font_size)
-  names(data) <- set_font_size(names(data))
-
-
-  return(data)
-  # return(formattable(data))
-}
-
-# ---- Show table for selected areas (or just England Average if no areas have been selected) ----
 table_selected <- function(data, selected_areas) {
-  if (ncol(data) >= 3) {
-    # User has selected at least one area; highlight the minimum values for each sub-domain in the selected areas
-    formattable(
-      data,
+  data <- data |>
+    filter(region %in% selected_areas)
 
-      # For each of the areas selected by the user (columns 3 and beyond), use a <span> tag to highlight the minimum values in red
-      lapply(data[, 3:ncol(data)], function(x) {
-        formatter("span",
-          style = x ~ formattable::style(
-            display = "block",
-            padding = "0 4px",
-            `border-radius` = "4px",
-            color = ifelse(x == min(x, na.rm = TRUE), "white", NA),
-            `background-color` = ifelse(x == min(x, na.rm = TRUE), "#ee2a24", NA),
-            `font-size` = "10px"
-          )
-        )
-      })
+  min_val <- data |>
+    select(-region) |>
+    min(na.rm = TRUE) |>
+    suppressWarnings()
+
+  max_val <- data |>
+    select(-region) |>
+    max(na.rm = TRUE) |>
+    suppressWarnings()
+
+  data |>
+    gt() |>
+    tab_header(
+      title = md("### Subdomain indicator scores"),
+      subtitle = md("Red = worse | Green = better")
+    ) |>
+    cols_label(region = "") |>
+    tab_options(
+      table.font.size = px(12),
+      column_labels.font.weight = "bold"
+    ) |>
+    tab_style(
+      style = cell_text(align = "center"),
+      locations = cells_body(columns = !region)
+    ) |>
+    tab_spanner_delim(delim = "--") |>
+    data_color(
+      columns = !region,
+      domain = c(min_val, max_val),
+      palette = c("#e41a1c", "#ffffbf", "#4daf4a")
+    ) |>
+    fmt_number(
+      !region,
+      decimals = 1
+    ) |>
+    tab_style(
+      style = cell_borders(sides = "all", style = "solid", color = "#e9e9e9"),
+      locations = cells_body(
+        columns = !region
+      )
     )
-  } else {
-    # User hasn't selected any areas; just show the sub-domains and the England Average
-    formattable(
-      data
-    )
-  }
 }
 
 # ---- Blank table ----

@@ -1,6 +1,5 @@
 ui <- function() {
   grid_page(
-
     # `grid_card()` notes:
     # - `area` arg is used in R/gridConfig.R
     # - `class` arg is used in inst/www/styles.css
@@ -45,7 +44,6 @@ ui <- function() {
         tags$button(class = "guide-button", "SEE QUICK USER GUIDE")
       )
     ),
-
 
     # ---- Selection ----
     grid_card(
@@ -147,9 +145,7 @@ ui <- function() {
         "hi_text hi_text hi_text",
         "people_title places_title lives_title",
         "people_domain  places_domain lives_domain",
-        "peoplesub_title placessub_title livessub_title",
-        "people_subdomain  places_subdomain lives_subdomain",
-        "subdomain_text subdomain_text subdomain_text",
+        "subdomains subdomains subdomains",
         "hi_source hi_source hi_source"
       ),
       # Link to ONS HI page
@@ -166,7 +162,8 @@ ui <- function() {
         )
       ),
       # Overall title
-      grid_card("hi_domain_title",
+      grid_card(
+        "hi_domain_title",
         has_border = FALSE,
         tags$h6(tags$b("Health Index Domains and Sub-Domains"))
       ),
@@ -193,7 +190,8 @@ ui <- function() {
       ),
 
       # Domain titles
-      grid_card("people_title",
+      grid_card(
+        "people_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -201,7 +199,8 @@ ui <- function() {
           tags$h6(tags$b("Health Outcomes Domain"))
         )
       ),
-      grid_card("lives_title",
+      grid_card(
+        "lives_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -209,7 +208,8 @@ ui <- function() {
           tags$h6(tags$b("Preventable Risk Factors Domain"))
         )
       ),
-      grid_card("places_title",
+      grid_card(
+        "places_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -218,7 +218,8 @@ ui <- function() {
         )
       ),
       # Domain plots
-      grid_card("people_domain",
+      grid_card(
+        "people_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -226,7 +227,8 @@ ui <- function() {
           barPlotUI("hioutcomesPlot")
         )
       ),
-      grid_card("lives_domain",
+      grid_card(
+        "lives_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -234,7 +236,8 @@ ui <- function() {
           barPlotUI("hiriskfactorsPlot")
         )
       ),
-      grid_card("places_domain",
+      grid_card(
+        "places_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -242,81 +245,17 @@ ui <- function() {
           barPlotUI("hisocialdeterminantsPlot")
         )
       ),
-      # Sub-titles
-      grid_card("peoplesub_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Health Outcomes Sub-Domains"))
-        )
-      ),
-      grid_card("livessub_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Preventable Risk Factors Sub-Domains"))
-        )
-      ),
-      grid_card("placessub_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Social Determinants of Health Sub-Domains"))
-        )
-      ),
-      # Sub-domain explnatory text
+      # Sub-domain table
       grid_card(
-        area = "subdomain_text",
-        has_border = FALSE,
-        tags$p(
-          "Each subdomain contains a number of indicators that measure a particular aspect of health.
-    Low numbers mean worse health and high numbers mean better health. Boxes in ",
-          tags$span(
-            "red",
-            style = "color: white; background-color: #ee2a24; padding: 0 4px; border-radius: 4px;"
-          ),
-          " represent the area's worst performing indicator by subdomain."
-        )
-      ),
-
-
-      # Sub-domain tables
-      grid_card("people_subdomain",
+        "subdomains",
         has_border = FALSE,
         scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
-
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tableUI("peopleSubdomainTable")
-        )
-      ),
-      grid_card("lives_subdomain",
-        has_border = FALSE, scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;",
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tableUI("livesSubdomainTable")
-        )
-      ), # only enable horizontal scroll
-      grid_card("places_subdomain",
-        has_border = FALSE,
-        scrollable = TRUE,
-        style = "overflow-x: auto; overflow-y: hidden;", # only enable horizontal scroll
-
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tableUI("placesSubdomainTable")
+          tableUI("subdomainTable")
         )
       )
     ),
-
 
     # ---- Secondary care ----
     # Secondary care in Wales LTLA does not have data

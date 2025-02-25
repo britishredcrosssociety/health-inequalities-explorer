@@ -21,9 +21,7 @@ server <- function(input, output, session) {
   barPlotServer("hisocialdeterminantsPlot", selected, "hi_social_determinants")
 
   # Health Index subdomains
-  tableServer("peopleSubdomainTable", selected, "people_subdomain")
-  tableServer("placesSubdomainTable", selected, "places_subdomain")
-  tableServer("livesSubdomainTable", selected, "lives_subdomain")
+  tableServer("subdomainTable", selected)
 
   # Indicator descriptions
   indicatorDescriptionsServer("summaryDescriptions", selected, "summary_metrics")
