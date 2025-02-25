@@ -105,6 +105,15 @@ bar_plot_selected <- function(data, selected_areas) {
   selected_areas_data <- data |>
     filter(!(area_name %in% c("England Average", "Scotland Average")))
 
+  color_palette <- c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004")
+
+  sorted_areas <- sort(selected_areas)
+
+  area_colors <- setNames(
+    color_palette[1:length(sorted_areas)],
+    sorted_areas
+  )
+
   plot_data <- selected_areas_data |>
     mutate(
       national_avg = national_average,
@@ -127,9 +136,7 @@ bar_plot_selected <- function(data, selected_areas) {
     geom_text(aes(x = 95, label = area_name), color = "black", size = 3, nudge_y = 0.3) +
     xlim(70, 130) +
     scale_fill_manual(
-      # https://waldyrious.net/viridis-palette-generator/
-      # No. of colours = maximum number of area selections + 1
-      values = c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004"),
+      values = area_colors
     ) +
     labs(
       x = "Score", y = NULL
