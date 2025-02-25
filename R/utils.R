@@ -22,3 +22,22 @@ string_wrap_unvectorized <- function(string) {
 }
 
 string_wrap <- Vectorize(string_wrap_unvectorized, USE.NAMES = FALSE)
+
+combine_subdomains <- function(outcomes, risk_factors, social_determinants) {
+  outcomes <- outcomes |>
+    pivot_longer(!variable, names_to = "region", values_to = "score") |>
+    mutate(sub_domain = "Outcomes", .before = "variable")
+
+  risk_factors <- risk_factors |>
+    pivot_longer(!variable, names_to = "region", values_to = "score") |>
+    mutate(sub_domain = "Risk factors", .before = "variable")
+
+  social_determinants <- social_determinants |>
+    pivot_longer(!variable, names_to = "region", values_to = "score") |>
+    mutate(sub_domain = "Social determinants", .before = "variable")
+
+  bind_rows(outcomes, risk_factors, social_determinants) |>
+    mutate(variable = paste(sub_domain, variable, sep = "--")) |>
+    select(-sub_domain) |>
+    pivot_wider(names_from = variable, values_from = score)
+}
