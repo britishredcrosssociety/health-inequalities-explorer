@@ -1,6 +1,5 @@
 ui <- function() {
   grid_page(
-
     # `grid_card()` notes:
     # - `area` arg is used in R/gridConfig.R
     # - `class` arg is used in inst/www/styles.css
@@ -45,7 +44,6 @@ ui <- function() {
         tags$button(class = "guide-button", "SEE QUICK USER GUIDE")
       )
     ),
-
 
     # ---- Selection ----
     grid_card(
@@ -148,7 +146,6 @@ ui <- function() {
         "people_title places_title lives_title",
         "people_domain  places_domain lives_domain",
         "subdomains subdomains subdomains",
-        "subdomain_text subdomain_text subdomain_text",
         "hi_source hi_source hi_source"
       ),
       # Link to ONS HI page
@@ -165,7 +162,8 @@ ui <- function() {
         )
       ),
       # Overall title
-      grid_card("hi_domain_title",
+      grid_card(
+        "hi_domain_title",
         has_border = FALSE,
         tags$h6(tags$b("Health Index Domains and Sub-Domains"))
       ),
@@ -192,7 +190,8 @@ ui <- function() {
       ),
 
       # Domain titles
-      grid_card("people_title",
+      grid_card(
+        "people_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -200,7 +199,8 @@ ui <- function() {
           tags$h6(tags$b("Health Outcomes Domain"))
         )
       ),
-      grid_card("lives_title",
+      grid_card(
+        "lives_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -208,7 +208,8 @@ ui <- function() {
           tags$h6(tags$b("Preventable Risk Factors Domain"))
         )
       ),
-      grid_card("places_title",
+      grid_card(
+        "places_title",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -217,7 +218,8 @@ ui <- function() {
         )
       ),
       # Domain plots
-      grid_card("people_domain",
+      grid_card(
+        "people_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -225,7 +227,8 @@ ui <- function() {
           barPlotUI("hioutcomesPlot")
         )
       ),
-      grid_card("lives_domain",
+      grid_card(
+        "lives_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -233,7 +236,8 @@ ui <- function() {
           barPlotUI("hiriskfactorsPlot")
         )
       ),
-      grid_card("places_domain",
+      grid_card(
+        "places_domain",
         has_border = FALSE,
         conditionalPanel(
           condition = "['scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
@@ -241,17 +245,7 @@ ui <- function() {
           barPlotUI("hisocialdeterminantsPlot")
         )
       ),
-      # Sub-domain explnatory text
-      grid_card(
-        area = "subdomain_text",
-        has_border = FALSE,
-        tags$p(
-          "Each subdomain contains a number of indicators that measure a particular aspect of health.
-          Green represents better health and red represents worse health."
-        )
-      ),
-
-      # Sub-domain tables
+      # Sub-domain table
       grid_card(
         "subdomains",
         has_border = FALSE,
