@@ -72,7 +72,6 @@ bar_plot_mean_only <- function(data, selected_geography) {
       )
     ) +
     geom_point(size = 3, color = "black") +
-    geom_segment(aes(x = 70, xend = number, yend = area_name), color = "black") +
     geom_text(aes(x = 90, y = area_name, label = area_name), color = "black", size = 3, nudge_y = 0.2) +
     xlim(70, 130) +
     labs(
