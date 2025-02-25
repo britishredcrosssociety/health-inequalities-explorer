@@ -58,7 +58,7 @@ bar_plot_mean_only <- function(data, selected_geography) {
   number_areas <- 1
 
   # if (selected_geography == "england_ltla_shp") {
-  data <- data |> filter(area_name %in% c("England Average", "Scotland Average"))
+  data <- data |> filter(area_name %in% c("England Average", "Scotland Average", "Northern Ireland Average"))
   number_areas <- length(data$area_name)
   # }
 
@@ -99,11 +99,11 @@ bar_plot_selected <- function(data, selected_areas) {
     filter(area_name %in% c(selected_areas, "England Average", "Scotland Average"))
 
   national_average <- data |>
-    filter(area_name %in% c("England Average", "Scotland Average")) |>
+    filter(area_name %in% c("England Average", "Scotland Average", "Northern Ireland Average")) |>
     pull(number)
 
   selected_areas_data <- data |>
-    filter(!(area_name %in% c("England Average", "Scotland Average")))
+    filter(!(area_name %in% c("England Average", "Scotland Average", "Northern Ireland Average")))
 
   color_palette <- c("#0d0887", "#febd2a", "#b83289", "#f48849", "#f0f921", "#8b0aa5", "#db5c68", "#5302a3", "#000004")
 

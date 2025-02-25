@@ -4,7 +4,7 @@ library(geographr)
 library(compositr)
 library(sf)
 library(ggridges)
-library(loneliness)
+library(healthindexni)
 
 pkgload::load_all(".")
 
@@ -56,10 +56,8 @@ hsct_health_index_northern_ireland_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, health index and loneliness as currently higher = worse health
-northern_ireland_hsct_health_index_polarised <-
-  hsct_health_index_northern_ireland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+# NOTE: No need since current healthindexni data follows higher = better
+northern_ireland_hsct_health_index_polarised <- hsct_health_index_northern_ireland_scaled
 
 # Check distributions
 northern_ireland_hsct_health_index_polarised |>
