@@ -3,6 +3,16 @@ table_selected <- function(data, selected_areas) {
   data <- data |>
     filter(region %in% selected_areas)
 
+  min_val <- data |>
+    select(-region) |>
+    min(na.rm = TRUE) |>
+    suppressWarnings()
+
+  max_val <- data |>
+    select(-region) |>
+    max(na.rm = TRUE) |>
+    suppressWarnings()
+
   data |>
     gt() |>
     tab_header(
@@ -21,6 +31,7 @@ table_selected <- function(data, selected_areas) {
     tab_spanner_delim(delim = "--") |>
     data_color(
       columns = !region,
+      domain = c(min_val, max_val),
       palette = c("#e41a1c", "#ffffbf", "#4daf4a")
     ) |>
     fmt_number(
@@ -32,9 +43,6 @@ table_selected <- function(data, selected_areas) {
       locations = cells_body(
         columns = !region
       )
-    ) |>
-    tab_footnote(
-      "Cells are coloured by column. This means you should compare colours across places for a single indicator, not across indicators for a single place."
     )
 }
 
