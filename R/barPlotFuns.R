@@ -108,8 +108,10 @@ bar_plot_selected <- function(data, selected_areas) {
   plot_data <- selected_areas_data |>
     mutate(
       national_avg = national_average,
-      area_label = label
-    )
+      area_label = label,
+      diff_from_avg = number - national_avg
+    ) |>
+    mutate(area_name = factor(area_name, levels = area_name[order(diff_from_avg)]))
 
   # Create the plot
   plot <-
