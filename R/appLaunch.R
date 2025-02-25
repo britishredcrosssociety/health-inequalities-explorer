@@ -1,3 +1,4 @@
+library(dplyr)
 library(formattable)
 library(ggplot2)
 library(gridlayout)

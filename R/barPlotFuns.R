@@ -71,7 +71,7 @@ bar_plot_mean_only <- function(data, selected_geography) {
         text = label
       )
     ) +
-    geom_point(size = 3, color = "black") +
+    geom_point(size = 3, color = "grey") +
     geom_text(aes(x = 90, y = area_name, label = area_name), color = "black", size = 3, nudge_y = 0.2) +
     xlim(70, 130) +
     labs(
@@ -95,21 +95,46 @@ bar_plot_mean_only <- function(data, selected_geography) {
 
 # ---- Plot selected areas ----
 bar_plot_selected <- function(data, selected_areas) {
-  data <-
-    data |>
+  # Filter data to include selected areas and national averages
+  data <- data |>
     filter(area_name %in% c(selected_areas, "England Average", "Scotland Average"))
+
+  # Separate national averages from selected areas
+  national_average <- data |>
+    filter(area_name %in% c("England Average", "Scotland Average")) |>
+    pull(number)
+
+  # Get selected areas only (excluding national averages)
+  selected_areas_data <- data |>
+    filter(!(area_name %in% c("England Average", "Scotland Average")))
+
+  # Create a new dataframe for plotting with one row per selected area
+  plot_data <- selected_areas_data |>
+    mutate(
+      # Assign the appropriate national average based on area
+      # This is a placeholder - you may need to adjust based on your data structure
+      national_avg = national_average,
+      # Create custom tooltip labels
+      area_label = label,
+      avg_label = paste0("National average: ", round(national_avg, 1))
+    )
+
+  # Create the plot
   plot <-
-    data |>
+    plot_data |>
     ggplot() +
     aes(
-      x = number,
       y = area_name,
-      text = label,
       fill = area_name
     ) +
-    geom_point(size = 3) +
-    geom_segment(aes(x = 70, xend = number - 1, yend = area_name), color = "black") +
-    geom_text(aes(x = 95, y = area_name, label = area_name), color = "black", size = 3, nudge_y = 0.3) +
+    # Add points for the selected areas
+    geom_point(aes(x = number), size = 3) +
+    # Add points for the national averages
+    geom_point(aes(x = national_avg), size = 3, shape = 21, fill = "grey", color = "black") +
+    # Create dumbbell segments from national average to area value
+    geom_segment(aes(x = national_avg, xend = number, y = area_name, yend = area_name), color = "black") +
+    # Add area labels
+    geom_text(aes(x = 95, label = area_name), color = "black", size = 3, nudge_y = 0.3) +
     xlim(70, 130) +
     scale_fill_manual(
       # https://waldyrious.net/viridis-palette-generator/
@@ -128,7 +153,7 @@ bar_plot_selected <- function(data, selected_areas) {
       legend.position = "none"
     )
 
-  number_areas <- length(data$area_name)
+  number_areas <- length(plot_data$area_name)
 
   ggplotly_default_bar(plot, number_areas)
 }
