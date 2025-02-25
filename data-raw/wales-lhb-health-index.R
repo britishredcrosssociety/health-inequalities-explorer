@@ -64,7 +64,8 @@ lhb_health_index_wales_scaled <-
 # Align so higher value = better health
 # Flip IMD, LBA, health index, and DEPAHRI, as currently higher = worse health
 wales_lhb_health_index_polarised <- lhb_health_index_wales_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(scaled_1_1 = scaled_1_1 * -1) |>
+  mutate(number = rank(-number))
 
 # Check distributions
 wales_lhb_health_index_polarised |>
