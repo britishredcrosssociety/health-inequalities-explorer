@@ -12,6 +12,9 @@ ui <- function() {
 
     # ---- Layout specified in R/gridConfig.R ----
     layout = grid_config,
+    
+    # ---- HTML page title ----
+    tags$title("Health Inequalities Explorer | British Red Cross"),
 
     # ---- Header, Intro & User Guide ----
     grid_card(
