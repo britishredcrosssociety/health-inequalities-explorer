@@ -114,120 +114,97 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Health Index ----
-    grid_nested(
-      "hi_domain",
-      layout = c(
-        "hi_domain_title help_hi_domains help_hi_domains",
-        "hi_text hi_text hi_text",
-        "people_title lives_title places_title",
-        "people_domain lives_domain places_domain",
-        "subdomains subdomains subdomains",
-        "hi_source hi_source hi_source"
-      ),
-      # Link to ONS HI page
-      grid_card(
-        area = "hi_source",
-        has_border = FALSE,
-        tags$p(
-          "For more information on the Health Index, its underlying methodology and indicators, please see",
-          tags$a(
-            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
-            target = "_blank",
-            "here."
-          )
-        )
-      ),
-      # Overall title
-      grid_card(
-        "hi_domain_title",
-        has_border = FALSE,
-        tags$h6(tags$b("Breakdown of population health data"))
-      ),
-      grid_card(
-        area = "help_hi_domains",
-        has_border = FALSE,
-        helpButtonHIUI("help_hi_domains")
-      ),
-
-      # Explanatory text
-      grid_card(
-        area = "hi_text",
-        has_border = FALSE,
-        collapsible = TRUE,
-        tags$p(
-          "Population health is based on three factors: (1) health outcomes, (2) modifiable and preventable risks,
-          and (3) social determinants of health. Each of these factors can be broken down further.
-          For example, social determinants of health are a combination of access to green spaces, access to services,
-          crime, economic and working conditions, and living conditions."
+    conditionalPanel(
+      condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_central_icb_shp', 'brc_london_shp', 'brc_london_icb_shp', 'brc_north_shp',, 'brc_north_icb_shp', 'brc_south_shp', 'brc_south_icb_shp', 'brc_southeast_shp', 'brc_southeast_icb_shp'].includes(input['geography-selectGeography']) && input['areas-selectAreas'].length > 0",
+      
+      grid_nested(
+        "hi_domain",
+        layout = c(
+          "hi_domain_title help_hi_domains help_hi_domains",
+          "hi_text hi_text hi_text",
+          "people_title lives_title places_title",
+          "people_domain lives_domain places_domain",
+          "subdomains subdomains subdomains",
+          "hi_source hi_source hi_source"
         ),
-        tags$p(
-          "Click the help (?) button above for information on interpreting these scores."
-        )
-      ),
-
-      # Domain titles
-      grid_card(
-        "people_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        # Link to ONS HI page
+        grid_card(
+          area = "hi_source",
+          has_border = FALSE,
+          tags$p(
+            "For more information on the Health Index, its underlying methodology and indicators, please see",
+            tags$a(
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
+              target = "_blank",
+              "here."
+            )
+          )
+        ),
+        # Overall title
+        grid_card(
+          "hi_domain_title",
+          has_border = FALSE,
+          tags$h6(tags$b("Breakdown of population health data"))
+        ),
+        grid_card(
+          area = "help_hi_domains",
+          has_border = FALSE,
+          helpButtonHIUI("help_hi_domains")
+        ),
+  
+        # Explanatory text
+        grid_card(
+          area = "hi_text",
+          has_border = FALSE,
+          collapsible = TRUE,
+          tags$p(
+            "Population health is based on three factors: (1) health outcomes, (2) modifiable and preventable risks,
+            and (3) social determinants of health. Each of these factors can be broken down further.
+            For example, social determinants of health are a combination of access to green spaces, access to services,
+            crime, economic and working conditions, and living conditions."
+          ),
+          tags$p(
+            "Click the help (?) button above for information on interpreting these scores."
+          )
+        ),
+  
+        # Domain titles
+        grid_card(
+          "people_title",
+          has_border = FALSE,
           tags$h6(tags$b("Health Outcomes"))
-        )
-      ),
-      grid_card(
-        "lives_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "lives_title",
+          has_border = FALSE,
           tags$h6(tags$b("Preventable Risk Factors"))
-        )
-      ),
-      grid_card(
-        "places_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "places_title",
+          has_border = FALSE,
           tags$h6(tags$b("Social Determinants of Health"))
-        )
-      ),
-      # Domain plots
-      grid_card(
-        "people_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        # Domain plots
+        grid_card(
+          "people_domain",
+          has_border = FALSE,
           barPlotUI("hioutcomesPlot")
-        )
-      ),
-      grid_card(
-        "lives_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "lives_domain",
+          has_border = FALSE,
           barPlotUI("hiriskfactorsPlot")
-        )
-      ),
-      grid_card(
-        "places_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "places_domain",
+          has_border = FALSE,
           barPlotUI("hisocialdeterminantsPlot")
-        )
-      ),
-      # Sub-domain table
-      grid_card(
-        "subdomains",
-        has_border = FALSE,
-        scrollable = TRUE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+        ),
+        # Sub-domain table
+        grid_card(
+          "subdomains",
+          has_border = FALSE,
+          scrollable = TRUE,
           tableUI("subdomainTable")
         )
       )
