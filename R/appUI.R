@@ -82,7 +82,7 @@ ui <- function() {
       area = "summary_title",
       has_border = FALSE,
       class = "summary-title",
-      tags$h4(tags$b("Summary Indicators"))
+      tags$h4(tags$b("Health Inequalities"))
     ),
     grid_card(
       area = "summary_note",
@@ -117,7 +117,7 @@ ui <- function() {
     grid_card(
       area = "hi_title",
       has_border = FALSE,
-      tags$h4(tags$b("Health Index"))
+      tags$h4(tags$b("Population Health"))
     ),
     grid_card(
       area = "hi_note",
@@ -153,7 +153,7 @@ ui <- function() {
         area = "hi_source",
         has_border = FALSE,
         tags$p(
-          "For more information on the ONS Health Index, its underlying methodology and indicators, please see",
+          "For more information on the Health Index, its underlying methodology and indicators, please see",
           tags$a(
             href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
             target = "_blank",
@@ -165,7 +165,7 @@ ui <- function() {
       grid_card(
         "hi_domain_title",
         has_border = FALSE,
-        tags$h6(tags$b("Health Index Domains and Sub-Domains"))
+        tags$h6(tags$b("Breakdown of population health data"))
       ),
       grid_card(
         area = "help_hi_domains",
@@ -179,13 +179,13 @@ ui <- function() {
         has_border = FALSE,
         collapsible = TRUE,
         tags$p(
-          "The ONS Health Index score can be broken down into three areas of health,
-          known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
-          Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
-          that represent overarching topics related to their respective domain."
+          "Population health is based on three factors: (1) health outcomes, (2) modifiable and preventable risks,
+          and (3) social determinants of health. Each of these factors can be broken down further.
+          For example, social determinants of health are a combination of access to green spaces, access to services,
+          crime, economic and working conditions, and living conditions."
         ),
         tags$p(
-          "Click the help (?) button above for information on interpreting the scores."
+          "Click the help (?) button above for information on interpreting these scores."
         )
       ),
 
@@ -196,7 +196,7 @@ ui <- function() {
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
           # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Health Outcomes Domain"))
+          tags$h6(tags$b("Health Outcomes"))
         )
       ),
       grid_card(
@@ -205,7 +205,7 @@ ui <- function() {
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
           # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Preventable Risk Factors Domain"))
+          tags$h6(tags$b("Preventable Risk Factors"))
         )
       ),
       grid_card(
@@ -214,7 +214,7 @@ ui <- function() {
         conditionalPanel(
           condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
           # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Social Determinants of Health Domain"))
+          tags$h6(tags$b("Social Determinants of Health"))
         )
       ),
       # Domain plots
@@ -263,7 +263,7 @@ ui <- function() {
     grid_card(
       area = "secondary_title",
       has_border = FALSE,
-      tags$h4(tags$b("Secondary Care Indicators"))
+      tags$h4(tags$b("Healthcare System Pressures"))
     ),
     grid_card(
       area = "secondary_note",
@@ -319,7 +319,7 @@ ui <- function() {
     grid_card(
       area = "demographics_title",
       has_border = FALSE,
-      tags$h4(tags$b("Demographic Indicators"))
+      tags$h4(tags$b("Local Population"))
     ),
     grid_card(
       area = "demographics_note",
