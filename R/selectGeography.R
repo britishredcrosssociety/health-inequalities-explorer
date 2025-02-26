@@ -2,8 +2,8 @@ selectGeographyUI <- function(id) {
   selectizeInput(
     NS(id, "selectGeography"),
     label = NULL,
-    # Default choice upload initial loading should be England LADs
-    choices = c("Local Authorities" = "england_ltla_shp"),
+    # Default choice upload initial loading should be England ICBs
+    choices = c("Integrated Care Boards" = "england_icb_shp"),
     multiple = FALSE
   )
 }
@@ -33,7 +33,7 @@ selectGeographyServer <- function(id, selected) {
         session,
         "selectGeography",
         choices = geography_choices,
-        selected = geography_choices[1],
+        selected = geography_choices[2],
         server = TRUE
       )
     })
