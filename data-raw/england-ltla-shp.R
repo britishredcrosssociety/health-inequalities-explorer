@@ -4,9 +4,9 @@ library(geographr)
 library(rmapshaper)
 
 england_ltla_shp <-
-  boundaries_ltla21 |>
-  filter(str_detect(ltla21_code, "^E")) |>
+  boundaries_ltla24 |>
+  filter(str_detect(ltla24_code, "^E")) |>
   ms_simplify(keep = 0.5) |> # Any less and areas get dropped
-  select(area_name = ltla21_name, area_code = ltla21_code)
+  select(area_name = ltla24_name, area_code = ltla24_code)
 
 usethis::use_data(england_ltla_shp, overwrite = TRUE)
