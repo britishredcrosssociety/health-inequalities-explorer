@@ -114,30 +114,6 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Health Index ----
-    grid_card(
-      area = "hi_title",
-      has_border = FALSE,
-      tags$h4(tags$b("Population Health"))
-    ),
-    grid_card(
-      area = "hi_note",
-      has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "Clusters of points have similar values. See the help button for more
-        info."
-      )
-    ),
-    grid_card(
-      area = "hi_plot",
-      has_border = FALSE,
-      jitterPlotUI("healthindexPlot")
-    ),
-    grid_card(
-      area = "help_button_health_index",
-      has_border = FALSE,
-      helpButtonUI("help_health_index")
-    ),
     grid_nested(
       "hi_domain",
       layout = c(
