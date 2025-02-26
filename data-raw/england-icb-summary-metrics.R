@@ -8,6 +8,7 @@ library(ggridges)
 library(DEPAHRI)
 library(demographr)
 library(loneliness)
+library(healthyr)
 
 # ---- Create lookups ----
 icb <- boundaries_icb22 |>
@@ -26,8 +27,8 @@ population_lsoa <-
 # ---- IMD score ----
 # Decile 1 = most deprived
 # Higher percentage / number = worse health
-imd <- imd_england_lsoa |>
-  rename(lsoa11_code = lsoa_code) |>
+imd <- imd2019_england_lsoa11 |>
+  # rename(lsoa11_code = lsoa_code) |>
   left_join(lookup_lsoa11_sicbl22_icb22_ltla22) |>
   select(
     lsoa11_code,
@@ -133,7 +134,7 @@ deri_lsoa <-
   left_join(population_lsoa)
 
 deri <-
-  calculate_extent(deri_lsoa,
+  geographr::calculate_extent(deri_lsoa,
     deri_score_national,
     icb22_code,
     total_population,
@@ -166,7 +167,7 @@ physical_lsoa <-
   left_join(population_lsoa)
 
 physical_access <-
-  calculate_extent(physical_lsoa,
+  geographr::calculate_extent(physical_lsoa,
     physical_score,
     icb22_code,
     total_population,
@@ -248,6 +249,27 @@ loneliness <- loneliness_lsoa |>
 #   mutate(variable = "Loneliness", .after = icb22_code) |>
 #   mutate(number = NA, .after = variable)
 
+# ---- ONS Health Index ----
+# Higher score = better health
+# Higher rank (calculated here) = better health
+# Source: https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland
+url <- "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland/current/healthindexscoresintegratedcaresystemsengland.xlsx"
+
+raw <- tempfile(fileext = ".xlsx")
+
+httr2::request(url) |>
+  httr2::req_perform(
+    path = raw
+  )
+
+health_index_raw <- read_excel(raw, sheet = "Table_2_Index_scores", skip = 2)
+
+health_index <- health_index_raw |>
+  select(icb22_code = `Area Code`, number = `2021`) |>
+  mutate(number = rank(number)) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Population health") |>
+  relocate(variable, .after = icb22_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
@@ -255,7 +277,8 @@ metrics_joined <- bind_rows(
   lba,
   deri,
   physical_access,
-  loneliness
+  loneliness,
+  health_index
 ) |>
   left_join(icb) |>
   select(-icb22_code) |>
@@ -276,7 +299,8 @@ icb_summary_metrics_england_scaled <-
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
       variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
-      variable == "Loneliness" ~ scale_1_1(percent)
+      variable == "Loneliness" ~ scale_1_1(percent),
+      variable == "Population health" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
@@ -335,6 +359,11 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent * 100), "%"
+      ),
+      variable == "Population health" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Overall population health rank: ", round(number)
       )
     )
   )

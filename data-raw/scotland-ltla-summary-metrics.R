@@ -6,6 +6,7 @@ library(ggridges)
 library(DEPAHRI)
 library(demographr)
 library(loneliness)
+library(healthindexscotland)
 
 ltla <- boundaries_ltla21 |>
   st_drop_geometry() |>
@@ -28,17 +29,17 @@ population_dz <-
 # Higher extent = more deprived
 # Higher rank (calculated here) = more deprived
 imd <-
-  imd_scotland_lad |>
-  select(ltla21_code = lad_code, imd_score = Extent) |>
+  imd2020_scotland_ltla24 |> 
+  select(ltla21_code = ltla24_code, imd_score = Extent) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
-  mutate(variable = "Index of Multiple \nDeprivation rank", .after = ltla21_code) |>
+  mutate(variable = "Deprivation", .after = ltla21_code) |>
   mutate(percent = NA, .after = number)
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 lba <-
-  cni_scotland_iz11 |>
+  cni2022_scotland_iz11 |>
   left_join(lookup_iz_ltla) |>
   select(iz11_code, ltla21_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
@@ -130,13 +131,22 @@ loneliness <-
   ) |>
   mutate(variable = "Loneliness", .after = ltla21_code)
 
+# ---- Health Index Score ----
+# Taken from healthindexscotland package
+health_index <- scotland_health_index |>
+  select(ltla21_code = ltla24_code, number = health_inequalities_rank) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Population health") |>
+  relocate(variable, .after = ltla21_code)
+
 # ---- Combine & reanme (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   deri,
   physical_access,
-  loneliness
+  loneliness,
+  health_index
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -153,11 +163,12 @@ ltla_summary_metrics_scotland_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
       variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
-      variable == "Loneliness" ~ scale_1_1(percent)
+      variable == "Loneliness" ~ scale_1_1(percent),
+      variable == "Population health" ~ scale_1_1(number),
     )
   ) |>
   ungroup()
@@ -166,7 +177,16 @@ ltla_summary_metrics_scotland_scaled <-
 # Align so higher value = better health
 # Flip IMD, LBA, health index, and DEPAHRI as currently higher = worse health
 scotland_ltla_summary_metrics_polarised <- ltla_summary_metrics_scotland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Deprivation" ~ scaled_1_1 * -1,
+      variable == "Left-behind areas" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
+      variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
+      variable == "Loneliness" ~ scaled_1_1 * -1,
+      TRUE ~ scaled_1_1
+    )
+  )
 
 # Check distributions
 scotland_ltla_summary_metrics_polarised |>
@@ -181,7 +201,7 @@ scotland_ltla_summary_metrics_polarised |>
 scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
   mutate(
     label = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+      variable == "Deprivation" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "IMD rank: ", round(number)
@@ -207,6 +227,11 @@ scotland_ltla_summary_metrics <- scotland_ltla_summary_metrics_polarised |>
         "<br>",
         "<br>", "No. of Intermediate Zones in the Local Authority that are in the 20% most lonely nationally: ", round(number),
         "<br>", "Percentage of all Intermediate Zones in the Local Authority that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Population health" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Population health score (higher = better health): ", round(number)
       )
     )
   )

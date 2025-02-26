@@ -20,10 +20,12 @@ lsoa_icb <- lookup_lsoa11_sicbl22_icb22_ltla22 |>
 # Source: https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland
 url <- "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/datasets/healthindexscoresintegratedcaresystemsengland/current/healthindexscoresintegratedcaresystemsengland.xlsx"
 
-raw <- download_file(
-  url,
-  ".xlsx"
-)
+raw <- tempfile(fileext = ".xlsx")
+
+httr2::request(url) |>
+  httr2::req_perform(
+    path = raw
+  )
 
 health_index_raw <- read_excel(raw, sheet = "Table_2_Index_scores", skip = 2)
 
@@ -33,7 +35,6 @@ health_index <- health_index_raw |>
   mutate(percent = NA) |>
   mutate(variable = "ONS Health \nIndex rank") |>
   relocate(variable, .after = icb22_code)
-
 
 # ---- Rename (pretty printing) ----
 metrics_joined <-
