@@ -143,8 +143,8 @@ ui <- function() {
       layout = c(
         "hi_domain_title help_hi_domains help_hi_domains",
         "hi_text hi_text hi_text",
-        "people_title places_title lives_title",
-        "people_domain  places_domain lives_domain",
+        "people_title lives_title places_title",
+        "people_domain lives_domain places_domain",
         "subdomains subdomains subdomains",
         "hi_source hi_source hi_source"
       ),

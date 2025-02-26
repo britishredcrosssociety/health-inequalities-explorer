@@ -43,14 +43,14 @@ tableServer <- function(id, selected) {
       } else if (selected$geography == "scotland_ltla_shp") {
         combine_subdomains(
           scotland_ltla_hi_outcomes_sub,
-          scotland_ltla_hi_social_determinants_sub,
-          scotland_ltla_hi_risk_factors_sub
+          scotland_ltla_hi_risk_factors_sub,
+          scotland_ltla_hi_social_determinants_sub
         )
       } else if (selected$geography == "northern_ireland_ltla_shp") {
         combine_subdomains(
           northern_ireland_ltla_hi_outcomes_sub,
-          northern_ireland_ltla_hi_social_determinants_sub,
-          northern_ireland_ltla_hi_risk_factors_sub
+          northern_ireland_ltla_hi_risk_factors_sub,
+          northern_ireland_ltla_hi_social_determinants_sub
         )
       }
     })
