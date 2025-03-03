@@ -10,10 +10,15 @@ barPlotServer <- function(id, selected, type) {
     valid_geographies <- c(
       "england_ltla_shp",
       "brc_central_shp",
+      "brc_central_icb_shp",
       "brc_london_shp",
+      "brc_london_icb_shp",
       "brc_north_shp",
+      "brc_north_icb_shp",
       "brc_south_shp",
+      "brc_south_icb_shp",
       "brc_southeast_shp",
+      "brc_southeast_icb_shp",
       "england_icb_shp",
       "scotland_ltla_shp",
       "northern_ireland_ltla_shp"
@@ -21,14 +26,34 @@ barPlotServer <- function(id, selected, type) {
 
     # Select dataset based on geographical selection and type of data
     dataset <- reactive({
-      if (selected$geography %in% c("england_ltla_shp", "brc_central_shp", "brc_london_shp", "brc_north_shp", "brc_south_shp", "brc_southeast_shp")) {
+      if (
+        selected$geography %in% 
+          c(
+            "england_ltla_shp",
+            "brc_central_shp",
+            "brc_london_shp",
+            "brc_north_shp",
+            "brc_south_shp",
+            "brc_southeast_shp"
+          )
+        ) {
         switch(type,
           "hi_outcomes" = england_ltla_hi_outcomes,
           "hi_risk_factors" = england_ltla_hi_risk_factors,
           "hi_social_determinants" = england_ltla_hi_social_determinants,
           stop("No data selected", call. = FALSE)
         )
-      } else if (selected$geography == "england_icb_shp") {
+      } else if (
+        selected$geography %in% 
+          c(
+            "england_icb_shp",
+            "brc_central_icb_shp",
+            "brc_london_icb_shp",
+            "brc_north_icb_shp",
+            "brc_south_icb_shp",
+            "brc_southeast_icb_shp"
+          )
+        ) {
         switch(type,
           "hi_outcomes" = england_icb_hi_outcomes,
           "hi_risk_factors" = england_icb_hi_risk_factors,

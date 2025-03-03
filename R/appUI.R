@@ -12,6 +12,9 @@ ui <- function() {
 
     # ---- Layout specified in R/gridConfig.R ----
     layout = grid_config,
+    
+    # ---- HTML page title ----
+    tags$title("Health Inequalities Explorer | British Red Cross"),
 
     # ---- Header, Intro & User Guide ----
     grid_card(
@@ -82,7 +85,7 @@ ui <- function() {
       area = "summary_title",
       has_border = FALSE,
       class = "summary-title",
-      tags$h4(tags$b("Summary Indicators"))
+      tags$h4(tags$b("Health Inequalities"))
     ),
     grid_card(
       area = "summary_note",
@@ -114,144 +117,97 @@ ui <- function() {
       tagAppendAttributes(class = "collapsed"),
 
     # ---- Health Index ----
-    grid_card(
-      area = "hi_title",
-      has_border = FALSE,
-      tags$h4(tags$b("Health Index"))
-    ),
-    grid_card(
-      area = "hi_note",
-      has_border = FALSE,
-      tags$p(
-        tags$span(class = "note-banner", "NOTE"),
-        "Clusters of points have similar values. See the help button for more
-        info."
-      )
-    ),
-    grid_card(
-      area = "hi_plot",
-      has_border = FALSE,
-      jitterPlotUI("healthindexPlot")
-    ),
-    grid_card(
-      area = "help_button_health_index",
-      has_border = FALSE,
-      helpButtonUI("help_health_index")
-    ),
-    grid_nested(
-      "hi_domain",
-      layout = c(
-        "hi_domain_title help_hi_domains help_hi_domains",
-        "hi_text hi_text hi_text",
-        "people_title places_title lives_title",
-        "people_domain  places_domain lives_domain",
-        "subdomains subdomains subdomains",
-        "hi_source hi_source hi_source"
-      ),
-      # Link to ONS HI page
-      grid_card(
-        area = "hi_source",
-        has_border = FALSE,
-        tags$p(
-          "For more information on the ONS Health Index, its underlying methodology and indicators, please see",
-          tags$a(
-            href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
-            target = "_blank",
-            "here."
-          )
-        )
-      ),
-      # Overall title
-      grid_card(
-        "hi_domain_title",
-        has_border = FALSE,
-        tags$h6(tags$b("Health Index Domains and Sub-Domains"))
-      ),
-      grid_card(
-        area = "help_hi_domains",
-        has_border = FALSE,
-        helpButtonHIUI("help_hi_domains")
-      ),
-
-      # Explanatory text
-      grid_card(
-        area = "hi_text",
-        has_border = FALSE,
-        collapsible = TRUE,
-        tags$p(
-          "The ONS Health Index score can be broken down into three areas of health,
-          known as domains - Health Outcomes (People), Preventable Risk Factors (Lives) and
-          Social Determinants of Health (Places). Each domain contains several indicators, or subdomains
-          that represent overarching topics related to their respective domain."
+    conditionalPanel(
+      condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_central_icb_shp', 'brc_london_shp', 'brc_london_icb_shp', 'brc_north_shp',, 'brc_north_icb_shp', 'brc_south_shp', 'brc_south_icb_shp', 'brc_southeast_shp', 'brc_southeast_icb_shp'].includes(input['geography-selectGeography']) && input['areas-selectAreas'].length > 0",
+      
+      grid_nested(
+        "hi_domain",
+        layout = c(
+          "hi_domain_title help_hi_domains help_hi_domains",
+          "hi_text hi_text hi_text",
+          "people_title lives_title places_title",
+          "people_domain lives_domain places_domain",
+          "subdomains subdomains subdomains",
+          "hi_source hi_source hi_source"
         ),
-        tags$p(
-          "Click the help (?) button above for information on interpreting the scores."
-        )
-      ),
-
-      # Domain titles
-      grid_card(
-        "people_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Health Outcomes Domain"))
-        )
-      ),
-      grid_card(
-        "lives_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Preventable Risk Factors Domain"))
-        )
-      ),
-      grid_card(
-        "places_title",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
-          tags$h6(tags$b("Social Determinants of Health Domain"))
-        )
-      ),
-      # Domain plots
-      grid_card(
-        "people_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        # Link to ONS HI page
+        grid_card(
+          area = "hi_source",
+          has_border = FALSE,
+          tags$p(
+            "For more information on the Health Index, its underlying methodology and indicators, please see",
+            tags$a(
+              href = "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/healthindexindicatorsanddefinitions#the-health-index-and-what-it-covers",
+              target = "_blank",
+              "here."
+            )
+          )
+        ),
+        # Overall title
+        grid_card(
+          "hi_domain_title",
+          has_border = FALSE,
+          tags$h6(tags$b("Breakdown of population health data"))
+        ),
+        grid_card(
+          area = "help_hi_domains",
+          has_border = FALSE,
+          helpButtonHIUI("help_hi_domains")
+        ),
+  
+        # Explanatory text
+        grid_card(
+          area = "hi_text",
+          has_border = FALSE,
+          collapsible = TRUE,
+          tags$p(
+            "Population health is based on three factors: (1) health outcomes, (2) modifiable and preventable risks,
+            and (3) social determinants of health. Each of these factors can be broken down further.
+            For example, social determinants of health are a combination of access to green spaces, access to services,
+            crime, economic and working conditions, and living conditions."
+          ),
+          tags$p(
+            "Click the help (?) button above for information on interpreting these scores."
+          )
+        ),
+  
+        # Domain titles
+        grid_card(
+          "people_title",
+          has_border = FALSE,
+          tags$h6(tags$b("Health Outcomes"))
+        ),
+        grid_card(
+          "lives_title",
+          has_border = FALSE,
+          tags$h6(tags$b("Preventable Risk Factors"))
+        ),
+        grid_card(
+          "places_title",
+          has_border = FALSE,
+          tags$h6(tags$b("Social Determinants of Health"))
+        ),
+        # Domain plots
+        grid_card(
+          "people_domain",
+          has_border = FALSE,
           barPlotUI("hioutcomesPlot")
-        )
-      ),
-      grid_card(
-        "lives_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "lives_domain",
+          has_border = FALSE,
           barPlotUI("hiriskfactorsPlot")
-        )
-      ),
-      grid_card(
-        "places_domain",
-        has_border = FALSE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
-          # condition = "input['geography-selectGeography'] == 'england_ltla_shp'",
+        ),
+        grid_card(
+          "places_domain",
+          has_border = FALSE,
           barPlotUI("hisocialdeterminantsPlot")
-        )
-      ),
-      # Sub-domain table
-      grid_card(
-        "subdomains",
-        has_border = FALSE,
-        scrollable = TRUE,
-        conditionalPanel(
-          condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_london_shp', 'brc_north_shp', 'brc_south_shp', 'brc_southeast_shp'].includes(input['geography-selectGeography'])",
+        ),
+        # Sub-domain table
+        grid_card(
+          "subdomains",
+          has_border = FALSE,
+          scrollable = TRUE,
           tableUI("subdomainTable")
         )
       )
@@ -263,7 +219,7 @@ ui <- function() {
     grid_card(
       area = "secondary_title",
       has_border = FALSE,
-      tags$h4(tags$b("Secondary Care Indicators"))
+      tags$h4(tags$b("Healthcare System Pressures"))
     ),
     grid_card(
       area = "secondary_note",
@@ -319,7 +275,7 @@ ui <- function() {
     grid_card(
       area = "demographics_title",
       has_border = FALSE,
-      tags$h4(tags$b("Demographic Indicators"))
+      tags$h4(tags$b("Local Population"))
     ),
     grid_card(
       area = "demographics_note",

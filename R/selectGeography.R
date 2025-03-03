@@ -2,8 +2,8 @@ selectGeographyUI <- function(id) {
   selectizeInput(
     NS(id, "selectGeography"),
     label = NULL,
-    # Default choice upload initial loading should be England LADs
-    choices = c("Local Authorities" = "england_ltla_shp"),
+    # Default choice upload initial loading should be England ICBs
+    choices = c("Integrated Care Boards" = "england_icb_shp"),
     multiple = FALSE
   )
 }
@@ -14,8 +14,8 @@ selectGeographyServer <- function(id, selected) {
       geography_choices <- switch(
         selected$region,
         "england" = c("Local Authorities" = "england_ltla_shp", "Integrated Care Boards" = "england_icb_shp"),
-        "northern_ireland" = c("Local Authorities" = "northern_ireland_ltla_shp", "Health and Social Care Trusts" = "northern_ireland_hsct_shp"),
-        "scotland" = c("Local Authorities" = "scotland_ltla_shp", "Health Boards" = "scotland_hb_shp"),
+        "northern_ireland" = c("Councils" = "northern_ireland_ltla_shp", "Health and Social Care Trusts" = "northern_ireland_hsct_shp"),
+        "scotland" = c("Council Areas" = "scotland_ltla_shp", "Health Boards" = "scotland_hb_shp"),
         "wales" = c("Local Authorities" = "wales_ltla_shp", "Local Health Boards" = "wales_lhb_shp"),
         
         "england_central" = c("Local Authorities" = "brc_central_shp", "Integrated Care Boards" = "brc_central_icb_shp"),
@@ -33,7 +33,7 @@ selectGeographyServer <- function(id, selected) {
         session,
         "selectGeography",
         choices = geography_choices,
-        selected = geography_choices[1],
+        selected = geography_choices[2],
         server = TRUE
       )
     })

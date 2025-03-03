@@ -16,7 +16,7 @@ table_selected <- function(data, selected_areas) {
   data |>
     gt() |>
     tab_header(
-      title = md("### Subdomain indicator scores"),
+      title = md(""),
       subtitle = md("Red = worse | Green = better")
     ) |>
     cols_label(region = "") |>
