@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+library(gt)
 library(formattable)
 library(ggplot2)
 library(gridlayout)

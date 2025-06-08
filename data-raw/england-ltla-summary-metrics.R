@@ -33,16 +33,16 @@ population_lsoa <-
 # Higher score = more deprived
 # Higher rank (calculated here) = more deprived
 imd <-
-  imd_england_lad |>
-  select(ltla19_code = lad_code, imd_score = Score) |>
-  left_join(lookup_england_ltla, by = "ltla19_code") |>
+  imd2019_england_ltla22 |>
+  select(ltla22_code, imd_score = Score) |>
+  left_join(lookup_england_ltla, by = "ltla22_code") |>
   select(ltla21_code, imd_score) |>
   group_by(ltla21_code) |>
   summarise(imd_score = mean(imd_score)) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
   mutate(
-    variable = "Index of Multiple \nDeprivation rank",
+    variable = "Deprivation",
     .after = ltla21_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -157,13 +157,46 @@ loneliness <- loneliness_lsoa |>
 #   ) |>
 #   mutate(number = NA, .before = percent)
 
+# ---- Health Index ----
+# ---- ONS Health Index score ----
+# Higher score = better health
+# Higher rank (calculated here) = better health
+health_index_2021 <- england_health_index |>
+  filter(year == "2021") |>
+  select(ltla21_code, health_index_score = overall_score)
+
+# Data is missing for two ltla's
+#   - Map Iscles of Scilly to Cornwall
+#   - Map City of London to Hackney
+cornwall_score <-
+  health_index_2021 |>
+  filter(ltla21_code == "E06000052") |>
+  pull(health_index_score)
+
+hackney_score <-
+  health_index_2021 |>
+  filter(ltla21_code == "E09000012") |>
+  pull(health_index_score)
+
+health_index_missing_added <-
+  health_index_2021 |>
+  add_row(ltla21_code = "E06000053", health_index_score = cornwall_score) |>
+  add_row(ltla21_code = "E09000001", health_index_score = hackney_score)
+
+health_index <-
+  health_index_missing_added |>
+  rename(number = health_index_score) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Population health", .after = ltla21_code) 
+
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
   deri,
   physical_access,
-  loneliness
+  loneliness,
+  health_index
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -180,11 +213,12 @@ ltla_summary_metrics_england_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
       variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
       variable == "Loneliness" ~ scale_1_1(percent),
+      variable == "Population health" ~ scale_1_1(number),
     )
   ) |>
   ungroup()
@@ -195,7 +229,7 @@ ltla_summary_metrics_england_scaled <-
 england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scaled_1_1 * -1,
+      variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
@@ -217,7 +251,7 @@ england_ltla_summary_metrics_polarised |>
 england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
   mutate(
     label = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+      variable == "Deprivation" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "IMD rank: ", round(number)
@@ -242,6 +276,11 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent * 100), "%"
+      ),
+      variable == "Population health" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Population health score (higher = better health): ", round(number)
       )
     )
   )

@@ -5,6 +5,7 @@ library(compositr)
 library(sf)
 library(ggridges)
 library(loneliness)
+library(healthindexni)
 
 ltla <-
   boundaries_ltla21 |>
@@ -19,12 +20,12 @@ lookup_sdz_ltla <- lookup_dz21_sdz21_dea14_lgd14 |>
 # Higher extent = more deprived /
 # Higher rank (calculated here) = more deprived
 imd <-
-  imd_northern_ireland_lad |>
-  select(ltla21_code = lad_code, imd_score = Extent) |>
+  imd2017_northern_ireland_lgd14 |> 
+  select(ltla21_code = lgd14_code, imd_score = Extent) |>
   mutate(number = rank(imd_score)) |>
   select(-imd_score) |>
   mutate(
-    variable = "Index of Multiple \nDeprivation rank",
+    variable = "Deprivation",
     .after = ltla21_code
   ) |>
   mutate(percent = NA, .after = number)
@@ -33,7 +34,7 @@ imd <-
 # Come from the community needs index (loaded from the IMD package)
 # Higher number/percent = more left-behind
 lba <-
-  cni_northern_ireland_soa11 |>
+  cni2022_northern_ireland_soa11 |> 
   select(soa11_code, ltla21_code = lgd14_code, lba = `Left Behind Area?`) |>
   group_by(ltla21_code) |>
   count(lba) |>
@@ -64,12 +65,20 @@ loneliness <-
   ) |>
   mutate(variable = "Loneliness", .after = ltla21_code)
 
+# ---- Health Index Score ----
+# Taken from healthindexni package
+health_index <- ni_health_index |>
+  select(ltla21_code = ltla24_code, number = health_inequalities_rank) |>
+  mutate(percent = NA) |>
+  mutate(variable = "Population health") |>
+  relocate(variable, .after = ltla21_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
   imd,
   lba,
-  loneliness
+  loneliness,
+  health_index
 ) |>
   left_join(ltla) |>
   select(-ltla21_code) |>
@@ -86,9 +95,10 @@ ltla_summary_metrics_northern_ireland_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
-      variable == "Loneliness" ~ scale_1_1(number)
+      variable == "Loneliness" ~ scale_1_1(number),
+      variable == "Population health" ~ scale_1_1(number)
     )
   ) |>
   ungroup()
@@ -98,7 +108,14 @@ ltla_summary_metrics_northern_ireland_scaled <-
 # Flip IMD, LBA, health index and loneliness as currently higher = worse health
 northern_ireland_ltla_summary_metrics_polarised <-
   ltla_summary_metrics_northern_ireland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(
+    scaled_1_1 = case_when(
+      variable == "Deprivation" ~ scaled_1_1 * -1,
+      variable == "Left-behind areas" ~ scaled_1_1 * -1,
+      variable == "Loneliness" ~ scaled_1_1 * -1,
+      TRUE ~ scaled_1_1
+    )
+  )
 
 # Check distributions
 northern_ireland_ltla_summary_metrics_polarised |>
@@ -114,7 +131,7 @@ northern_ireland_ltla_summary_metrics <-
   northern_ireland_ltla_summary_metrics_polarised |>
   mutate(
     label = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+      variable == "Deprivation" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "IMD rank: ", round(number)
@@ -130,8 +147,13 @@ northern_ireland_ltla_summary_metrics <-
         "<br>",
         "<br>", "No. of Super Data Zones in the Local Authority that are in the 20% most lonely nationally: ", round(number),
         "<br>", "Percentage of all Super Data Zones in the Local Authority that are in the 20% most lonely nationally: ", round(percent * 100, 1), "%"
+      ),
+      variable == "Population health" ~ paste0(
+        "<b>", area_name, "</b>",
+        "<br>",
+        "<br>", "Population health score (higher = better health): ", round(number)
       )
-    )
+    ),
   )
 
 usethis::use_data(northern_ireland_ltla_summary_metrics, overwrite = TRUE)
