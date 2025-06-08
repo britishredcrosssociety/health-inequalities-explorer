@@ -69,11 +69,10 @@ tableServer <- function(id, selected) {
           northern_ireland_ltla_hi_social_determinants_sub
         )
       } else if (selected$geography == "wales_ltla_shp") {
-        switch(type,
-          "people_subdomain" = wales_ltla_hi_outcomes_sub,
-          "places_subdomain" = wales_ltla_hi_social_determinants_sub,
-          "lives_subdomain" = wales_ltla_hi_risk_factors_sub,
-          stop("No data selected", call. = FALSE)
+        combine_subdomains(
+          wales_ltla_hi_outcomes_sub,
+          wales_ltla_hi_risk_factors_sub,
+          wales_ltla_hi_social_determinants_sub
         )
       }
     })
