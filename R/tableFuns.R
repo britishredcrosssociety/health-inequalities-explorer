@@ -1,7 +1,7 @@
 # ---- Prepare selected data ----
 table_prep <- function(data, selected_areas) {
   names(data)[1] <- "Sub-domain"
-  average_col <- intersect(names(data), c("England Average", "Scotland Average", "Northern Ireland Average"))
+  average_col <- intersect(names(data), c("England Average", "Scotland Average", "Northern Ireland Average", "Wales Average"))
 
   # If selected_areas is NULL then this will just return "Sub-domain" and "England Average"
   data <- data[, c("Sub-domain", average_col, selected_areas)]
