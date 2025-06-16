@@ -118,7 +118,7 @@ ui <- function() {
 
     # ---- Health Index ----
     conditionalPanel(
-      condition = "['northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_central_icb_shp', 'brc_london_shp', 'brc_london_icb_shp', 'brc_north_shp',, 'brc_north_icb_shp', 'brc_south_shp', 'brc_south_icb_shp', 'brc_southeast_shp', 'brc_southeast_icb_shp'].includes(input['geography-selectGeography']) && input['areas-selectAreas'].length > 0",
+      condition = "['wales_ltla_shp', 'northern_ireland_ltla_shp', 'scotland_ltla_shp', 'england_icb_shp', 'england_ltla_shp', 'brc_central_shp', 'brc_central_icb_shp', 'brc_london_shp', 'brc_london_icb_shp', 'brc_north_shp',, 'brc_north_icb_shp', 'brc_south_shp', 'brc_south_icb_shp', 'brc_southeast_shp', 'brc_southeast_icb_shp'].includes(input['geography-selectGeography']) && input['areas-selectAreas'].length > 0",
       
       grid_nested(
         "hi_domain",

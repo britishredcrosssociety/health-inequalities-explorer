@@ -21,7 +21,8 @@ barPlotServer <- function(id, selected, type) {
       "brc_southeast_icb_shp",
       "england_icb_shp",
       "scotland_ltla_shp",
-      "northern_ireland_ltla_shp"
+      "northern_ireland_ltla_shp",
+      "wales_ltla_shp"
     )
 
     # Select dataset based on geographical selection and type of data
@@ -72,6 +73,13 @@ barPlotServer <- function(id, selected, type) {
           "hi_outcomes" = northern_ireland_ltla_hi_outcomes,
           "hi_risk_factors" = northern_ireland_ltla_hi_risk_factors,
           "hi_social_determinants" = northern_ireland_ltla_hi_social_determinants,
+          stop("No data selected", call. = FALSE)
+        )
+      } else if (selected$geography == "wales_ltla_shp") {
+        switch(type,
+          "hi_outcomes" = wales_ltla_hi_outcomes,
+          "hi_risk_factors" = wales_ltla_hi_risk_factors,
+          "hi_social_determinants" = wales_ltla_hi_social_determinants,
           stop("No data selected", call. = FALSE)
         )
       }

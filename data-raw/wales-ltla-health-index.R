@@ -4,64 +4,39 @@ library(sf)
 library(ggridges)
 library(stringr)
 library(demographr)
+library(healthindexwales)
 
-ltla <- boundaries_ltla21 |>
+ltla <- boundaries_ltla24 |>
   st_drop_geometry() |>
-  filter(str_detect(ltla21_code, "^W")) |>
-  select(ltla21_code, ltla21_name)
-
-lookup_msoa_ltla <- lookup_msoa11_ltla21 |>
-  select(msoa11_code, ltla21_code) |>
-  filter(str_starts(ltla21_code, "W"))
-
-lookup_lsoa_ltla <-
-  lookup_lsoa11_lsoa21_ltla22 |>
-  distinct(lsoa11_code, ltla22_code) |>
-  filter(str_detect(ltla22_code, "^W"))
-
-population_lsoa <-
-  population20_lsoa11 |>
-  select(lsoa11_code, total_population) |>
-  filter(str_detect(lsoa11_code, "^W"))
+  filter(str_detect(ltla24_code, "^W"))
 
 # ---- Health Index Score ----
-# Higher score = worse health
-# Higher rank (calculated here) = worse health
-url <- "https://raw.githubusercontent.com/britishredcrosssociety/resilience-index/main/data/vulnerability/health-inequalities/wales/healthy-people-domain.csv"
-
-health_index_raw <- read_csv(url)
-
-health_index <- health_index_raw |>
-  select(ltla21_code = lad_code, number = healthy_people_domain_rank) |>
+# Taken from healthindexwales package
+health_index <- wales_health_index |>
+  select(ltla24_code, number = health_inequalities_rank) |>
   mutate(percent = NA) |>
   mutate(variable = "Health Index \nrank") |>
-  relocate(variable, .after = ltla21_code)
-
+  relocate(variable, .after = ltla24_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- health_index |>
   left_join(ltla) |>
-  select(-ltla21_code) |>
-  rename(area_name = ltla21_name) |>
+  select(-ltla24_code) |>
+  rename(area_name = ltla24_name) |>
   relocate(area_name)
 
-# ---- Normalise/scale ---- quotient transformation (x/sum)
+# ---- Normalise/scale ----
 scale_1_1 <- function(x) {
   (x - mean(x)) / max(abs(x - mean(x)))
 }
 
 ltla_health_index_wales_scaled <- metrics_joined |>
-  group_by(variable) |>
-  mutate(
-    scaled_1_1 = scale_1_1(number)
-  )
+  mutate(scaled_1_1 = scale_1_1(number))
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, health index, DEPAHRI, loneliness as currently higher = worse health
-wales_ltla_health_index_polarised <- ltla_health_index_wales_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1) |>
-  mutate(number = rank(-number))
+# NOTE: No need since current healthindexni data follows higher = better
+wales_ltla_health_index_polarised <- ltla_health_index_wales_scaled
 
 # Check distributions
 wales_ltla_health_index_polarised |>

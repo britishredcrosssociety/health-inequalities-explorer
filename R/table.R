@@ -18,7 +18,8 @@ tableServer <- function(id, selected) {
       "brc_southeast_icb_shp",
       "england_icb_shp",
       "scotland_ltla_shp",
-      "northern_ireland_ltla_shp"
+      "northern_ireland_ltla_shp",
+      "wales_ltla_shp"
     )
 
     # Select dataset based on geographical selection and type of data
@@ -66,6 +67,12 @@ tableServer <- function(id, selected) {
           northern_ireland_ltla_hi_outcomes_sub,
           northern_ireland_ltla_hi_risk_factors_sub,
           northern_ireland_ltla_hi_social_determinants_sub
+        )
+      } else if (selected$geography == "wales_ltla_shp") {
+        combine_subdomains(
+          wales_ltla_hi_outcomes_sub,
+          wales_ltla_hi_risk_factors_sub,
+          wales_ltla_hi_social_determinants_sub
         )
       }
     })
