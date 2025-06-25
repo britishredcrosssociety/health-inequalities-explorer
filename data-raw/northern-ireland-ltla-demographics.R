@@ -5,7 +5,7 @@ library(demographr)
 # Note: term 'sex' is used to correspond to the 2021 Census from which the data
 # has been collected
 age_sex_ltla <-
-  age_gender_ltla21_ni |>
+  age_gender23_ltla_ni |>
   select(-ltla21_code, -total_female_population, -total_male_population) |>
   mutate(
     across(younger_females:older_males,
