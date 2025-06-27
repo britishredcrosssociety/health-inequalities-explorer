@@ -176,6 +176,7 @@ ltla_summary_metrics_scotland_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index, and DEPAHRI as currently higher = worse health
+# For IMD and DEPHARI also flip ranks (so that worse = lower rank)
 scotland_ltla_summary_metrics_polarised <- ltla_summary_metrics_scotland_scaled |>
   mutate(
     scaled_1_1 = case_when(
@@ -185,6 +186,14 @@ scotland_ltla_summary_metrics_polarised <- ltla_summary_metrics_scotland_scaled 
       variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
       variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
+    )
+  ) |>
+  mutate(
+    number = case_when(
+      variable == "Deprivation"                     ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
     )
   )
 
