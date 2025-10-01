@@ -82,7 +82,12 @@ tableServer <- function(id, selected) {
         table_selected(
           data = dataset(),
           selected_areas = selected$areas
-        )
+        ) |>
+          tab_style(
+            style = cell_text(color = "transparent"),
+            locations = cells_body(columns = -1)
+            
+          )
       } else {
         table_null()
       }
@@ -107,4 +112,4 @@ tableTest <- function() {
 }
 
 # Examples
-# tableTest()
+tableTest()
