@@ -110,7 +110,7 @@ available_icb_beds <-
 # need to filter criteria to reside data to cover same time period
 # Check this when updating data
 england_icb_criteria_to_reside_filtered <- england_icb_criteria_to_reside |>
-  filter(date < "2025-01-01")
+  filter(date < "2026-01-01")
 
 criteria_to_reside_icb_ungrouped <-
   england_icb_criteria_to_reside_filtered |>
@@ -151,7 +151,7 @@ criteria_to_reside_icb <- criteria_to_reside_icb_ungrouped |>
 # Check this when updating data
 
 england_icb_discharged_patients_filtered <- england_icb_discharged_patients |>
-  filter(date < "2025-01-01")
+  filter(date < "2026-01-01")
 
 discharged_patients_icb_ungrouped <-
   england_icb_discharged_patients_filtered |>
