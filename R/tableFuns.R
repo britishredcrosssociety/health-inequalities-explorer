@@ -17,7 +17,7 @@ table_selected <- function(data, selected_areas) {
     gt() |>
     tab_header(
       title = md(""),
-      subtitle = md("Red = worse | Green = better")
+      subtitle = md("🟥 = worst indicator within area | 🟩 = best indicator within area")
     ) |>
     cols_label(region = "") |>
     tab_options(
