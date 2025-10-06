@@ -106,6 +106,7 @@ ltla_summary_metrics_northern_ireland_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index and loneliness as currently higher = worse health
+# For IMD also flip ranks (so that worse = lower rank)
 northern_ireland_ltla_summary_metrics_polarised <-
   ltla_summary_metrics_northern_ireland_scaled |>
   mutate(
@@ -114,6 +115,12 @@ northern_ireland_ltla_summary_metrics_polarised <-
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
+    )
+  ) |>
+  mutate(
+    number = case_when(
+      variable == "Deprivation"  ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
     )
   )
 

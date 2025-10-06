@@ -25,9 +25,9 @@ population_lsoa <-
 # Decile 1 = most deprived
 # Higher percentage / number = worse health
 imd <-
-  imd_wales_lsoa |>
-  left_join(lookup_lsoa11_ltla21_lhb22, by = c("lsoa_code" = "lsoa11_code")) |>
-  select(lsoa_code, lhb20_code, IMD_decile) |>
+  imd2019_wales_lsoa11 |>
+  left_join(lookup_lsoa11_ltla21_lhb22, by = "lsoa11_code") |>
+  select(lsoa11_code, lhb20_code, IMD_decile) |>
   mutate(top_10 = if_else(IMD_decile == 1, "yes", "no")) |>
   group_by(lhb20_code, top_10) |>
   summarise(n = n()) |>
@@ -42,7 +42,7 @@ imd <-
 
 # ---- % Left-behind areas ----
 lba <-
-  cni_wales_msoa11 |>
+  cni2022_wales_msoa11 |>
   select(ltla21_name = lad21_name, lba = `Left Behind Area?`) |>
   left_join(lookup_ltla21_lhb22) |>
   group_by(lhb22_code) |>
@@ -215,8 +215,16 @@ lhb_summary_metrics_wales_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index, and DEPAHRI, as currently higher = worse health
+# For DEPHARI also flip ranks (so that worse = lower rank)
 wales_lhb_summary_metrics_polarised <- lhb_summary_metrics_wales_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(scaled_1_1 = scaled_1_1 * -1) |>
+  mutate(
+    number = case_when(
+      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
+    )
+  )
 
 # Check distributions
 wales_lhb_summary_metrics_polarised |>
