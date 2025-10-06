@@ -27,8 +27,8 @@ population_dz <-
 
 # ---- IMD ----
 # Decile 1 = most deprived
-imd <- imd_scotland_dz |>
-  select(dz11_code = dz_code, decile = IMD_decile) |>
+imd <- imd2020_scotland_dz11 |>
+  select(dz11_code, decile = IMD_decile) |>
   left_join(lookup_dz_hb) |>
   mutate(most_deprived = if_else(decile == 1, "yes", "no")) |>
   group_by(hb19_code, most_deprived) |>
@@ -45,7 +45,7 @@ imd <- imd_scotland_dz |>
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 lba <-
-  cni_scotland_iz11 |>
+  cni2022_scotland_iz11 |>
   left_join(lookup_iz_hb) |>
   select(iz11_code, hb19_code, lba = `Left Behind Area?`) |>
   group_by(hb19_code) |>
@@ -172,8 +172,16 @@ hb_summary_metrics_scotland_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index, and DEPAHRI as currently higher = worse health
+# For DEPHARI also flip ranks (so that worse = lower rank)
 scotland_hb_summary_metrics_polarised <- hb_summary_metrics_scotland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(scaled_1_1 = scaled_1_1 * -1) |>
+  mutate(
+    number = case_when(
+      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
+    )
+  )
 
 # Check distributions
 scotland_hb_summary_metrics_polarised |>

@@ -308,6 +308,7 @@ icb_summary_metrics_england_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, DEPAHRI, loneliness as currently higher = worse health
+# For DEPHARI also flip ranks (so that worse = lower rank)
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
@@ -317,6 +318,13 @@ england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
       variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
       variable == "Loneliness" ~ scaled_1_1 * -1,
       TRUE ~ scaled_1_1
+    )
+  ) |>
+  mutate(
+    number = case_when(
+      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
     )
   )
 
