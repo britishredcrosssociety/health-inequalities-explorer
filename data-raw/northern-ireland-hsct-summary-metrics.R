@@ -26,8 +26,7 @@ lookup_sdz_ltla <- lookup_dz21_sdz21_dea14_lgd14 |>
 imd <-
   northern_ireland_ltla_summary_metrics |>
   select(lad_name = area_name, variable, number) |>
-  filter(variable %in%
-    c("Index of Multiple \nDeprivation rank")) |>
+  filter(variable %in% c("Deprivation")) |>
   left_join(lookup_northern_ireland_ltla_hsct) |>
   group_by(trust_name, variable) |>
   summarise(max_rank = max(number)) |>
@@ -42,7 +41,7 @@ imd <-
 
 # Left-behind areas: adding all left-behind areas of the LGDs of each trust
 lba <-
-  cni_northern_ireland_soa11 |>
+  cni2022_northern_ireland_soa11 |>
   select(soa11_code, lad_name = lgd14_name, lba = `Left Behind Area?`) |>
   left_join(lookup_northern_ireland_ltla_hsct) |>
   group_by(trust_name) |>
@@ -93,7 +92,7 @@ hsct_summary_metrics_northern_ireland_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ scale_1_1(number),
+      variable == "Deprivation" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Loneliness" ~ scale_1_1(number),
     )
@@ -103,9 +102,16 @@ hsct_summary_metrics_northern_ireland_scaled <-
 # ---- Align indicator polarity ----
 # Align so higher value = better health
 # Flip IMD, LBA, health index and loneliness as currently higher = worse health
+# For IMD also flip ranks (so that worse = lower rank)
 northern_ireland_hsct_summary_metrics_polarised <-
   hsct_summary_metrics_northern_ireland_scaled |>
-  mutate(scaled_1_1 = scaled_1_1 * -1)
+  mutate(scaled_1_1 = scaled_1_1 * -1) |>
+  mutate(
+    number = case_when(
+      variable == "Deprivation"  ~ ave(-number, variable, FUN = rank),
+      TRUE ~ number
+    )
+  )
 
 # Check distributions
 northern_ireland_hsct_summary_metrics_polarised |>
@@ -121,7 +127,7 @@ northern_ireland_hsct_summary_metrics <-
   northern_ireland_hsct_summary_metrics_polarised |>
   mutate(
     label = case_when(
-      variable == "Index of Multiple \nDeprivation rank" ~ paste0(
+      variable == "Deprivation" ~ paste0(
         "<b>", area_name, "</b>",
         "<br>",
         "<br>", "IMD rank: ", round(number)
