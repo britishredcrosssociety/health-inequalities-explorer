@@ -8,23 +8,17 @@ library(ggridges)
 library(demographr)
 
 ltla <-
-  boundaries_ltla21 |>
+  boundaries_ltla24 |>
   st_drop_geometry() |>
-  filter(str_detect(ltla21_code, "^E"))
+  filter(str_detect(ltla24_code, "^E"))
 
 lookup_england_ltla <-
   lookup_ltla_ltla |>
   filter(str_detect(ltla21_code, "^E"))
 
-lookup_england_lsoa_ltla <-
-  lookup_lsoa11_lsoa21_ltla22 |>
-  distinct(lsoa11_code, lsoa21_code, ltla22_code) |>
-  filter(str_detect(ltla22_code, "^E"))
-
-population_lsoa <-
-  population20_lsoa11 |>
-  select(lsoa11_code, total_population) |>
-  filter(str_detect(lsoa11_code, "^E"))
+lookup_ltla21_ltla24 <-
+  lookup_england_ltla |>
+  distinct(ltla21_code, ltla24_code)
 
 # ---- ONS Health Index score ----
 # Higher score = better health
@@ -51,20 +45,29 @@ health_index_missing_added <-
   add_row(ltla21_code = "E06000053", health_index_score = cornwall_score) |>
   add_row(ltla21_code = "E09000001", health_index_score = hackney_score)
 
+# health_index <-
+#   health_index_missing_added |>
+#   mutate(number = rank(health_index_score)) |>
+#   mutate(percent = NA) |>
+#   mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code)
+#select(-health_index_score)
+
+# Recast to LTLA 2024 codes using mean scores where there are more than one 2021 LA for one 2024 LA
 health_index <-
   health_index_missing_added |>
-  mutate(number = rank(health_index_score)) |>
+  left_join(lookup_ltla21_ltla24) |>
+  group_by(ltla24_code) |>
+  summarise(number = mean(health_index_score)) |>
+  ungroup() |>
   mutate(percent = NA) |>
-  mutate(variable = "ONS Health \nIndex rank", .after = ltla21_code) 
-  #select(-health_index_score)
-
+  mutate(variable = "ONS Health \nIndex rank", .after = ltla24_code)
 
 # ---- Rename (pretty printing) ----
 metrics_joined <-
   health_index |>
   left_join(ltla) |>
-  select(-ltla21_code) |>
-  rename(area_name = ltla21_name) |>
+  select(-ltla24_code) |>
+  rename(area_name = ltla24_name) |>
   relocate(area_name)
 
 # ---- Normalise/scale ----
@@ -91,10 +94,13 @@ ltla_health_index_england_scaled |>
 england_ltla_health_index <- ltla_health_index_england_scaled |>
   mutate(
     label = paste0(
-      "<b>", area_name, "</b>",
+      "<b>",
+      area_name,
+      "</b>",
       "<br>",
-      "<br>", "Health Index rank: ", round(number),
-      "<br>", "Health Index score: ", round(health_index_score)
+      "<br>",
+      "Health Index score: ",
+      round(number)
     )
   )
 
