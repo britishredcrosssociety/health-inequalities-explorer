@@ -17,7 +17,7 @@ table_selected <- function(data, selected_areas) {
     gt() |>
     tab_header(
       title = md(""),
-      subtitle = md("🟥 = worst indicator within area | 🟩 = best indicator within area")
+      subtitle = md("<span style='color:#001F3F'>⬛</span> = area's worst indicator | <span style='color:#F9FBFF'>⬜</span> = area's best indicator")
     ) |>
     cols_label(region = "") |>
     tab_options(
@@ -32,7 +32,7 @@ table_selected <- function(data, selected_areas) {
     data_color(
       columns = !region,
       domain = c(min_val, max_val),
-      palette = c("#e41a1c", "#ffffbf", "#4daf4a")
+      palette = c("#000B1E", "#6BAED6", "#F9FBFF")
     ) |>
     fmt_number(
       !region,
