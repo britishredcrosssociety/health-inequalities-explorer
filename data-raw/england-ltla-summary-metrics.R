@@ -11,18 +11,27 @@ library(demographr)
 library(loneliness)
 
 ltla <-
-  boundaries_ltla21 |>
+  boundaries_ltla24 |>
   st_drop_geometry() |>
-  filter(str_detect(ltla21_code, "^E"))
+  filter(str_detect(ltla24_code, "^E"))
 
 lookup_england_ltla <-
   lookup_ltla_ltla |>
-  filter(str_detect(ltla21_code, "^E"))
+  filter(str_detect(ltla24_code, "^E"))
+
+lookup_ltla21_ltla24 <-
+  lookup_england_ltla |>
+  distinct(ltla21_code, ltla24_code)
+
+lookup_ltla22_ltla24 <-
+  lookup_england_ltla |>
+  distinct(ltla22_code, ltla24_code)
 
 lookup_england_lsoa_ltla <-
   lookup_lsoa11_lsoa21_ltla22 |>
-  distinct(lsoa11_code, lsoa21_code, ltla22_code) |>
-  filter(str_detect(ltla22_code, "^E"))
+  left_join(lookup_ltla22_ltla24) |>
+  distinct(lsoa11_code, lsoa21_code, ltla24_code) |>
+  filter(str_detect(ltla24_code, "^E"))
 
 population_lsoa <-
   population20_lsoa11 |>
@@ -30,39 +39,36 @@ population_lsoa <-
   filter(str_detect(lsoa11_code, "^E"))
 
 # ---- IMD score ----
-# Higher score = more deprived
-# Higher rank (calculated here) = more deprived
+# Lower rank = more deprived
+# Higher percent = more deprived
 imd <-
-  imd2019_england_ltla22 |>
-  select(ltla22_code, imd_score = Score) |>
-  left_join(lookup_england_ltla, by = "ltla22_code") |>
-  select(ltla21_code, imd_score) |>
-  group_by(ltla21_code) |>
-  summarise(imd_score = mean(imd_score)) |>
-  mutate(number = rank(imd_score)) |>
-  select(-imd_score) |>
+  imd2025_england_ltla24 |>
+  select(
+    ltla24_code,
+    number = imd_rank_of_average_score,
+    percent = imd25_extent
+  ) |>
   mutate(
     variable = "Deprivation",
-    .after = ltla21_code
-  ) |>
-  mutate(percent = NA, .after = number)
+    .after = ltla24_code
+  )
 
 # ---- % Left-behind areas ----
 # Higher number/percent = more left-behind
 lba <-
   cni2023_england_lsoa21 |>
   left_join(lookup_england_lsoa_ltla) |>
-  select(lsoa21_code, ltla22_code, lba = `Left Behind Area?`) |>
-  group_by(ltla22_code) |>
+  select(lsoa21_code, ltla24_code, lba = `Left Behind Area?`) |>
+  group_by(ltla24_code) |>
   count(lba) |>
   mutate(percent = n / sum(n)) |>
   ungroup() |>
   filter(lba == TRUE) |>
-  right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
+  # right_join(ltla, by = c("ltla22_code" = "ltla21_code")) |>
   mutate(percent = replace_na(percent, 0)) |>
   mutate(n = replace_na(n, 0)) |>
-  select(ltla21_code = ltla22_code, number = n, percent) |>
-  mutate(variable = "Left-behind areas", .after = ltla21_code)
+  select(ltla24_code, number = n, percent) |>
+  mutate(variable = "Left-behind areas", .after = ltla24_code)
 
 # ---- DEPHARI - digital only ----
 # Isolate digital access to healthcare from DEPAHRI
@@ -73,13 +79,14 @@ lba <-
 deri_lsoa <-
   england_lsoa_depahri |>
   left_join(lookup_england_lsoa_ltla) |>
-  distinct(lsoa11_code, deri_score_national, ltla21_code = ltla22_code) |>
+  distinct(lsoa11_code, deri_score_national, ltla24_code) |>
   left_join(population_lsoa)
 
 deri <-
-  calculate_extent(deri_lsoa,
+  calculate_extent(
+    deri_lsoa,
     deri_score_national,
-    ltla21_code,
+    ltla24_code,
     total_population,
     weight_high_scores = TRUE
   ) |>
@@ -87,7 +94,7 @@ deri <-
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare - Digital",
-    .after = ltla21_code
+    .after = ltla24_code
   ) |>
   mutate(percent = NA, .after = number)
 
@@ -99,19 +106,20 @@ deri <-
 physical_lsoa <-
   england_lsoa_depahri |>
   mutate(
-    physical_score =
-      demography_comp_national * 0.33 +
-        deprivation_comp_national * 0.33 +
-        health_access_comp_national * 0.33
+    physical_score = demography_comp_national *
+      0.33 +
+      deprivation_comp_national * 0.33 +
+      health_access_comp_national * 0.33
   ) |>
   left_join(lookup_england_lsoa_ltla) |>
-  distinct(lsoa11_code, physical_score, ltla21_code = ltla22_code) |>
+  distinct(lsoa11_code, physical_score, ltla24_code) |>
   left_join(population_lsoa)
 
 physical_access <-
-  calculate_extent(physical_lsoa,
+  calculate_extent(
+    physical_lsoa,
     physical_score,
-    ltla21_code,
+    ltla24_code,
     total_population,
     weight_high_scores = TRUE
   ) |>
@@ -119,7 +127,7 @@ physical_access <-
   select(-extent) |>
   mutate(
     variable = "Access to Healthcare - Physical",
-    .after = ltla21_code
+    .after = ltla24_code
   ) |>
   mutate(percent = NA, .after = number)
 
@@ -131,15 +139,17 @@ physical_access <-
 loneliness_lsoa <-
   england_cls_loneliness_lsoa |>
   left_join(lookup_england_lsoa_ltla, by = "lsoa21_code") |>
-  distinct(lsoa11_code, perc, ltla21_code = ltla22_code) |>
+  distinct(lsoa11_code, perc, ltla24_code) |>
   left_join(population_lsoa, by = "lsoa11_code")
 
 loneliness <- loneliness_lsoa |>
-  group_by(ltla21_code) |>
-  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+  group_by(ltla24_code) |>
+  summarise(
+    percent = weighted.mean(perc, w = total_population, na.rm = TRUE)
+  ) |>
   mutate(
     variable = "Loneliness",
-    .after = ltla21_code
+    .after = ltla24_code
   ) |>
   mutate(percent = percent / 100) |>
   mutate(number = NA, .before = percent)
@@ -183,11 +193,21 @@ health_index_missing_added <-
   add_row(ltla21_code = "E06000053", health_index_score = cornwall_score) |>
   add_row(ltla21_code = "E09000001", health_index_score = hackney_score)
 
+# health_index <-
+#   health_index_missing_added |>
+#   rename(number = health_index_score) |>
+#   mutate(percent = NA) |>
+#   mutate(variable = "Population health", .after = ltla21_code)
+
+# Recast to LTLA 2024 codes using mean scores where there are more than one 2021 LA for one 2024 LA
 health_index <-
   health_index_missing_added |>
-  rename(number = health_index_score) |>
+  left_join(lookup_ltla21_ltla24) |>
+  group_by(ltla24_code) |>
+  summarise(number = mean(health_index_score)) |>
+  ungroup() |>
   mutate(percent = NA) |>
-  mutate(variable = "Population health", .after = ltla21_code) 
+  mutate(variable = "Population health", .after = ltla24_code)
 
 # ---- Combine & rename (pretty printing) ----
 metrics_joined <- bind_rows(
@@ -199,8 +219,8 @@ metrics_joined <- bind_rows(
   health_index
 ) |>
   left_join(ltla) |>
-  select(-ltla21_code) |>
-  rename(area_name = ltla21_name) |>
+  select(-ltla24_code) |>
+  rename(area_name = ltla24_name) |>
   relocate(area_name)
 
 # ---- Normalise/scale ----
@@ -225,12 +245,12 @@ ltla_summary_metrics_england_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, and DEPAHRI as currently higher = worse health
-# For IMD and DEPHARI also flip ranks (so that worse = lower rank)
+# Flip LBA and DEPAHRI as currently higher = worse health
+# For DEPHARI also flip ranks (so that worse = lower rank)
 england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scaled_1_1 * -1,
+      # variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
@@ -240,9 +260,17 @@ england_ltla_summary_metrics_polarised <- ltla_summary_metrics_england_scaled |>
   ) |>
   mutate(
     number = case_when(
-      variable == "Deprivation"                     ~ ave(-number, variable, FUN = rank),
-      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
-      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      # variable == "Deprivation" ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Digital" ~ ave(
+        -number,
+        variable,
+        FUN = rank
+      ),
+      variable == "Access to Healthcare - Physical" ~ ave(
+        -number,
+        variable,
+        FUN = rank
+      ),
       TRUE ~ number
     )
   )
@@ -261,35 +289,67 @@ england_ltla_summary_metrics <- england_ltla_summary_metrics_polarised |>
   mutate(
     label = case_when(
       variable == "Deprivation" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "IMD rank: ", round(number)
+        "<br>",
+        "IMD rank (1 = most deprived): ",
+        round(number),
+        "<br>",
+        "Percentage of people living in deprived neighbourhoods: ",
+        round(percent * 100, 1),
+        "%"
       ),
       variable == "Left-behind areas" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "No. of left-behind LSOA's in the area: ", round(number),
-        "<br>", "Percentage of all LSOA's that are left-behind: ", round(percent * 100, 1), "%"
+        "<br>",
+        "No. of left-behind LSOA's in the area: ",
+        round(number),
+        "<br>",
+        "Percentage of all LSOA's that are left-behind: ",
+        round(percent * 100, 1),
+        "%"
       ),
       variable == "Access to Healthcare - Digital" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Digital Access to Healthcare rank: ", round(number)
+        "<br>",
+        "Digital Access to Healthcare rank: ",
+        round(number)
       ),
       variable == "Access to Healthcare - Physical" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Physical Access to Healthcare rank: ", round(number)
+        "<br>",
+        "Physical Access to Healthcare rank: ",
+        round(number)
       ),
       variable == "Loneliness" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent * 100), "%"
+        "<br>",
+        "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ",
+        round(percent * 100),
+        "%"
       ),
       variable == "Population health" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Population health score (higher = better health): ", round(number)
+        "<br>",
+        "Population health score (higher = better health): ",
+        round(number)
       )
     )
   )
