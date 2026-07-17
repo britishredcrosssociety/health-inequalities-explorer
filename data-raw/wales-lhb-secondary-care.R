@@ -11,8 +11,19 @@ lhb <- boundaries_lhb20 |>
 # ---- RTT ----
 # Higher = worse performance
 rtt_raw <- wales_rtt_lhb |>
-  rename(lhb20_code = lhb22_code) |>
-  filter(date >= max(date) %m-% months(2)) # Last quarter
+  filter(date >= max(date) %m-% months(2)) |> # Last quarter
+  mutate(lhb22_name_clean = case_when(
+    str_detect(lhb22_name, "Betsi") ~ "Betsi Cadwaladr University Health Board",
+    str_detect(lhb22_name, "Powys") ~ "Powys Teaching Health Board",
+    str_detect(lhb22_name, "Hywel") ~ "Hywel Dda University Health Board",
+    str_detect(lhb22_name, "Aneurin") ~ "Aneurin Bevan University Health Board",
+    str_detect(lhb22_name, "Cardiff") ~ "Cardiff and Vale University Health Board",
+    str_detect(lhb22_name, "Cwm") ~ "Cwm Taf Morgannwg University Health Board",
+    str_detect(lhb22_name, "Swansea") ~ "Swansea Bay University Health Board",
+    TRUE ~ lhb22_name)) |>
+    left_join(lhb, by = c("lhb22_name_clean"= "lhb20_name")) |>
+  select(-lhb22_name) |>
+    rename(lhb20_name = lhb22_name_clean)
 
 # Create dynamic label
 min_date_rtt <- min(rtt_raw$date) |>

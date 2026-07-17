@@ -21,7 +21,7 @@ rtt <- ni_rtt_hsct |>
     waits_over_18_weeks,
     total_waits,
   ) |>
-  filter(date == "2023-09-01") # Last quarter with data for all areas. NOTE: Check when updating.
+  filter(date == "2025-12-01") # Last quarter with data for all areas. NOTE: Check when updating.
 
 # Create dynamic label
 max_date_rtt <- max(rtt$date) |>
