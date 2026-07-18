@@ -25,27 +25,36 @@ population_lsoa <-
   filter(str_detect(lsoa11_code, "^E"))
 
 # ---- IMD score ----
-# Decile 1 = most deprived
-# Higher percentage / number = worse health
-imd <- imd2019_england_lsoa11 |>
-  # rename(lsoa11_code = lsoa_code) |>
-  left_join(lookup_lsoa11_sicbl22_icb22_ltla22) |>
+# Number/rank 1 = most deprived
+# Higher percentage = worse health
+# imd <- imd2019_england_lsoa11 |>
+#   # rename(lsoa11_code = lsoa_code) |>
+#   left_join(lookup_lsoa11_sicbl22_icb22_ltla22) |>
+#   select(
+#     lsoa11_code,
+#     decile = IMD_decile,
+#     icb22_code
+#   ) |>
+#   mutate(top_10 = if_else(decile == 1, "yes", "no")) |>
+#   group_by(icb22_code, top_10) |>
+#   summarise(n = n()) |>
+#   mutate(freq = n / sum(n)) |>
+#   mutate(total_number_lsoas = sum(n)) |>
+#   ungroup() |>
+#   filter(top_10 == "no") |> # Not all ICBs have top 10% most vulnerable LSOAs
+#   mutate(number = total_number_lsoas - n) |>
+#   mutate(percent = 1 - freq) |>
+#   mutate(variable = "Deprivation", .after = icb22_code) |>
+#   select(-top_10, -n, -freq, -total_number_lsoas)
+
+imd <-
+  imd2025_england_icb24 |>
   select(
-    lsoa11_code,
-    decile = IMD_decile,
-    icb22_code
+    icb22_code = icb24_code,
+    number = imd_rank_of_average_score,
+    percent = imd_2025_extent
   ) |>
-  mutate(top_10 = if_else(decile == 1, "yes", "no")) |>
-  group_by(icb22_code, top_10) |>
-  summarise(n = n()) |>
-  mutate(freq = n / sum(n)) |>
-  mutate(total_number_lsoas = sum(n)) |>
-  ungroup() |>
-  filter(top_10 == "no") |> # Not all ICBs have top 10% most vulnerable LSOAs
-  mutate(number = total_number_lsoas - n) |>
-  mutate(percent = 1 - freq) |>
-  mutate(variable = "Deprivation", .after = icb22_code) |>
-  select(-top_10, -n, -freq, -total_number_lsoas)
+  mutate(variable = "Deprivation", .after = icb22_code)
 
 
 # ---- % Left-behind areas ----
@@ -134,7 +143,8 @@ deri_lsoa <-
   left_join(population_lsoa)
 
 deri <-
-  geographr::calculate_extent(deri_lsoa,
+  geographr::calculate_extent(
+    deri_lsoa,
     deri_score_national,
     icb22_code,
     total_population,
@@ -157,17 +167,18 @@ deri <-
 physical_lsoa <-
   england_lsoa_depahri |>
   mutate(
-    physical_score =
-      demography_comp_national * 0.33 +
-        deprivation_comp_national * 0.33 +
-        health_access_comp_national * 0.33
+    physical_score = demography_comp_national *
+      0.33 +
+      deprivation_comp_national * 0.33 +
+      health_access_comp_national * 0.33
   ) |>
   left_join(lsoa_icb) |>
   distinct(lsoa11_code, physical_score, icb22_code) |>
   left_join(population_lsoa)
 
 physical_access <-
-  geographr::calculate_extent(physical_lsoa,
+  geographr::calculate_extent(
+    physical_lsoa,
     physical_score,
     icb22_code,
     total_population,
@@ -231,7 +242,9 @@ loneliness_lsoa <-
 
 loneliness <- loneliness_lsoa |>
   group_by(icb22_code) |>
-  summarise(percent = weighted.mean(perc, w = total_population, na.rm = TRUE)) |>
+  summarise(
+    percent = weighted.mean(perc, w = total_population, na.rm = TRUE)
+  ) |>
   mutate(
     variable = "Loneliness",
     .after = icb22_code
@@ -295,7 +308,7 @@ icb_summary_metrics_england_scaled <-
   group_by(variable) |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scale_1_1(percent),
+      variable == "Deprivation" ~ scale_1_1(number),
       variable == "Left-behind areas" ~ scale_1_1(percent),
       variable == "Access to Healthcare - Digital" ~ scale_1_1(number),
       variable == "Access to Healthcare - Physical" ~ scale_1_1(number),
@@ -307,12 +320,12 @@ icb_summary_metrics_england_scaled <-
 
 # ---- Align indicator polarity ----
 # Align so higher value = better health
-# Flip IMD, LBA, DEPAHRI, loneliness as currently higher = worse health
+# Flip LBA, DEPAHRI, loneliness as currently higher = worse health
 # For DEPHARI also flip ranks (so that worse = lower rank)
 england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   mutate(
     scaled_1_1 = case_when(
-      variable == "Deprivation" ~ scaled_1_1 * -1,
+      # variable == "Deprivation" ~ scaled_1_1 * -1,
       variable == "Left-behind areas" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Digital" ~ scaled_1_1 * -1,
       variable == "Access to Healthcare - Physical" ~ scaled_1_1 * -1,
@@ -322,8 +335,16 @@ england_icb_summary_metrics_polarised <- icb_summary_metrics_england_scaled |>
   ) |>
   mutate(
     number = case_when(
-      variable == "Access to Healthcare - Digital"  ~ ave(-number, variable, FUN = rank),
-      variable == "Access to Healthcare - Physical" ~ ave(-number, variable, FUN = rank),
+      variable == "Access to Healthcare - Digital" ~ ave(
+        -number,
+        variable,
+        FUN = rank
+      ),
+      variable == "Access to Healthcare - Physical" ~ ave(
+        -number,
+        variable,
+        FUN = rank
+      ),
       TRUE ~ number
     )
   )
@@ -342,36 +363,67 @@ england_icb_summary_metrics <- england_icb_summary_metrics_polarised |>
   mutate(
     label = case_when(
       variable == "Deprivation" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "The no. of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(number),
-        "<br>", "Percentage of LSOAs in the ICB that are in the top 10% most deprived nationally: ", round(percent * 100, 1), "%"
+        "<br>",
+        "IMD rank (1 = most deprived): ",
+        round(number),
+        "<br>",
+        "Percentage of people living in deprived neighbourhoods: ",
+        round(percent * 100, 1),
+        "%"
       ),
       variable == "Left-behind areas" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "No. of left-behind LSOAs in the ICB: ", round(number),
-        "<br>", "Percentage of LSOAs in ICB that are left-behind: ", round(percent * 100, 1), "%"
+        "<br>",
+        "No. of left-behind LSOAs in the ICB: ",
+        round(number),
+        "<br>",
+        "Percentage of LSOAs in ICB that are left-behind: ",
+        round(percent * 100, 1),
+        "%"
       ),
       variable == "Access to Healthcare - Digital" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Digital Access to Healthcare rank: ", round(number)
+        "<br>",
+        "Digital Access to Healthcare rank: ",
+        round(number)
       ),
       variable == "Access to Healthcare - Physical" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Physical Access to Healthcare rank: ", round(number)
+        "<br>",
+        "Physical Access to Healthcare rank: ",
+        round(number)
       ),
       variable == "Loneliness" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ", round(percent * 100), "%"
+        "<br>",
+        "Percentage of people who 'often', 'always' or 'some of the time' feel lonely: ",
+        round(percent * 100),
+        "%"
       ),
       variable == "Population health" ~ paste0(
-        "<b>", area_name, "</b>",
+        "<b>",
+        area_name,
+        "</b>",
         "<br>",
-        "<br>", "Overall population health rank: ", round(number)
+        "<br>",
+        "Overall population health rank: ",
+        round(number)
       )
     )
   )
